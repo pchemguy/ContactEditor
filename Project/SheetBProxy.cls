@@ -32,26 +32,21 @@ Private Sub Class_Initialize()
     Next FieldIndex
 End Sub
 
-
 Private Sub Class_Terminate()
     Set this.TableAMap = Nothing
 End Sub
-
 
 Private Property Get TableA() As Excel.Range
     Set TableA = SheetB.Range("TableA").Rows
 End Property
 
-
 Private Property Get CodeColumnIndex() As Long
     CodeColumnIndex = this.TableAMap("Code")
 End Property
 
-
 Private Property Get NameColumnIndex() As Long
     NameColumnIndex = this.TableAMap("Name")
 End Property
-
 
 Private Property Get IDataSheet_Data() As Collection
     Dim result As Collection
