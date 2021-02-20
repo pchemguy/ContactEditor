@@ -7,29 +7,30 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
+'@Folder "Forms.Workbook"
 Option Explicit
 
 Private Type TProxy
-    Sheet1 As ISheet1Proxy
-    Sheet2 As IDataSheet
+    SheetA As ISheetAProxy
+    SheetB As IDataSheet
 End Type
-
 Private this As TProxy
 
-Public Property Get Sheet1() As ISheet1Proxy
-    Set Sheet1 = this.Sheet1
+
+Public Property Get SheetA() As ISheetAProxy
+    Set SheetA = this.SheetA
 End Property
 
-Public Property Get Sheet2() As IDataSheet
-    Set Sheet2 = this.Sheet2
+Public Property Get SheetB() As IDataSheet
+    Set SheetB = this.SheetB
 End Property
 
 Private Sub Class_Initialize()
-    Set this.Sheet1 = New Sheet1Proxy
-    Set this.Sheet2 = New Sheet2Proxy
+    Set this.SheetA = New SheetAProxy
+    Set this.SheetB = New SheetBProxy
 End Sub
 
 Private Sub Class_Terminate()
-    Set this.Sheet1 = Nothing
-    Set this.Sheet2 = Nothing
+    Set this.SheetA = Nothing
+    Set this.SheetB = Nothing
 End Sub

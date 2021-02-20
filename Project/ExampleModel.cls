@@ -7,30 +7,31 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
+'@Folder "Forms.Example"
 Option Explicit
 
 Private Type TModel
-    Field1 As String
-    Field2 As String
+    FieldA As String
+    FieldB As String
     PossibleValues As Collection
 End Type
 
 Private this As TModel
 
-Public Property Get Field1() As String
-    Field1 = this.Field1
+Public Property Get FieldA() As String
+    FieldA = this.FieldA
 End Property
 
-Public Property Let Field1(ByVal value As String)
-    this.Field1 = value
+Public Property Let FieldA(ByVal value As String)
+    this.FieldA = value
 End Property
 
-Public Property Get Field2() As String
-    Field2 = this.Field2
+Public Property Get FieldB() As String
+    FieldB = this.FieldB
 End Property
 
-Public Property Let Field2(ByVal value As String)
-    this.Field2 = value
+Public Property Let FieldB(ByVal value As String)
+    this.FieldB = value
 End Property
 
 Public Property Get PossibleValues() As Collection

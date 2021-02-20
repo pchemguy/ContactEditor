@@ -13,6 +13,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
+'@Folder "Forms.Example"
 Option Explicit
 
 Public Event ApplyChanges(ByVal viewModel As ExampleModel)
@@ -37,12 +38,12 @@ Private Sub CancelButton_Click()
     OnCancel
 End Sub
 
-Private Sub Field1Box_Change()
-    this.Model.Field1 = Field1Box.value
+Private Sub FieldABox_Change()
+    this.Model.FieldA = FieldABox.value
 End Sub
 
-Private Sub Field2Box_Change()
-    this.Model.Field2 = Field2Box.value
+Private Sub FieldBBox_Change()
+    this.Model.FieldB = FieldBBox.value
 End Sub
 
 Private Sub OnCancel()
@@ -57,28 +58,29 @@ Private Function IDialogView_ShowDialog(ByVal viewModel As Object) As Boolean
 End Function
 
 Private Sub UserForm_Activate()
-    InitializeField1
-    Field1Box.value = this.Model.Field1
-    Field2Box.value = this.Model.Field2
+    InitializeFieldA
+    FieldABox.value = this.Model.FieldA
+    FieldBBox.value = this.Model.FieldB
 End Sub
 
-Private Sub InitializeField1()
+Private Sub InitializeFieldA()
     Dim allValues As Collection
     Set allValues = this.Model.PossibleValues
     
     Dim listValues() As Variant
     ReDim listValues(0 To allValues.Count - 1, 0 To 1)
     
-    Dim current As SomeModel, i As Long
+    Dim current As SheetBModel
+    Dim i As Long
     For Each current In this.Model.PossibleValues
         listValues(i, 0) = current.Code
         listValues(i, 1) = current.Name
         i = i + 1
     Next
-    Field1Box.Clear
-    Field1Box.List = listValues
-    Field1Box.ColumnCount = 2
-    Field1Box.ColumnWidths = "0,70"
+    FieldABox.Clear
+    FieldABox.List = listValues
+    FieldABox.ColumnCount = 2
+    FieldABox.ColumnWidths = "0,70"
 End Sub
 
 Private Sub UserForm_QueryClose(Cancel As Integer, CloseMode As Integer)

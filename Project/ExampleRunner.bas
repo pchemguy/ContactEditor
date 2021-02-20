@@ -1,4 +1,5 @@
-Attribute VB_Name = "Module1"
+Attribute VB_Name = "ExampleRunner"
+'@Folder "Forms.Example"
 Option Explicit
 
 Public Sub ExampleMacro()
