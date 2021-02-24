@@ -9,7 +9,8 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 '@Folder "Forms.Example"
 Option Explicit
-Private wbProxy As WorkbookProxy
+
+Private wbProxy As StorageManager
 '@MemberAttribute VB_VarHelpID, -1
 Private WithEvents view As ExampleDialog
 Attribute view.VB_VarHelpID = -1
@@ -18,7 +19,7 @@ Private Property Get Dialog() As IDialogView
     Set Dialog = view
 End Property
 
-Public Sub Show(ByVal proxy As WorkbookProxy)
+Public Sub Show(ByVal proxy As StorageManager)
     
     Set wbProxy = proxy
     Set view = New ExampleDialog
@@ -26,8 +27,8 @@ Public Sub Show(ByVal proxy As WorkbookProxy)
     Dim viewModel As ExampleModel
     Set viewModel = New ExampleModel
     Set viewModel.PossibleValues = wbProxy.SheetB.Data
-    viewModel.FieldA = wbProxy.SheetA.FieldA
-    viewModel.FieldB = wbProxy.SheetA.FieldB
+    viewModel.Code = wbProxy.SheetA.Code
+    viewModel.Quantity = wbProxy.SheetA.Value
     
     If Dialog.ShowDialog(viewModel) Then ApplyChanges viewModel
     Set view = Nothing
@@ -35,8 +36,8 @@ Public Sub Show(ByVal proxy As WorkbookProxy)
 End Sub
 
 Private Sub ApplyChanges(ByVal viewModel As ExampleModel)
-    wbProxy.SheetA.FieldA = viewModel.FieldA
-    wbProxy.SheetA.FieldB = viewModel.FieldB
+    wbProxy.SheetA.Code = viewModel.Code
+    wbProxy.SheetA.Value = viewModel.Quantity
 End Sub
 
 Private Sub view_ApplyChanges(ByVal viewModel As ExampleModel)

@@ -11,33 +11,33 @@ Attribute VB_Exposed = False
 Option Explicit
 
 Private Type TModel
-    FieldA As String
-    FieldB As String
+    Code As String
+    Quantity As String
     PossibleValues As Collection
 End Type
 
 Private this As TModel
 
-Public Property Get FieldA() As String
-    FieldA = this.FieldA
+Public Property Get Code() As String
+    Code = this.Code
 End Property
 
-Public Property Let FieldA(ByVal value As String)
-    this.FieldA = value
+Public Property Let Code(ByVal Value As String)
+    this.Code = Value
 End Property
 
-Public Property Get FieldB() As String
-    FieldB = this.FieldB
+Public Property Get Quantity() As String
+    Quantity = this.Quantity
 End Property
 
-Public Property Let FieldB(ByVal value As String)
-    this.FieldB = value
+Public Property Let Quantity(ByVal Value As String)
+    this.Quantity = Value
 End Property
 
 Public Property Get PossibleValues() As Collection
     Set PossibleValues = this.PossibleValues
 End Property
 
-Public Property Set PossibleValues(ByVal value As Collection)
-    Set this.PossibleValues = value
+Public Property Set PossibleValues(ByVal Value As Collection)
+    Set this.PossibleValues = Value
 End Property

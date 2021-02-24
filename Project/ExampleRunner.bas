@@ -3,8 +3,8 @@ Attribute VB_Name = "ExampleRunner"
 Option Explicit
 
 Public Sub ExampleMacro()
-    Dim proxy As WorkbookProxy
-    Set proxy = New WorkbookProxy
+    Dim proxy As StorageManager
+    Set proxy = New StorageManager
     With New ExamplePresenter
         .Show proxy
     End With

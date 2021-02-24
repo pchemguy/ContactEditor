@@ -13,23 +13,19 @@ Option Explicit
 Implements ISheetAProxy
 
 
-Private Property Get ISheetAProxy_FieldA() As String
-    ISheetAProxy_FieldA = SheetA.Range("FieldAValue").value
+Private Property Get ISheetAProxy_Code() As String
+    ISheetAProxy_Code = RecordEditor.Range("Code").Value
 End Property
 
-Private Property Let ISheetAProxy_FieldA(ByVal value As String)
-    SheetA.Range("FieldAValue").value = value
+Private Property Let ISheetAProxy_Code(ByVal Value As String)
+    RecordEditor.Range("Code").Value = Value
 End Property
 
-Private Property Get ISheetAProxy_FieldB() As String
-    ISheetAProxy_FieldB = SheetA.Range("FieldBValue").value
+Private Property Get ISheetAProxy_Value() As String
+    ISheetAProxy_Value = RecordEditor.Range("Quantity").Value
 End Property
 
-Private Property Let ISheetAProxy_FieldB(ByVal value As String)
-    SheetA.Range("FieldBValue").value = value
+Private Property Let ISheetAProxy_Value(ByVal Value As String)
+    RecordEditor.Range("Quantity").Value = Value
 End Property
 
-Private Sub ISheetAProxy_Clear()
-    SheetA.Range("FieldAValue").ClearContents
-    SheetA.Range("FieldBValue").ClearContents
-End Sub

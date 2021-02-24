@@ -38,12 +38,12 @@ Private Sub CancelButton_Click()
     OnCancel
 End Sub
 
-Private Sub FieldABox_Change()
-    this.Model.FieldA = FieldABox.value
+Private Sub CodeNameBox_Change()
+    this.Model.Code = CodeNameBox.Value
 End Sub
 
-Private Sub FieldBBox_Change()
-    this.Model.FieldB = FieldBBox.value
+Private Sub QuantityBox_Change()
+    this.Model.Quantity = QuantityBox.Value
 End Sub
 
 Private Sub OnCancel()
@@ -59,8 +59,8 @@ End Function
 
 Private Sub UserForm_Activate()
     InitializeFieldA
-    FieldABox.value = this.Model.FieldA
-    FieldBBox.value = this.Model.FieldB
+    CodeNameBox.Value = this.Model.Code
+    QuantityBox.Value = this.Model.Quantity
 End Sub
 
 Private Sub InitializeFieldA()
@@ -77,10 +77,10 @@ Private Sub InitializeFieldA()
         listValues(i, 1) = current.Name
         i = i + 1
     Next
-    FieldABox.Clear
-    FieldABox.List = listValues
-    FieldABox.ColumnCount = 2
-    FieldABox.ColumnWidths = "0,70"
+    CodeNameBox.Clear
+    CodeNameBox.List = listValues
+    CodeNameBox.ColumnCount = 2
+    CodeNameBox.ColumnWidths = "0,30"
 End Sub
 
 Private Sub UserForm_QueryClose(Cancel As Integer, CloseMode As Integer)

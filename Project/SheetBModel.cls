@@ -21,14 +21,14 @@ Public Property Get Code() As String
     Code = this.Code
 End Property
 
-Public Property Let Code(ByVal value As String)
-    this.Code = value
+Public Property Let Code(ByVal Value As String)
+    this.Code = Value
 End Property
 
 Public Property Get Name() As String
     Name = this.Name
 End Property
 
-Public Property Let Name(ByVal value As String)
-    this.Name = value
+Public Property Let Name(ByVal Value As String)
+    this.Name = Value
 End Property

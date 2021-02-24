@@ -10,18 +10,15 @@ Attribute VB_Exposed = False
 '@Folder "Forms.Abstract"
 Option Explicit
 
-Public Property Get FieldA() As String
+Public Property Get Code() As String
 End Property
 
-Public Property Let FieldA(ByVal value As String)
+Public Property Let Code(ByVal Value As String)
 End Property
 
-Public Property Get FieldB() As String
+Public Property Get Value() As String
 End Property
 
-Public Property Let FieldB(ByVal value As String)
+Public Property Let Value(ByVal Value As String)
 End Property
-
-Public Sub Clear()
-End Sub
 
