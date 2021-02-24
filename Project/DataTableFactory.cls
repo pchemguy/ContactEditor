@@ -33,11 +33,16 @@ Public Sub Init(ByVal ClassName As String)
 End Sub
 
 
-Private Function IDataTableFactory_CreateInstance(ByVal Model As DataTableModel) As IDataTable
-    Select Case this.ClassName
+Public Function CreateInstance(ByVal ClassName As String, ByVal model As DataTableModel, ByVal ConnectionString As String, ByVal TableName As String) As IDataTable
+    Select Case ClassName
         Case "SheetTable"
-            Set IDataTableFactory_CreateInstance = SheetTable.Create(Model)
+            Set CreateInstance = SheetTable.Create(model, ConnectionString, TableName)
         Case Else
-            VBA.Err.Raise vbObjectError, "IDataTableFactory", "Unsupported backend: " & this.ClassName
+            VBA.Err.Raise vbObjectError, "IDataTableFactory", "Unsupported backend: " & ClassName
     End Select
+End Function
+
+
+Private Function IDataTableFactory_CreateInstance(ByVal model As DataTableModel, ByVal ConnectionString As String, ByVal TableName As String) As IDataTable
+    IDataTableFactory_CreateInstance = CreateInstance(this.ClassName, model, ConnectionString, TableName)
 End Function

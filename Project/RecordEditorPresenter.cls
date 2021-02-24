@@ -2,27 +2,31 @@ VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
-Attribute VB_Name = "ExamplePresenter"
+Attribute VB_Name = "RecordEditorPresenter"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
-'@Folder "Forms.Example"
+'@Folder "Forms.Record Editor"
 Option Explicit
 
-Private wbProxy As StorageManager
 '@MemberAttribute VB_VarHelpID, -1
-Private WithEvents view As ExampleDialog
+Private WithEvents view As RecordEditorDialog
 Attribute view.VB_VarHelpID = -1
+Private Type TPresenter
+    model As RecordEditorModel
+    CodeQuantitySM As IDataMap
+    CodeNamesSM As IDataTable
+End Type
+Private this As TPresenter
 
 Private Property Get Dialog() As IDialogView
     Set Dialog = view
 End Property
 
-Public Sub Show(ByVal proxy As StorageManager)
-    
-    Set wbProxy = proxy
-    Set view = New ExampleDialog
+Public Sub Show()
+    Set this.model = New RecordEditorModel
+    Set view = New RecordEditorDialog
     
     Dim viewModel As ExampleModel
     Set viewModel = New ExampleModel

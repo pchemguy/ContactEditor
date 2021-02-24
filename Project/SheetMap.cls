@@ -18,45 +18,73 @@ Option Explicit
 Implements IDataMap
 
 Private Type TDataMap
-    Model As DataMapModel
+    model As DataMapModel
     MapSheet As Excel.Worksheet
 End Type
 Private this As TDataMap
 
 
 '@Description "Returns a new IDataMap object."
-Public Function Create(ByVal Model As DataMapModel) As IDataMap
+Public Function Create(ByVal model As DataMapModel, ByVal ConnectionString As String) As IDataMap
 Attribute Create.VB_Description = "Returns a new IDataMap object."
     Dim result As SheetMap
     Set result = New SheetMap
-    result.Init Model
+    result.Init model, ConnectionString
     Set Create = result
 End Function
 
 
-Public Sub Init(ByVal Model As DataMapModel)
-    Set this.Model = Model
+Public Sub Init(ByVal model As DataMapModel, ByVal ConnectionString As String)
+    Set this.model = model
+    Dim BookSheet As Variant: BookSheet = Split(ConnectionString, "!")
+    Set this.MapSheet = Excel.Workbooks(BookSheet(0)).Worksheets(BookSheet(1))
 End Sub
 
 
 Private Sub Class_Terminate()
-    Set this.Model = Nothing
+    Set this.model = Nothing
 End Sub
 
 
-Private Sub GetProperties(ByVal FieldNames As Variant)
-    this.Model.Properties.RemoveAll
+'''' Collect all named ranges, keep only those referring to a single cell on a proper worksheet
+'''' and the adjacent label above or to the left matches the range name.
+Private Sub IDataMap_GetData()
+    this.model.Properties.RemoveAll
     
-    Dim FieldName As Variant
-    For Each FieldName In FieldNames
-        this.Model.Properties.Item(FieldName) = this.MapSheet.Range(FieldName).Value
-    Next FieldName
+    Dim WSheetName As String: WSheetName = this.MapSheet.Name
+    Dim Prefix As String: Prefix = "=" & WSheetName & "!"
+    Dim PrefixLength As Long: PrefixLength = Len(Prefix)
+    
+    Dim RangeName As Excel.Name
+    Dim TargetRange As Excel.Range
+    Dim RefersTo As String
+    Dim CellCount As Long
+    Dim FieldName As String
+    For Each RangeName In Application.Names
+        ' Check that this range name refers to the desired Worksheet (RefersTo starts with "=<Worksheet Name>!
+        RefersTo = RangeName.RefersTo
+        If Left$(RefersTo, PrefixLength) <> Prefix Then GoTo RANGENAME_CONTINUE
+        
+        ' Check that this range name refers to a single cell
+        Set TargetRange = this.MapSheet.Range(Right$(RefersTo, Len(RefersTo) - PrefixLength))
+        CellCount = TargetRange.Cells.Count
+        If CellCount > 1 Then GoTo RANGENAME_CONTINUE
+        
+        ' For Worksheet scoped range names, strip Worksheet name and check that it matches the label in adjacent top or left cell
+        FieldName = RangeName.Name
+        If Left$(FieldName, PrefixLength - 1) = WSheetName & "!" Then FieldName = Right$(FieldName, Len(FieldName) - (PrefixLength - 1))
+        If (TargetRange.Offset(-1, 0).Value <> FieldName) And (TargetRange.Offset(0, -1).Value <> FieldName) Then GoTo RANGENAME_CONTINUE
+        
+        'Add FieldName -> TargetRange.Value to the dictionary
+        this.model.Properties.Item(FieldName) = TargetRange.Value
+RANGENAME_CONTINUE:
+    Next RangeName
 End Sub
 
 
-Private Sub IDataMap_GetData(ByVal ConnectionString As String, ByVal FieldNames As Variant)
-    Dim BookSheet As Variant: BookSheet = Split(ConnectionString, "!")
-    Set this.MapSheet = Excel.Workbooks(BookSheet(0)).Worksheets(BookSheet(1))
-    
-    GetProperties FieldNames
+Private Sub IDataMap_PersistData()
+    Dim PropertyName As Variant
+    For Each PropertyName In this.model.Properties
+        this.MapSheet.Range(PropertyName).Value = this.model.Properties(PropertyName)
+    Next PropertyName
 End Sub

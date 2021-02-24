@@ -9,11 +9,14 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Attribute VB_Description = "Abstracts storage interfaces for DataTableModel."
 '@Folder "Storage.Table.Abstract"
-'@ModuleDescription "Abstracts storage interfaces for DataTableModel."
+'@ModuleDescription "Abstracts storage interfaces for DataTableModel. Implemented by storage backends."
 '@Interface
 '@Exposed
 Option Explicit
 
 
-Public Sub GetData(ByVal ConnectionString As String, ByVal TableName As String)
+Public Sub GetData()
+End Sub
+
+Public Sub PersistData()
 End Sub

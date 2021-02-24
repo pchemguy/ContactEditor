@@ -1,26 +1,26 @@
 VERSION 5.00
-Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} ExampleDialog 
+Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} RecordEditorDialog 
    Caption         =   "Example Dialog"
    ClientHeight    =   3000
    ClientLeft      =   45
    ClientTop       =   375
    ClientWidth     =   6165
-   OleObjectBlob   =   "ExampleDialog.frx":0000
+   OleObjectBlob   =   "RecordEditorDialog.frx":0000
    StartUpPosition =   1  'CenterOwner
 End
-Attribute VB_Name = "ExampleDialog"
+Attribute VB_Name = "RecordEditorDialog"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-'@Folder "Forms.Example"
+'@Folder "Forms.Record Editor"
 Option Explicit
 
 Public Event ApplyChanges(ByVal viewModel As ExampleModel)
 
 Private Type TView
     IsCancelled As Boolean
-    Model As ExampleModel
+    model As ExampleModel
 End Type
 Private this As TView
 
@@ -31,7 +31,7 @@ Private Sub AcceptButton_Click()
 End Sub
 
 Private Sub ApplyButton_Click()
-    RaiseEvent ApplyChanges(this.Model)
+    RaiseEvent ApplyChanges(this.model)
 End Sub
 
 Private Sub CancelButton_Click()
@@ -39,11 +39,11 @@ Private Sub CancelButton_Click()
 End Sub
 
 Private Sub CodeNameBox_Change()
-    this.Model.Code = CodeNameBox.Value
+    this.model.Code = CodeNameBox.Value
 End Sub
 
 Private Sub QuantityBox_Change()
-    this.Model.Quantity = QuantityBox.Value
+    this.model.Quantity = QuantityBox.Value
 End Sub
 
 Private Sub OnCancel()
@@ -52,27 +52,27 @@ Private Sub OnCancel()
 End Sub
 
 Private Function IDialogView_ShowDialog(ByVal viewModel As Object) As Boolean
-    Set this.Model = viewModel
+    Set this.model = viewModel
     Me.Show vbModal
     IDialogView_ShowDialog = Not this.IsCancelled
 End Function
 
 Private Sub UserForm_Activate()
     InitializeFieldA
-    CodeNameBox.Value = this.Model.Code
-    QuantityBox.Value = this.Model.Quantity
+    CodeNameBox.Value = this.model.Code
+    QuantityBox.Value = this.model.Quantity
 End Sub
 
 Private Sub InitializeFieldA()
     Dim allValues As Collection
-    Set allValues = this.Model.PossibleValues
+    Set allValues = this.model.PossibleValues
     
     Dim listValues() As Variant
     ReDim listValues(0 To allValues.Count - 1, 0 To 1)
     
     Dim current As SheetBModel
     Dim i As Long
-    For Each current In this.Model.PossibleValues
+    For Each current In this.model.PossibleValues
         listValues(i, 0) = current.Code
         listValues(i, 1) = current.Name
         i = i + 1

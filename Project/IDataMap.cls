@@ -15,5 +15,8 @@ Attribute VB_Description = "Abstracts storage interfaces for DataMapModel."
 Option Explicit
 
 
-Public Sub GetData(ByVal ConnectionString As String, ByVal FieldNames As Variant)
+Public Sub GetData()
+End Sub
+
+Public Sub PersistData()
 End Sub

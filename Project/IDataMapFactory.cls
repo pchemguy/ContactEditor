@@ -15,5 +15,5 @@ Attribute VB_Description = "Abstract factory for map storage objects."
 Option Explicit
 
 
-Public Function CreateInstance(ByVal Model As DataMapModel) As IDataMap
+Public Function CreateInstance(ByVal model As DataMapModel, ByVal ConnectionString As String) As IDataMap
 End Function

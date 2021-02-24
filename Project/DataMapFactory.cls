@@ -33,11 +33,16 @@ Public Sub Init(ByVal ClassName As String)
 End Sub
 
 
-Private Function IDataMapFactory_CreateInstance(ByVal Model As DataMapModel) As IDataMap
-    Select Case this.ClassName
+Public Function CreateInstance(ByVal ClassName As String, ByVal model As DataMapModel, ByVal ConnectionString As String) As IDataMap
+    Select Case ClassName
         Case "SheetMap"
-            Set IDataMapFactory_CreateInstance = SheetMap.Create(Model)
+            Set CreateInstance = SheetMap.Create(model, ConnectionString)
         Case Else
-            VBA.Err.Raise vbObjectError, "IDataMapFactory", "Unsupported backend: " & this.ClassName
+            VBA.Err.Raise vbObjectError, "IDataMapFactory", "Unsupported backend: " & ClassName
     End Select
+End Function
+
+
+Private Function IDataMapFactory_CreateInstance(ByVal model As DataMapModel, ByVal ConnectionString As String) As IDataMap
+    IDataMapFactory_CreateInstance = CreateInstance(this.ClassName, model, ConnectionString)
 End Function
