@@ -13,14 +13,14 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-'@Folder "Forms.Record Editor"
+'@Folder "WorkbookProxyExampleDialog.Record Editor"
 Option Explicit
 
 Public Event ApplyChanges(ByVal viewModel As ExampleModel)
 
 Private Type TView
     IsCancelled As Boolean
-    model As ExampleModel
+    Model As ExampleModel
 End Type
 Private this As TView
 
@@ -31,7 +31,7 @@ Private Sub AcceptButton_Click()
 End Sub
 
 Private Sub ApplyButton_Click()
-    RaiseEvent ApplyChanges(this.model)
+    RaiseEvent ApplyChanges(this.Model)
 End Sub
 
 Private Sub CancelButton_Click()
@@ -39,11 +39,11 @@ Private Sub CancelButton_Click()
 End Sub
 
 Private Sub CodeNameBox_Change()
-    this.model.Code = CodeNameBox.Value
+    this.Model.Code = CodeNameBox.Value
 End Sub
 
 Private Sub QuantityBox_Change()
-    this.model.Quantity = QuantityBox.Value
+    this.Model.Quantity = QuantityBox.Value
 End Sub
 
 Private Sub OnCancel()
@@ -52,27 +52,27 @@ Private Sub OnCancel()
 End Sub
 
 Private Function IDialogView_ShowDialog(ByVal viewModel As Object) As Boolean
-    Set this.model = viewModel
+    Set this.Model = viewModel
     Me.Show vbModal
     IDialogView_ShowDialog = Not this.IsCancelled
 End Function
 
 Private Sub UserForm_Activate()
     InitializeFieldA
-    CodeNameBox.Value = this.model.Code
-    QuantityBox.Value = this.model.Quantity
+    CodeNameBox.Value = this.Model.Code
+    QuantityBox.Value = this.Model.Quantity
 End Sub
 
 Private Sub InitializeFieldA()
     Dim allValues As Collection
-    Set allValues = this.model.PossibleValues
+    Set allValues = this.Model.PossibleValues
     
     Dim listValues() As Variant
     ReDim listValues(0 To allValues.Count - 1, 0 To 1)
     
     Dim current As SheetBModel
     Dim i As Long
-    For Each current In this.model.PossibleValues
+    For Each current In this.Model.PossibleValues
         listValues(i, 0) = current.Code
         listValues(i, 1) = current.Name
         i = i + 1

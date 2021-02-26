@@ -7,16 +7,17 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
-'@Folder "Forms.Record Editor"
+'@Folder "WorkbookProxyExampleDialog.Record Editor"
 Option Explicit
 
 '@MemberAttribute VB_VarHelpID, -1
 Private WithEvents view As RecordEditorDialog
 Attribute view.VB_VarHelpID = -1
+Private wbProxy As StorageManager
 Private Type TPresenter
-    model As RecordEditorModel
-    CodeQuantitySM As IDataMap
-    CodeNamesSM As IDataTable
+    Model As RecordEditorModel
+    CodeQuantitySM As IDataRecordStorage
+    CodeNamesSM As IDataTableStorage
 End Type
 Private this As TPresenter
 
@@ -24,8 +25,8 @@ Private Property Get Dialog() As IDialogView
     Set Dialog = view
 End Property
 
-Public Sub Show()
-    Set this.model = New RecordEditorModel
+Public Sub Show(ByVal proxy As StorageManager)
+    Set wbProxy = proxy
     Set view = New RecordEditorDialog
     
     Dim viewModel As ExampleModel

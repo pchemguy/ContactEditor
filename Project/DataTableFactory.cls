@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
+'@IgnoreModule ProcedureNotUsed
 '@Folder "Storage.Table.Factory"
 '@PredeclaredId
 Option Explicit
@@ -33,16 +34,16 @@ Public Sub Init(ByVal ClassName As String)
 End Sub
 
 
-Public Function CreateInstance(ByVal ClassName As String, ByVal model As DataTableModel, ByVal ConnectionString As String, ByVal TableName As String) As IDataTable
+Public Function CreateInstance(ByVal ClassName As String, ByVal Model As DataTableModel, ByVal ConnectionString As String, ByVal TableName As String) As IDataTableStorage
     Select Case ClassName
-        Case "SheetTable"
-            Set CreateInstance = SheetTable.Create(model, ConnectionString, TableName)
+        Case "Worksheet"
+            Set CreateInstance = DataTableWSheet.Create(Model, ConnectionString, TableName)
         Case Else
             VBA.Err.Raise vbObjectError, "IDataTableFactory", "Unsupported backend: " & ClassName
     End Select
 End Function
 
 
-Private Function IDataTableFactory_CreateInstance(ByVal model As DataTableModel, ByVal ConnectionString As String, ByVal TableName As String) As IDataTable
-    IDataTableFactory_CreateInstance = CreateInstance(this.ClassName, model, ConnectionString, TableName)
+Private Function IDataTableFactory_CreateInstance(ByVal Model As DataTableModel, ByVal ConnectionString As String, ByVal TableName As String) As IDataTableStorage
+    Set IDataTableFactory_CreateInstance = CreateInstance(this.ClassName, Model, ConnectionString, TableName)
 End Function

@@ -7,7 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
-'@Folder "Forms.Workbook"
+'@Folder "WorkbookProxyExampleDialog.Workbook"
 '@IgnoreModule IndexedDefaultMemberAccess
 
 Option Explicit
@@ -37,7 +37,7 @@ Private Sub Class_Terminate()
 End Sub
 
 Private Property Get CodeNameTable() As Excel.Range
-    Set CodeNameTable = CodeNameData.Range("CodeNameTable").Rows
+    Set CodeNameTable = CodeNameData.Range("CodeNameData").Rows
 End Property
 
 Private Property Get CodeColumnIndex() As Long

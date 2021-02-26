@@ -43,25 +43,78 @@ Option Explicit
 
 Private Sub TestSheetTable()
     Dim StorageTableModel As DataTableModel: Set StorageTableModel = New DataTableModel
-    Dim ClassName As String: ClassName = "SheetTable"
-    Dim ConnectionString As String: ConnectionString = ThisWorkbook.Name & "!" & CodeNameData.Name
-    Dim TableName As String: TableName = "CodeNameTable"
+    Dim ClassName As String: ClassName = "Worksheet"
+    Dim ConnectionString As String: ConnectionString = ThisWorkbook.Name & "!" & Contacts.Name
+    Dim TableName As String: TableName = "Contacts"
     
-    Dim StorageManager As IDataTable
+    Dim StorageManager As IDataTableStorage
     Set StorageManager = DataTableFactory.CreateInstance(ClassName, StorageTableModel, ConnectionString, TableName)
     
-    StorageManager.GetData
+    StorageManager.LoadDataIntoModel
 End Sub
 
 
-Private Sub TestSheetMap()
-    Dim StorageMapModel As DataMapModel: Set StorageMapModel = New DataMapModel
-    Dim ClassName As String: ClassName = "SheetMap"
-    Dim ConnectionString As String: ConnectionString = ThisWorkbook.Name & "!" & RecordEditor.Name
+Private Sub TestSheetRecord()
+    Dim StorageRecordModel As DataRecordModel: Set StorageRecordModel = New DataRecordModel
+    Dim ClassName As String: ClassName = "Worksheet"
+    Dim ConnectionString As String: ConnectionString = ThisWorkbook.Name & "!" & ContactBrowser.Name
     
-    Dim StorageManager As IDataMap
-    Set StorageManager = DataMapFactory.CreateInstance(ClassName, StorageMapModel, ConnectionString)
+    Dim StorageManager As IDataRecordStorage
+    Set StorageManager = DataRecordFactory.CreateInstance(ClassName, StorageRecordModel, ConnectionString, vbNullString)
     
-    StorageManager.GetData
+    StorageManager.LoadDataIntoModel
+End Sub
+
+
+Private Sub TestDataRecordManager()
+    Dim ClassName As String: ClassName = "Worksheet"
+    Dim ConnectionString As String: ConnectionString = ThisWorkbook.Name & "!" & ContactBrowser.Name
+    
+    Dim Storman As IDataRecordManager
+    Set Storman = DataRecordManager.Create(ClassName, ConnectionString, vbNullString)
+    
+    Storman.LoadDataIntoModel
+End Sub
+
+
+Private Sub TestDataTableManager()
+    Dim ClassName As String: ClassName = "Worksheet"
+    Dim TableName As String: TableName = "Contacts"
+    Dim ConnectionString As String: ConnectionString = ThisWorkbook.Name & "!" & Contacts.Name
+    
+    Dim Storman As IDataTableManager
+    Set Storman = DataTableManager.Create(ClassName, ConnectionString, TableName)
+    
+    Storman.LoadDataIntoModel
+End Sub
+
+
+Private Sub TestArray()
+    Dim Target As Variant
+    Target = Application.WorksheetFunction.Index(Range("Contacts").Value, 1)
+    Target = Application.WorksheetFunction.Transpose(Range("ContactsIds").Value)
+End Sub
+
+
+Private Sub TestDataCompositeManager()
+    Dim Storman As DataCompositeManager
+    Set Storman = New DataCompositeManager
+
+    Dim ClassName As String: ClassName = "Worksheet"
+    Dim TableName As String: TableName = "Contacts"
+    Dim ConnectionString As String: ConnectionString = ThisWorkbook.Name & "!" & Contacts.Name
+    Storman.InitTable ClassName, ConnectionString, TableName
+    
+    
+    ConnectionString = ThisWorkbook.Name & "!" & ContactBrowser.Name
+    Storman.InitRecord ClassName, ConnectionString, ""
+    
+    Storman.LoadDataIntoModel
+    'Storman.LoadRecordFromTable "10"
+    
+    
+    Storman.UpdateRecordToTable
+    
+    'Storman.LoadDataIntoModel
 End Sub
 

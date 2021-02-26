@@ -7,19 +7,20 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
-'@Folder("Forms.Record Editor")
+'@IgnoreModule
+'@Folder "WorkbookProxyExampleDialog.Record Editor"
 Option Explicit
 
 
 Private Type TRecordEditorModel
-    CodeQuantityModel As DataMapModel
+    CodeQuantityModel As DataRecordModel
     CodeNamesModel As DataTableModel
 End Type
 Private this As TRecordEditorModel
 
 
 Private Sub Class_Initialize()
-    Set this.CodeQuantityModel = New DataMapModel
+    Set this.CodeQuantityModel = New DataRecordModel
     Set this.CodeNamesModel = New DataTableModel
 End Sub
 
@@ -28,7 +29,7 @@ Private Sub Class_Terminate()
     Set this.CodeNamesModel = Nothing
 End Sub
 
-Public Property Get CodeQuantityModel() As DataMapModel
+Public Property Get CodeQuantityModel() As DataRecordModel
     Set CodeQuantityModel = this.CodeQuantityModel
 End Property
 
@@ -37,5 +38,5 @@ Public Property Get CodeNamesModel() As DataTableModel
 End Property
 
 Public Function GetProperty(ByVal PropertyName As String) As Variant
-    GetProperty = this.CodeQuantityModel.Properties(PropertyName)
+    GetProperty = this.CodeQuantityModel.Record(PropertyName)
 End Function

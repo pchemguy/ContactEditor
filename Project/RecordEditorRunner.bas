@@ -1,9 +1,12 @@
 Attribute VB_Name = "RecordEditorRunner"
-'@Folder "Forms.Record Editor"
+'@Folder "WorkbookProxyExampleDialog.Record Editor"
 Option Explicit
 
 Public Sub ExampleMacro()
+    Dim proxy As StorageManager
+    Set proxy = New StorageManager
+    
     With New RecordEditorPresenter
-        .Show
+        .Show proxy
     End With
 End Sub

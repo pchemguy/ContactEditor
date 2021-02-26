@@ -16,37 +16,49 @@ Option Explicit
 
 
 Private Type TDataTableModel
-    FieldMap As Scripting.Dictionary
+    FieldIndices As Scripting.Dictionary
+    IdIndices As Scripting.Dictionary
     FieldNames As Variant
-    Records As Variant
+    Values As Variant
 End Type
 Private this As TDataTableModel
 
 Private Sub Class_Initialize()
-    Set this.FieldMap = New Scripting.Dictionary
-    this.FieldMap.CompareMode = TextCompare
+    Set this.FieldIndices = New Scripting.Dictionary
+    this.FieldIndices.CompareMode = TextCompare
+    Set this.IdIndices = New Scripting.Dictionary
+    this.IdIndices.CompareMode = TextCompare
 End Sub
 
 Private Sub Class_Terminate()
-    Set this.FieldMap = Nothing
+    Set this.FieldIndices = Nothing
+    Set this.IdIndices = Nothing
 End Sub
 
-Public Property Get FieldMap() As Scripting.Dictionary
-    Set FieldMap = this.FieldMap
+Public Property Get FieldIndices() As Scripting.Dictionary
+    Set FieldIndices = this.FieldIndices
+End Property
+
+Public Property Get IdIndices() As Scripting.Dictionary
+    Set IdIndices = this.IdIndices
 End Property
 
 Public Property Get FieldNames() As Variant
     FieldNames = this.FieldNames
 End Property
 
-Public Property Let FieldNames(ByVal FieldNames As Variant)
-    this.FieldNames = FieldNames
+Public Property Let FieldNames(ByVal FieldNamesArg As Variant)
+    this.FieldNames = FieldNamesArg
 End Property
 
-Public Property Get Records() As Variant
-    Records = this.Records
+Public Property Get Values() As Variant
+    Values = this.Values
 End Property
 
-Public Property Let Records(ByVal Records As Variant)
-    this.Records = Records
+Public Property Let Values(ByVal ValuesArg As Variant)
+    this.Values = ValuesArg
 End Property
+
+Public Sub UpdateValues(ByVal RecordIndex As Long, ByVal FieldIndex As Long, ByVal Value As Variant)
+    this.Values(RecordIndex, FieldIndex) = Value
+End Sub
