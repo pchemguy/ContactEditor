@@ -15,7 +15,6 @@
   <graph edgedefault="directed" id="G">
     <data key="d0" xml:space="preserve"/>
     <node id="n0">
-      <data key="d5"/>
       <data key="d6">
         <y:SVGNode>
           <y:Geometry height="69.94900512695312" width="56.554100036621094" x="1159.7229499816895" y="526.0254974365234"/>
@@ -37,7 +36,6 @@
       </data>
     </node>
     <node id="n1">
-      <data key="d5"/>
       <data key="d6">
         <y:SVGNode>
           <y:Geometry height="106.19934861880259" width="89.5270004272461" x="1583.3033056318884" y="561.556001663208"/>
@@ -59,7 +57,6 @@
       </data>
     </node>
     <node id="n2">
-      <data key="d5"/>
       <data key="d6">
         <y:ImageNode>
           <y:Geometry height="151.66329113924047" width="250.13361169102296" x="1230.6292227891402" y="765.960853173548"/>
@@ -93,7 +90,6 @@
       </data>
     </node>
     <node id="n5">
-      <data key="d5"/>
       <data key="d6">
         <y:ImageNode>
           <y:Geometry height="156.0" width="200.57142857142858" x="889.5" y="701.8591541722685"/>
@@ -105,7 +101,6 @@
       </data>
     </node>
     <node id="n6">
-      <data key="d5"/>
       <data key="d6">
         <y:GenericNode configuration="com.yworks.bpmn.Event.withShadow">
           <y:Geometry height="18.0" width="16.63033640546746" x="1209.6292227891402" y="561.9745025634766"/>
@@ -120,8 +115,8 @@
             </y:ModelParameter>
           </y:NodeLabel>
           <y:StyleProperties>
-            <y:Property class="com.yworks.yfiles.bpmn.view.EventCharEnum" name="com.yworks.bpmn.characteristic" value="EVENT_CHARACTERISTIC_START"/>
             <y:Property class="java.awt.Color" name="com.yworks.bpmn.icon.line.color" value="#000000"/>
+            <y:Property class="com.yworks.yfiles.bpmn.view.EventCharEnum" name="com.yworks.bpmn.characteristic" value="EVENT_CHARACTERISTIC_START"/>
             <y:Property class="java.awt.Color" name="com.yworks.bpmn.icon.fill2" value="#d4d4d4cc"/>
             <y:Property class="java.awt.Color" name="com.yworks.bpmn.icon.fill" value="#ffffffe6"/>
             <y:Property class="com.yworks.yfiles.bpmn.view.BPMNTypeEnum" name="com.yworks.bpmn.type" value="EVENT_TYPE_PLAIN"/>
@@ -162,8 +157,20 @@
         </y:ShapeNode>
       </data>
     </node>
+    <node id="n10">
+      <data key="d6">
+        <y:ShapeNode>
+          <y:Geometry height="54.32577319587631" width="113.5270004272461" x="1103.5868254666614" y="832.718308344537"/>
+          <y:Fill color="#BFFFBF" transparent="false"/>
+          <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="48.103515625" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="99.384765625" x="7.071117401123047" xml:space="preserve" y="3.111128785438268">Transfer between
+the form and local
+storage/cache<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:ModelParameter><y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/></y:ModelParameter></y:NodeLabel>
+          <y:Shape type="roundrectangle"/>
+        </y:ShapeNode>
+      </data>
+    </node>
     <edge id="e0" source="n6" target="n1">
-      <data key="d9"/>
       <data key="d10">
         <y:ArcEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0">
@@ -176,7 +183,6 @@
       </data>
     </edge>
     <edge id="e1" source="n3" target="n3">
-      <data key="d9"/>
       <data key="d10">
         <y:ArcEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0">
@@ -189,7 +195,6 @@
       </data>
     </edge>
     <edge id="e2" source="n1" target="n2">
-      <data key="d9"/>
       <data key="d10">
         <y:ArcEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0">
@@ -202,7 +207,6 @@
       </data>
     </edge>
     <edge id="e3" source="n4" target="n4">
-      <data key="d9"/>
       <data key="d10">
         <y:ArcEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0">
@@ -215,20 +219,18 @@
       </data>
     </edge>
     <edge id="e4" source="n2" target="n5">
-      <data key="d9"/>
       <data key="d10">
         <y:ArcEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0">
-            <y:Point x="1157.257568359375" y="902.3034057617188"/>
+            <y:Point x="1154.953857421875" y="915.9135131835938"/>
           </y:Path>
           <y:LineStyle color="#000000" type="line" width="3.0"/>
           <y:Arrows source="none" target="standard"/>
-          <y:Arc height="92.77867126464844" ratio="1.0" type="fixedRatio"/>
+          <y:Arc height="106.58235931396484" ratio="1.1487808227539062" type="fixedRatio"/>
         </y:ArcEdge>
       </data>
     </edge>
     <edge id="e5" source="n5" target="n0">
-      <data key="d9"/>
       <data key="d10">
         <y:ArcEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0">
@@ -241,7 +243,6 @@
       </data>
     </edge>
     <edge id="e6" source="n0" target="n5">
-      <data key="d9"/>
       <data key="d10">
         <y:ArcEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0">
@@ -254,20 +255,18 @@
       </data>
     </edge>
     <edge id="e7" source="n5" target="n2">
-      <data key="d9"/>
       <data key="d10">
         <y:ArcEdge>
           <y:Path sx="79.21428571428567" sy="42.14084582773148" tx="-104.69602863465161" ty="6.207501256831733">
-            <y:Point x="1161.8499755859375" y="822.0499877929688"/>
+            <y:Point x="1165.489990234375" y="796.5700073242188"/>
           </y:Path>
           <y:LineStyle color="#339966" type="line" width="3.0"/>
           <y:Arrows source="none" target="standard"/>
-          <y:Arc height="13.081476211547852" ratio="0.2846153974533081" type="fixedRatio"/>
+          <y:Arc height="38.82017135620117" ratio="0.8446155786514282" type="fixedRatio"/>
         </y:ArcEdge>
       </data>
     </edge>
     <edge id="e8" source="n2" target="n1">
-      <data key="d9"/>
       <data key="d10">
         <y:ArcEdge>
           <y:Path sx="0.0" sy="0.0" tx="-44.79276710241129" ty="26.58431378619548">
@@ -280,7 +279,6 @@
       </data>
     </edge>
     <edge id="e9" source="n7" target="n7">
-      <data key="d9"/>
       <data key="d10">
         <y:ArcEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0">
@@ -293,7 +291,6 @@
       </data>
     </edge>
     <edge id="e10" source="n8" target="n8">
-      <data key="d9"/>
       <data key="d10">
         <y:ArcEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0">
@@ -306,11 +303,22 @@
       </data>
     </edge>
     <edge id="e11" source="n9" target="n9">
-      <data key="d9"/>
       <data key="d10">
         <y:ArcEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0">
             <y:Point x="1371.51318359375" y="668.3580932617188"/>
+          </y:Path>
+          <y:LineStyle color="#000000" type="line" width="1.0"/>
+          <y:Arrows source="none" target="standard"/>
+          <y:Arc height="0.0" ratio="1.0" type="fixedRatio"/>
+        </y:ArcEdge>
+      </data>
+    </edge>
+    <edge id="e12" source="n10" target="n10">
+      <data key="d10">
+        <y:ArcEdge>
+          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0">
+            <y:Point x="1160.350341796875" y="859.8811645507812"/>
           </y:Path>
           <y:LineStyle color="#000000" type="line" width="1.0"/>
           <y:Arrows source="none" target="standard"/>
