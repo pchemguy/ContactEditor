@@ -20,3 +20,9 @@ End Sub
 
 Public Sub SaveDataFromModel()
 End Sub
+
+Public Function GetIds() As Variant
+End Function
+
+Public Function GetColumnValues(ByVal FieldName As String) As Variant
+End Function

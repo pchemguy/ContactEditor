@@ -7,7 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
-Attribute VB_Description = "Abstract factory for map storage objects."
+Attribute VB_Description = "Abstract factory for record storage objects."
 '@Folder "Storage.Record.Factory"
 '@ModuleDescription "Abstract factory for record storage objects."
 '@Interface

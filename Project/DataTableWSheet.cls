@@ -42,7 +42,7 @@ Public Sub Init(ByVal Model As DataTableModel, ByVal ConnectionString As String,
     With Excel.Workbooks(BookSheet(0)).Worksheets(BookSheet(1))
         Set this.TableRange = .Range(TableName)
         Set this.TableBodyRange = .Range(TableName & "Body")
-        Set this.TableIdColumn = .Range(TableName & "Ids")
+        Set this.TableIdColumn = .Range(TableName & "Id")
     End With
 End Sub
 
@@ -88,5 +88,32 @@ End Sub
 
 
 Private Sub IDataTableStorage_SaveDataFromModel()
-    Err.Raise 5 'TODO implement interface member
+    With this.Model
+        If Not .IsDirty Then Exit Sub
+        Dim RecordId As Variant
+        Dim RecordIndex As Long
+        Dim RecordRange As Excel.Range
+        Dim FieldIndex As Long
+        For Each RecordId In .DirtyRecords.Keys
+            RecordIndex = this.Model.RecordIndexFromId(RecordId)
+            Set RecordRange = this.TableBodyRange.Rows(RecordIndex)
+            For FieldIndex = 1 To UBound(this.Model.FieldNames, 1)
+                RecordRange.Cells(1, FieldIndex) = .Values(RecordIndex, FieldIndex)
+            Next FieldIndex
+        Next RecordId
+        .IsNotDirty
+    End With
 End Sub
+
+
+Private Function IDataTableStorage_GetIds() As Variant
+    IDataTableStorage_GetIds = Application.WorksheetFunction.Transpose(this.TableIdColumn)
+End Function
+
+
+Private Function IDataTableStorage_GetColumnValues(ByVal FieldName As String) As Variant
+    Dim FieldIndex As Long: FieldIndex = this.Model.FieldIndices(FieldName)
+    Dim FieldRange As Excel.Range
+    Set FieldRange = this.TableBodyRange.Offset(0, FieldIndex - 1).Resize(this.TableBodyRange.Rows.Count, 1)
+    IDataTableStorage_GetColumnValues = Application.WorksheetFunction.Transpose(FieldRange)
+End Function

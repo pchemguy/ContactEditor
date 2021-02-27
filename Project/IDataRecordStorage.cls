@@ -7,7 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
-Attribute VB_Description = "Abstracts storage interfaces for DataMapModel."
+Attribute VB_Description = "Abstracts storage interfaces for DataRecordModel."
 '@Folder "Storage.Record.Backend"
 '@ModuleDescription "Abstracts storage interfaces for DataRecordModel."
 '@Interface

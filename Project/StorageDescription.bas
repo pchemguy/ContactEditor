@@ -1,5 +1,6 @@
 Attribute VB_Name = "StorageDescription"
 '@Folder("Storage")
+Option Explicit
 
 '''' Storage package provides storage management for two types of models:
 ''''    - Record subpackage
@@ -29,6 +30,7 @@ Attribute VB_Name = "StorageDescription"
 
 
 Public Function GetTopLeftCell(ByVal RangeName As String) As Variant
+    '@Ignore ImplicitActiveSheetReference
     GetTopLeftCell = Range(RangeName).Range("A1").Value
 End Function
 

@@ -11,6 +11,7 @@ Attribute VB_Description = "Composite class incorporating one Table and one Reco
 '@Folder "Storage.Composite.Manager"
 '@ModuleDescription "Composite class incorporating one Table and one Record model with backends. Record submodel is used to represent a row from the Table."
 '@PredeclaredId
+'@IgnoreModule ProcedureNotUsed
 '@Exposed
 Option Explicit
 
@@ -37,12 +38,20 @@ Public Property Get Record() As Scripting.Dictionary
     Set Record = this.RecordModel.Record
 End Property
 
+Public Property Get RecordModel() As DataRecordModel
+    Set RecordModel = this.RecordModel
+End Property
+
 Public Property Get FieldNames() As Variant
     FieldNames = this.TableModel.FieldNames
 End Property
 
 Public Property Get Values() As Variant
     Values = this.TableModel.Values
+End Property
+
+Public Property Get Ids() As Variant
+    Ids = this.TableStorage.GetIds
 End Property
 
 Public Sub InitRecord(ByVal ClassName As String, ByVal ConnectionString As String, ByVal TableName As String)
@@ -60,26 +69,19 @@ End Sub
 
 Public Sub SaveDataFromModel()
     this.RecordStorage.SaveDataFromModel
-    'this.TableStorage.SaveDataFromModel 'Not yet implemented
+    this.TableStorage.SaveDataFromModel
+End Sub
+
+Public Sub SaveRecordDataToRecordStorage()
+    this.RecordStorage.SaveDataFromModel
 End Sub
 
 Public Sub LoadRecordFromTable(ByVal RecordId As String)
-    Dim RecordIndex As Long: RecordIndex = this.TableModel.IdIndices(RecordId)
-    Dim Record As Variant: Record = Application.WorksheetFunction.Index(Values, RecordIndex)
-    Dim FieldName As Variant
-    For Each FieldName In this.TableModel.FieldNames
-        this.RecordModel.Record.Item(CStr(FieldName)) = Record(this.TableModel.FieldIndices(CStr(FieldName)))
-    Next FieldName
+    this.TableModel.LoadValuesToDictionary this.RecordModel.Record, RecordId
+    this.RecordModel.RecordIndex = this.TableModel.RecordIndexFromId(RecordId)
+    this.RecordModel.IsNotDirty
 End Sub
 
 Public Sub UpdateRecordToTable()
-    Dim IdName As String: IdName = this.TableModel.FieldNames(1)
-    Dim RecordId As String: RecordId = CStr(this.RecordModel.Record.Item(CStr(IdName)))
-    Dim RecordIndex As Long: RecordIndex = this.TableModel.IdIndices(RecordId)
-    Dim FieldNameIndex As Long
-    Dim FieldName As Variant
-    For Each FieldName In this.TableModel.FieldNames
-        this.TableModel.UpdateValues RecordIndex, this.TableModel.FieldIndices(CStr(FieldName)), this.RecordModel.Record.Item(CStr(FieldName))
-    Next FieldName
+    this.TableModel.UpdateValuesFromDictionary this.RecordModel.Record
 End Sub
-

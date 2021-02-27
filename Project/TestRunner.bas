@@ -1,4 +1,5 @@
 Attribute VB_Name = "TestRunner"
+'@IgnoreModule
 '@Folder("Storage")
 '@IgnoreModule ProcedureNotUsed
 Option Explicit
@@ -107,7 +108,7 @@ Private Sub TestDataCompositeManager()
     
     
     ConnectionString = ThisWorkbook.Name & "!" & ContactBrowser.Name
-    Storman.InitRecord ClassName, ConnectionString, ""
+    Storman.InitRecord ClassName, ConnectionString, vbNullString
     
     Storman.LoadDataIntoModel
     'Storman.LoadRecordFromTable "10"
@@ -118,3 +119,11 @@ Private Sub TestDataCompositeManager()
     'Storman.LoadDataIntoModel
 End Sub
 
+
+Private Sub TestUpdate()
+    Playground.Range("A1:E1").Value = Array(1, 2, 3, 4, 5)
+    Dim Val As Variant
+    Dim ColumnIndex As Long
+    ColumnIndex = 3 - 1
+    Val = Application.WorksheetFunction.Transpose(Range("Contacts").Offset(1, ColumnIndex).Resize(Range("Contacts").Rows.Count - 1, 1))
+End Sub

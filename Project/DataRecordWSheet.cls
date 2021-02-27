@@ -26,6 +26,7 @@ Private this As TDataRecord
 
 '@Description "Returns a new IDataRecord object."
 Public Function Create(ByVal Model As DataRecordModel, ByVal ConnectionString As String, ByVal TableName As String) As IDataRecordStorage
+Attribute Create.VB_Description = "Returns a new IDataRecord object."
     Dim result As DataRecordWSheet
     Set result = New DataRecordWSheet
     result.Init Model, ConnectionString, TableName
@@ -33,6 +34,7 @@ Public Function Create(ByVal Model As DataRecordModel, ByVal ConnectionString As
 End Function
 
 
+'@Ignore ParameterNotUsed
 Public Sub Init(ByVal Model As DataRecordModel, ByVal ConnectionString As String, ByVal TableName As String)
     Set this.Model = Model
     Dim BookSheet As Variant: BookSheet = Split(ConnectionString, "!")
@@ -76,7 +78,7 @@ Private Sub InitModel()
         If (TargetRange.Offset(-1, 0).Value <> FieldName) And (TargetRange.Offset(0, -1).Value <> FieldName) Then GoTo RANGENAME_CONTINUE
         
         'Add FieldName -> TargetRange.Value to the dictionary
-        this.Model.Record.Item(CStr(FieldName)) = TargetRange.Value
+        this.Model.Record(CStr(FieldName)) = TargetRange.Value
 RANGENAME_CONTINUE:
     Next RangeName
 End Sub
@@ -95,8 +97,14 @@ End Sub
 
 
 Private Sub IDataRecordStorage_SaveDataFromModel()
-    Dim FieldName As Variant
-    For Each FieldName In this.Model.Record.Keys
-        this.WSheet.Range(FieldName).Value = this.Model.Record(CStr(FieldName))
-    Next FieldName
+    With this.Model
+        If Not .IsDirty Then Exit Sub
+        
+        Dim FieldName As Variant
+        For Each FieldName In .Record.Keys
+            this.WSheet.Range(FieldName).Value = .Record(CStr(FieldName))
+        Next FieldName
+        
+        .IsNotDirty
+    End With
 End Sub
