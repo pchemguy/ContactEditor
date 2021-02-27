@@ -10,5 +10,5 @@ Attribute VB_Exposed = False
 '@Folder "Forms.Abstract"
 Option Explicit
 
-Public Function ShowDialog(ByVal viewModel As Object) As Boolean
-End Function
+Public Sub ShowDialog(ByVal viewModel As Object)
+End Sub
