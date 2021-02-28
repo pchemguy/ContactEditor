@@ -34,7 +34,10 @@ Public Sub Init(ByVal ClassName As String)
 End Sub
 
 
-Public Function CreateInstance(ByVal ClassName As String, ByVal Model As DataTableModel, ByVal ConnectionString As String, ByVal TableName As String) As IDataTableStorage
+Public Function CreateInstance(ByVal ClassName As String, _
+                               ByVal Model As DataTableModel, _
+                               ByVal ConnectionString As String, _
+                               ByVal TableName As String) As IDataTableStorage
     Select Case ClassName
         Case "Worksheet"
             Set CreateInstance = DataTableWSheet.Create(Model, ConnectionString, TableName)
@@ -44,6 +47,8 @@ Public Function CreateInstance(ByVal ClassName As String, ByVal Model As DataTab
 End Function
 
 
-Private Function IDataTableFactory_CreateInstance(ByVal Model As DataTableModel, ByVal ConnectionString As String, ByVal TableName As String) As IDataTableStorage
+Private Function IDataTableFactory_CreateInstance(ByVal Model As DataTableModel, _
+                                                  ByVal ConnectionString As String, _
+                                                  ByVal TableName As String) As IDataTableStorage
     Set IDataTableFactory_CreateInstance = CreateInstance(this.ClassName, Model, ConnectionString, TableName)
 End Function

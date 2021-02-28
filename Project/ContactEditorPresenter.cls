@@ -21,11 +21,6 @@ End Type
 Private this As TPresenter
 
 
-'Public Property Get viewModel() As ContactEditorModel
-'    Set viewModel = this.viewModel
-'End Property
-
-
 Public Sub Show()
     Set view = New ContactEditorForm
     Set this.Dialog = view

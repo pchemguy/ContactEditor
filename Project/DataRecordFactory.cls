@@ -34,7 +34,10 @@ Public Sub Init(ByVal ClassName As String)
 End Sub
 
 
-Public Function CreateInstance(ByVal ClassName As String, ByVal Model As DataRecordModel, ByVal ConnectionString As String, ByVal TableName As String) As IDataRecordStorage
+Public Function CreateInstance(ByVal ClassName As String, _
+                               ByVal Model As DataRecordModel, _
+                               ByVal ConnectionString As String, _
+                               ByVal TableName As String) As IDataRecordStorage
     Select Case ClassName
         Case "Worksheet"
             Set CreateInstance = DataRecordWSheet.Create(Model, ConnectionString, TableName)
@@ -44,6 +47,8 @@ Public Function CreateInstance(ByVal ClassName As String, ByVal Model As DataRec
 End Function
 
 
-Private Function IDataRecordFactory_CreateInstance(ByVal Model As DataRecordModel, ByVal ConnectionString As String, ByVal TableName As String) As IDataRecordStorage
+Private Function IDataRecordFactory_CreateInstance(ByVal Model As DataRecordModel, _
+                                                   ByVal ConnectionString As String, _
+                                                   ByVal TableName As String) As IDataRecordStorage
     Set IDataRecordFactory_CreateInstance = CreateInstance(this.ClassName, Model, ConnectionString, TableName)
 End Function
