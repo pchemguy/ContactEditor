@@ -15,5 +15,7 @@ Attribute VB_Description = "Abstract factory for storage objects."
 Option Explicit
 
 
-Public Function CreateInstance(ByVal Model As DataTableModel, ByVal ConnectionString As String, ByVal TableName As String) As IDataTableStorage
+Public Function CreateInstance(ByVal Model As DataTableModel, _
+                               ByVal ConnectionString As String, _
+                               ByVal TableName As String) As IDataTableStorage
 End Function
