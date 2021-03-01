@@ -8,7 +8,7 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Attribute VB_Description = "Represents a set of property-value pairs."
-'@Folder "Storage.Record.Model"
+'@Folder "ContactEditor.Storage.Record.Model"
 '@ModuleDescription "Represents a set of property-value pairs."
 '@IgnoreModule ProcedureNotUsed, IndexedDefaultMemberAccess
 '@Exposed

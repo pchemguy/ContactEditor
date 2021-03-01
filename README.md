@@ -57,5 +57,5 @@ Since UserForm events cannot be programmatically enabled/disabled (at least stra
 
 ## Limitations and outlook
 
-Presently, this project contains no automatic tests and very few data checks. These might be fixed in the future.
+Presently, this project contains no validation of data read from Excel Worksheets.
 Also, a second demo backend might be implemented, which pulls the table from a CSV file. Another possibility, which will likely be implemented later, is incorporation of the [SecureADODB](https://github.com/rubberduck-vba/examples/tree/master/SecureADODB) package and implementation of a backend that pulls data from an actual database (my [fork](https://github.com/pchemguy/RDVBA-examples/) of this package with some modifications also incorporates test examples with ADODB mediated quires against CSV and sqlite mock databases).

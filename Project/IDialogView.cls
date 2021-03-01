@@ -7,7 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
-'@Folder "Forms.Abstract"
+'@Folder "ContactEditor.Forms.Abstract"
 Option Explicit
 
 Public Sub ShowDialog(ByVal viewModel As Object)

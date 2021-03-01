@@ -13,8 +13,13 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-'@Folder "Forms.Contact Editor"
+'@Folder "ContactEditor.Forms.Contact Editor"
 Option Explicit
+
+'''' To avoid issues, populate ComboBox.List with array of strings,
+'''' cast if necessary (ComboBox.List column elements used for
+'''' ComboBox.Value must have the same type as ComboBox.Value,
+'''' otherwise expect runtime errors and glitches.
 
 Implements IDialogView
 

@@ -8,7 +8,7 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = True
 Attribute VB_Description = "Abstracts Excel worksheet"
-'@Folder "Storage.Table.Backend"
+'@Folder "ContactEditor.Storage.Table.Backend"
 '@ModuleDescription "Abstracts Excel worksheet"
 '@PredeclaredId
 '@IgnoreModule IndexedDefaultMemberAccess
@@ -39,11 +39,33 @@ End Function
 Public Sub Init(ByVal Model As DataTableModel, ByVal ConnectionString As String, ByVal TableName As String)
     Set this.Model = Model
     Dim BookSheet As Variant: BookSheet = Split(ConnectionString, "!")
-    With Excel.Workbooks(BookSheet(0)).Worksheets(BookSheet(1))
+    Guard.Expression UBound(BookSheet) = 1, "DataRecordWSheet", "Invalid connection string: " & ConnectionString
+    On Error Resume Next
+    Dim WSheet As Excel.Worksheet
+    Set WSheet = Application.Workbooks(BookSheet(0)).Worksheets(BookSheet(1))
+    Select Case Err.number
+        Case ErrNo.SubscriptOutOfRange
+            Err.Clear
+            Guard.Expression False, "DataTableWSheet constructor", "Invalid connection string"
+            Exit Sub
+        Case Is > 0
+            Err.Raise Err.number, Err.source, Err.description, Err.HelpFile, Err.HelpContext
+    End Select
+    With WSheet
         Set this.TableRange = .Range(TableName)
         Set this.TableBodyRange = .Range(TableName & "Body")
         Set this.TableIdColumn = .Range(TableName & "Id")
     End With
+    Select Case Err.number
+        Case ErrNo.PassedNoErr
+            On Error GoTo 0
+        Case 1004
+            Err.Clear
+            Guard.Expression False, "DataTableWSheet constructor", "Verify named ranges"
+            Exit Sub
+        Case Else
+            Err.Raise Err.number, Err.source, Err.description, Err.HelpFile, Err.HelpContext
+    End Select
 End Sub
 
 
@@ -107,7 +129,15 @@ End Sub
 
 
 Private Function IDataTableStorage_GetIds() As Variant
-    IDataTableStorage_GetIds = Application.WorksheetFunction.Transpose(this.TableIdColumn)
+    '''' Ids should be strings (cast if necessary), not numeric
+    Dim Ids() As Variant
+    ReDim Ids(1 To this.Model.IdIndices.Count)
+    Dim IdColumn As Variant: IdColumn = Application.WorksheetFunction.Transpose(this.TableIdColumn)
+    Dim IdIndex As Long
+    For IdIndex = 1 To UBound(Ids)
+        Ids(IdIndex) = CStr(IdColumn(IdIndex))
+    Next IdIndex
+    IDataTableStorage_GetIds = Ids
 End Function
 
 

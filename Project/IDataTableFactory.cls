@@ -8,7 +8,7 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Attribute VB_Description = "Abstract factory for storage objects."
-'@Folder "Storage.Table.Factory"
+'@Folder "ContactEditor.Storage.Table.Factory"
 '@ModuleDescription "Abstract factory for storage objects."
 '@Interface
 '@Exposed
@@ -19,3 +19,4 @@ Public Function CreateInstance(ByVal Model As DataTableModel, _
                                ByVal ConnectionString As String, _
                                ByVal TableName As String) As IDataTableStorage
 End Function
+

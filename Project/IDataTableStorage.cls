@@ -8,7 +8,7 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Attribute VB_Description = "Abstracts storage interfaces for DataTableModel. Implemented by storage backends."
-'@Folder "Storage.Table.Backend"
+'@Folder "ContactEditor.Storage.Table.Backend"
 '@ModuleDescription "Abstracts storage interfaces for DataTableModel. Implemented by storage backends."
 '@Interface
 '@Exposed

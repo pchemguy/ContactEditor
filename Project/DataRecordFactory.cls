@@ -8,7 +8,7 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 '@IgnoreModule ProcedureNotUsed
-'@Folder "Storage.Record.Factory"
+'@Folder "ContactEditor.Storage.Record.Factory"
 '@PredeclaredId
 Option Explicit
 Option Compare Text
@@ -42,7 +42,15 @@ Public Function CreateInstance(ByVal ClassName As String, _
         Case "Worksheet"
             Set CreateInstance = DataRecordWSheet.Create(Model, ConnectionString, TableName)
         Case Else
-            VBA.Err.Raise vbObjectError, "IDataRecordFactory", "Unsupported backend: " & ClassName
+            Dim errorDetails As TError
+            With errorDetails
+                .number = ErrNo.NotImplementedErr
+                .Name = "NotImplementedErr"
+                .source = "IDataRecordFactory"
+                .description = "Unsupported backend: " & ClassName
+                .message = .description
+            End With
+            RaiseError errorDetails
     End Select
 End Function
 
@@ -52,3 +60,4 @@ Private Function IDataRecordFactory_CreateInstance(ByVal Model As DataRecordMode
                                                    ByVal TableName As String) As IDataRecordStorage
     Set IDataRecordFactory_CreateInstance = CreateInstance(this.ClassName, Model, ConnectionString, TableName)
 End Function
+

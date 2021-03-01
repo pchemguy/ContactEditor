@@ -1,5 +1,5 @@
 Attribute VB_Name = "ContactEditorRunner"
-'@Folder("Forms.Contact Editor")
+'@Folder "ContactEditor.Forms.Contact Editor"
 Option Explicit
 
 '@Ignore MoveFieldCloserToUsage

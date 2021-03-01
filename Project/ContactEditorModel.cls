@@ -7,7 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
-'@Folder "Forms.Contact Editor"
+'@Folder "ContactEditor.Forms.Contact Editor"
 '@IgnoreModule ProcedureNotUsed
 '@Exposed
 Option Explicit
