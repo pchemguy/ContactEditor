@@ -8,7 +8,7 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Attribute VB_Description = "Represents a data table."
-'@Folder "Storage.Table.Model"
+'@Folder "ContactEditor.Storage.Table.Model"
 '@ModuleDescription "Represents a data table."
 '@IgnoreModule ProcedureNotUsed
 '@IgnoreModule IndexedDefaultMemberAccess
@@ -89,7 +89,7 @@ Public Sub IsNotDirty()
     this.DirtyRecords.RemoveAll
 End Sub
 
-Public Sub UpdateValuesFromDictionary(ByVal Record As Scripting.Dictionary)
+Public Sub UpdateRecordFromDictionary(ByVal Record As Scripting.Dictionary)
     Const ID_NAME_INDEX As Long = 1
     Dim FieldIdName As String: FieldIdName = this.FieldNames(ID_NAME_INDEX)
     Dim RecordId As String: RecordId = CStr(Record(FieldIdName))
@@ -104,7 +104,7 @@ Public Sub UpdateValuesFromDictionary(ByVal Record As Scripting.Dictionary)
     Next FieldName
 End Sub
 
-Public Sub LoadValuesToDictionary(ByVal Record As Scripting.Dictionary, ByVal RecordId As String)
+Public Sub CopyRecordToDictionary(ByVal Record As Scripting.Dictionary, ByVal RecordId As String)
     Dim RecordIndex As Long: RecordIndex = RecordIndexFromId(RecordId)
     Dim FieldName As Variant
     Dim FieldIndex As Long

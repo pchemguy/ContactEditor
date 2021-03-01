@@ -8,7 +8,7 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Attribute VB_Description = "A composition of a data model and a storage class responsible for loading/saving the model data."
-'@Folder "Storage.Table.Manager"
+'@Folder "ContactEditor.Storage.Table.Manager"
 '@ModuleDescription "A composition of a data model and a storage class responsible for loading/saving the model data."
 '@Interface
 '@Exposed

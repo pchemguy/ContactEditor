@@ -8,7 +8,7 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = True
 Attribute VB_Description = "Abstracts Excel worksheet"
-'@Folder "Storage.Record.Backend"
+'@Folder "ContactEditor.Storage.Record.Backend"
 '@ModuleDescription "Abstracts Excel worksheet"
 '@PredeclaredId
 '@IgnoreModule IndexedDefaultMemberAccess
@@ -38,7 +38,19 @@ End Function
 Public Sub Init(ByVal Model As DataRecordModel, ByVal ConnectionString As String, ByVal TableName As String)
     Set this.Model = Model
     Dim BookSheet As Variant: BookSheet = Split(ConnectionString, "!")
-    Set this.WSheet = Excel.Workbooks(BookSheet(0)).Worksheets(BookSheet(1))
+    Guard.Expression UBound(BookSheet) = 1, "DataRecordWSheet", "Invalid connection string: " & ConnectionString
+    On Error Resume Next
+    Set this.WSheet = Application.Workbooks(BookSheet(0)).Worksheets(BookSheet(1))
+    Select Case Err.number
+        Case ErrNo.PassedNoErr
+            On Error GoTo 0
+            Exit Sub
+        Case ErrNo.SubscriptOutOfRange
+            Err.Clear
+            Guard.Expression False, "DataRecordWSheet constructor", "Invalid connection string"
+        Case Else
+            Err.Raise Err.number, Err.source, Err.description, Err.HelpFile, Err.HelpContext
+    End Select
 End Sub
 
 

@@ -8,7 +8,7 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 '@IgnoreModule ProcedureNotUsed
-'@Folder "Storage.Table.Factory"
+'@Folder "ContactEditor.Storage.Table.Factory"
 '@PredeclaredId
 Option Explicit
 Option Compare Text
@@ -21,7 +21,17 @@ End Type
 Private this As TDataTableFactory
 
 
+'@Ignore ProcedureNotUsed
+'@Description("Returns class reference")
+Public Property Get Class() As DataTableFactory
+Attribute Class.VB_Description = "Returns class reference"
+    Set Class = DataTableFactory
+End Property
+
+
 Public Function Create(ByVal ClassName As String) As IDataTableFactory
+    Guard.NonDefaultInstance Me
+    
     Dim result As DataTableFactory
     Set result = New DataTableFactory
     result.Init ClassName
@@ -42,7 +52,15 @@ Public Function CreateInstance(ByVal ClassName As String, _
         Case "Worksheet"
             Set CreateInstance = DataTableWSheet.Create(Model, ConnectionString, TableName)
         Case Else
-            VBA.Err.Raise vbObjectError, "IDataTableFactory", "Unsupported backend: " & ClassName
+            Dim errorDetails As TError
+            With errorDetails
+                .number = ErrNo.NotImplementedErr
+                .Name = "NotImplementedErr"
+                .source = "IDataTableFactory"
+                .description = "Unsupported backend: " & ClassName
+                .message = .description
+            End With
+            RaiseError errorDetails
     End Select
 End Function
 

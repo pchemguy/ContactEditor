@@ -1,5 +1,5 @@
 Attribute VB_Name = "StorageDescription"
-'@Folder("Storage")
+'@Folder "ContactEditor.Storage"
 Option Explicit
 
 '''' Storage package provides storage management for two types of models:

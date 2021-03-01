@@ -7,7 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
-'@Folder("Forms.Contact Editor")
+'@Folder "ContactEditor.Forms.Contact Editor"
 Option Explicit
 
 '@MemberAttribute VB_VarHelpID, -1
@@ -57,16 +57,15 @@ Private Sub view_FormLoaded()
 End Sub
 
 
-Private Sub LoadFormFromModel(Optional ByVal SkipID As Boolean = False)
+Private Sub LoadFormFromModel()
     this.viewModel.SuppressEvents = True
         
     Dim FieldName As Variant
     Dim FieldIndex As Long
     Dim FieldNames As Variant: FieldNames = this.viewModel.RecordTableManager.FieldNames
-    ' If SkipID is true, skip the first (ID) field
-    For FieldIndex = LBound(FieldNames) + Abs(CInt(SkipID)) To UBound(FieldNames)
+    For FieldIndex = LBound(FieldNames) To UBound(FieldNames)
         FieldName = FieldNames(FieldIndex)
-        view.Controls(FieldName).Value = this.viewModel.RecordTableManager.RecordModel.GetField(FieldName)
+        view.Controls(FieldName).Value = CStr(this.viewModel.RecordTableManager.RecordModel.GetField(FieldName))
     Next FieldIndex
 
     this.viewModel.SuppressEvents = False
@@ -80,7 +79,7 @@ Private Sub view_LoadRecord(ByVal RecordId As String)
         If SaveChanges Then ApplyChanges
     End If
     this.viewModel.RecordTableManager.LoadRecordFromTable RecordId
-    LoadFormFromModel True
+    LoadFormFromModel
 End Sub
 
 

@@ -1,6 +1,6 @@
 Attribute VB_Name = "TestRunner"
 '@IgnoreModule
-'@Folder("Storage")
+'@Folder "ContactEditor.Storage"
 '@IgnoreModule ProcedureNotUsed
 Option Explicit
 
@@ -46,7 +46,7 @@ Private Sub TestSheetTable()
     Dim StorageTableModel As DataTableModel: Set StorageTableModel = New DataTableModel
     Dim ClassName As String: ClassName = "Worksheet"
     Dim ConnectionString As String: ConnectionString = ThisWorkbook.Name & "!" & Contacts.Name
-    Dim TableName As String: TableName = "Contacts"
+    Dim TableName As String: TableName = "Contacts1"
     
     Dim StorageManager As IDataTableStorage
     Set StorageManager = DataTableFactory.CreateInstance(ClassName, StorageTableModel, ConnectionString, TableName)

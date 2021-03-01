@@ -8,7 +8,7 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = True
 Attribute VB_Description = "Composite class incorporating one Table and one Record model with backends. Record submodel is used to represent a row from the Table."
-'@Folder "Storage.Composite.Manager"
+'@Folder "ContactEditor.Storage.Manager"
 '@ModuleDescription "Composite class incorporating one Table and one Record model with backends. Record submodel is used to represent a row from the Table."
 '@PredeclaredId
 '@IgnoreModule ProcedureNotUsed
@@ -40,6 +40,10 @@ End Property
 
 Public Property Get RecordModel() As DataRecordModel
     Set RecordModel = this.RecordModel
+End Property
+
+Public Property Get TableModel() As DataTableModel
+    Set TableModel = this.TableModel
 End Property
 
 Public Property Get FieldNames() As Variant
@@ -77,11 +81,11 @@ Public Sub SaveRecordDataToRecordStorage()
 End Sub
 
 Public Sub LoadRecordFromTable(ByVal RecordId As String)
-    this.TableModel.LoadValuesToDictionary this.RecordModel.Record, RecordId
+    this.TableModel.CopyRecordToDictionary this.RecordModel.Record, RecordId
     this.RecordModel.RecordIndex = this.TableModel.RecordIndexFromId(RecordId)
     this.RecordModel.IsNotDirty
 End Sub
 
 Public Sub UpdateRecordToTable()
-    this.TableModel.UpdateValuesFromDictionary this.RecordModel.Record
+    this.TableModel.UpdateRecordFromDictionary this.RecordModel.Record
 End Sub
