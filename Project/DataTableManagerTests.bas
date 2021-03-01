@@ -170,8 +170,8 @@ Private Sub ztcSaveDataFromModel_ValidatesBackendDataSaving()
     On Error GoTo TestFail
     
 Arrange:
-    ActiveSheet.Range("TestContactsBody").Range("B11").Value = "Hannah11"
-    ActiveSheet.Range("TestContactsBody").Range("G22").Value = "Ukraine22"
+    TestSheet.Range("TestContactsBody").Range("B11").Value = "Hannah11"
+    TestSheet.Range("TestContactsBody").Range("G22").Value = "Ukraine22"
     
     Dim Storman As IDataTableManager
     Set Storman = zfxGetDataTableManager
@@ -202,8 +202,8 @@ Assert:
     Storman.SaveDataFromModel
     Assert.IsFalse StorageModel.IsDirty, "Table should not be dirty"
     Assert.AreEqual 0, StorageModel.DirtyRecords.Count, "Dirty records should be empty"
-    Assert.AreEqual "Hannah", ActiveSheet.Range("TestContactsBody").Range("B11").Value, "Wrong saved field"
-    Assert.AreEqual "Ukraine", ActiveSheet.Range("TestContactsBody").Range("G22").Value, "Wrong saved field"
+    Assert.AreEqual "Hannah", TestSheet.Range("TestContactsBody").Range("B11").Value, "Wrong saved field"
+    Assert.AreEqual "Ukraine", TestSheet.Range("TestContactsBody").Range("G22").Value, "Wrong saved field"
         
 CleanExit:
     Exit Sub

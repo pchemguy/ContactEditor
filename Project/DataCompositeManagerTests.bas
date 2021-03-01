@@ -85,7 +85,7 @@ Arrange:
 Act:
 Assert:
     With Storman
-        Assert.AreEqual ActiveSheet.Range("TestEmail").Value, .Record("TestEmail"), "RecordModel data mismatch"
+        Assert.AreEqual TestSheet.Range("TestEmail").Value, .Record("TestEmail"), "RecordModel data mismatch"
         Assert.AreEqual "Edna.Jennings@neuf.fr", .Values(4, 6), "TableModel data mismatch"
     End With
     
