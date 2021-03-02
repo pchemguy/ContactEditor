@@ -1,19 +1,19 @@
 VERSION 5.00
-Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} ContactEditorForm 
+Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} ContactBrowserForm 
    Caption         =   "Contact Editor"
    ClientHeight    =   5235
    ClientLeft      =   45
    ClientTop       =   315
    ClientWidth     =   8910
-   OleObjectBlob   =   "ContactEditorForm.frx":0000
+   OleObjectBlob   =   "ContactBrowserForm.frx":0000
    StartUpPosition =   1  'CenterOwner
 End
-Attribute VB_Name = "ContactEditorForm"
+Attribute VB_Name = "ContactBrowserForm"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-'@Folder "ContactEditor.Forms.Contact Editor"
+'@Folder "ContactEditor.Forms.Contact Browser"
 Option Explicit
 
 '''' To avoid issues, populate ComboBox.List with array of strings,
@@ -30,7 +30,7 @@ Public Event FormConfirmed()
 Public Event FormCancelled(ByRef Cancel As Boolean)
 
 Private Type TView
-    Model As ContactEditorModel
+    Model As ContactBrowserModel
     IsCancelled As Boolean
 End Type
 Private this As TView

@@ -1,5 +1,5 @@
 Attribute VB_Name = "DataCompositeManagerTests"
-'@Folder "ContactEditor.Storage.Manager"
+'@Folder "ContactEditor.Storage.Composite Manager"
 '@TestModule
 '@IgnoreModule AssignmentNotUsed, VariableNotUsed, LineLabelNotUsed, UnhandledOnErrorResumeNext, IndexedDefaultMemberAccess
 Option Explicit

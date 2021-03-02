@@ -2,12 +2,12 @@ VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
-Attribute VB_Name = "ContactEditorModel"
+Attribute VB_Name = "ContactBrowserModel"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
-'@Folder "ContactEditor.Forms.Contact Editor"
+'@Folder "ContactEditor.Forms.Contact Browser"
 '@IgnoreModule ProcedureNotUsed
 '@Exposed
 Option Explicit

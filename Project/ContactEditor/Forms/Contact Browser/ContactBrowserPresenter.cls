@@ -2,27 +2,27 @@ VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
-Attribute VB_Name = "ContactEditorPresenter"
+Attribute VB_Name = "ContactBrowserPresenter"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
-'@Folder "ContactEditor.Forms.Contact Editor"
+'@Folder "ContactEditor.Forms.Contact Browser"
 Option Explicit
 
 '@MemberAttribute VB_VarHelpID, -1
-Private WithEvents view As ContactEditorForm
+Private WithEvents view As ContactBrowserForm
 Attribute view.VB_VarHelpID = -1
 
 Private Type TPresenter
-    viewModel As ContactEditorModel
+    viewModel As ContactBrowserModel
     Dialog As IDialogView
 End Type
 Private this As TPresenter
 
 
 Public Sub Show()
-    Set view = New ContactEditorForm
+    Set view = New ContactBrowserForm
     Set this.Dialog = view
     InitializeModel
     
@@ -110,7 +110,7 @@ End Sub
 '@Description "Instantiates model and binds it to the desired backends."
 Private Sub InitializeModel()
 Attribute InitializeModel.VB_Description = "Instantiates model and binds it to the desired backends."
-    Set this.viewModel = New ContactEditorModel
+    Set this.viewModel = New ContactBrowserModel
     
     Dim ClassName As String
     Dim TableName As String

@@ -8,7 +8,7 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = True
 Attribute VB_Description = "Composite class incorporating one Table and one Record model with backends. Record submodel is used to represent a row from the Table."
-'@Folder "ContactEditor.Storage.Manager"
+'@Folder "ContactEditor.Storage.Composite Manager"
 '@ModuleDescription "Composite class incorporating one Table and one Record model with backends. Record submodel is used to represent a row from the Table."
 '@PredeclaredId
 '@IgnoreModule ProcedureNotUsed
