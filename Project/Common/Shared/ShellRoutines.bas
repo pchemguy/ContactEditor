@@ -48,11 +48,11 @@ Public Function ReadLines(ByVal FilePath As String) As Variant
     Dim handle As Long: handle = FreeFile
     Open FilePath For Input As handle
     
-    Dim buffer As String: buffer = Input$(LOF(handle), handle)
-    If Right$(buffer, Len(vbNewLine)) = vbNewLine Then
-        buffer = Left$(buffer, Len(buffer) - Len(vbNewLine))
+    Dim Buffer As String: Buffer = Input$(LOF(handle), handle)
+    If Right$(Buffer, Len(vbNewLine)) = vbNewLine Then
+        Buffer = Left$(Buffer, Len(Buffer) - Len(vbNewLine))
     End If
-    ReadLines = Split(buffer, vbNewLine)
+    ReadLines = Split(Buffer, vbNewLine)
     Close handle
 End Function
 
@@ -62,9 +62,9 @@ Public Function SyncRun(ByVal command As String, Optional ByVal redirectStdout A
     Dim cli As String
     If redirectStdout Then
         Dim GUID As String: GUID = Mid$(CreateObject("Scriptlet.TypeLib").GUID, 2, 36)
-        Dim sys As IWshRuntimeLibrary.wshShell: Set sys = New IWshRuntimeLibrary.wshShell
-        Dim tempFile As String: tempFile = sys.ExpandEnvironmentStrings("%temp%\stdout-") & GUID & ".txt"
-        cli = command & " >""" & tempFile & """"
+        Dim sys As IWshRuntimeLibrary.WshShell: Set sys = New IWshRuntimeLibrary.WshShell
+        Dim TempFile As String: TempFile = sys.ExpandEnvironmentStrings("%temp%\stdout-") & GUID & ".txt"
+        cli = command & " >""" & TempFile & """"
     Else
         cli = command
     End If
@@ -86,7 +86,7 @@ Public Function SyncRun(ByVal command As String, Optional ByVal redirectStdout A
         End If
     End If
     If redirectStdout Then
-        SyncRun = ReadLines(tempFile)
+        SyncRun = ReadLines(TempFile)
     End If
 End Function
 

@@ -36,7 +36,7 @@ Public Type TError
     number As ErrNo
     Name As String
     source As String
-    message As String
+    Message As String
     description As String
     trapped As Boolean
 End Type
@@ -59,15 +59,15 @@ End Sub
 Public Sub RaiseError(ByRef errorDetails As TError)
 Attribute RaiseError.VB_Description = "Formats and raises a run-time error."
     With errorDetails
-        Dim message As Variant
-        message = Array("Error:", _
+        Dim Message As Variant
+        Message = Array("Error:", _
             "name: " & .Name, _
             "number: " & .number, _
-            "message: " & .message, _
+            "message: " & .Message, _
             "description: " & .description, _
             "source: " & .source)
-        Debug.Print Join(message, vbNewLine & vbTab)
-        VBA.Err.Raise .number, .source, .message
+        Debug.Print Join(Message, vbNewLine & vbTab)
+        VBA.Err.Raise .number, .source, .Message
     End With
 End Sub
 
