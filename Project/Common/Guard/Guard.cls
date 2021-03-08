@@ -49,7 +49,7 @@ Private Sub Class_Initialize()
             .Name = "SingletonErr"
             .number = ErrNo.SingletonErr
             .source = TypeName(Me) & " type"
-            .message = "Singleton already instantiated"
+            .Message = "Singleton already instantiated"
             .description = "Creation of non-default instances is not supported. Use predeclared instance."
             RaiseError this
         End If
@@ -67,7 +67,7 @@ Attribute EmptyString.VB_Description = "Raises a run-time error if the specified
             .Name = "TypeMismatchErr"
             .number = ErrNo.TypeMismatchErr
             .source = TypeName(Text) & " type"
-            .message = "String required"
+            .Message = "String required"
             .description = "Variable type: " & TypeName(Text) & ". String required."
             RaiseError errorDetails
         End If
@@ -77,8 +77,8 @@ Attribute EmptyString.VB_Description = "Raises a run-time error if the specified
             .Name = "EmptyStringErr"
             .number = ErrNo.EmptyStringErr
             .source = "String variable"
-            .message = "String variable empty"
-            .description = .message
+            .Message = "String variable empty"
+            .description = .Message
             RaiseError errorDetails
         End If
     End With
@@ -95,7 +95,7 @@ Attribute NullReference.VB_Description = "Raises a run-time error if the specifi
             .Name = "ObjectRequiredErr"
             .number = ErrNo.ObjectRequiredErr
             .source = TypeName(instanceVar) & " Type"
-            .message = "Object required"
+            .Message = "Object required"
             .description = "Variable type: " & TypeName(instanceVar) & ". Object required."
             RaiseError errorDetails
         End If
@@ -105,7 +105,7 @@ Attribute NullReference.VB_Description = "Raises a run-time error if the specifi
             .Name = "ObjectNotSetErr"
             .number = ErrNo.ObjectNotSetErr
             .source = "Variable is Nothing"
-            .message = "Object variable not set"
+            .Message = "Object variable not set"
             .description = "Variable type: " & TypeName(instanceVar) & ". Object not set."
             RaiseError errorDetails
         End If
@@ -123,7 +123,7 @@ Attribute NonNullReference.VB_Description = "Raises a run-time error if the spec
             .Name = "ObjectRequiredErr"
             .number = ErrNo.ObjectRequiredErr
             .source = TypeName(instanceVar) & " Type"
-            .message = "Object required"
+            .Message = "Object required"
             .description = "Variable type: " & TypeName(instanceVar) & ". Object required."
             RaiseError errorDetails
         End If
@@ -133,7 +133,7 @@ Attribute NonNullReference.VB_Description = "Raises a run-time error if the spec
             .Name = "ObjectSetErr"
             .number = ErrNo.ObjectSetErr
             .source = TypeName(instanceVar) & " Type"
-            .message = "Object variable already set"
+            .Message = "Object variable already set"
             .description = "Variable type: " & TypeName(instanceVar) & ". Object is not Nothing."
             RaiseError errorDetails
         End If
@@ -157,7 +157,7 @@ Attribute Singleton.VB_Description = "Raises a run-time error if the specified i
             .Name = "SingletonErr"
             .number = ErrNo.SingletonErr
             .source = TypeName(instanceVar) & " type"
-            .message = "Singleton already instantiated"
+            .Message = "Singleton already instantiated"
             .description = "Creation of non-default instances is not supported. Use predeclared instance."
             RaiseError errorDetails
         End If
@@ -180,7 +180,7 @@ Attribute NonDefaultInstance.VB_Description = "Raises a run-time error if the sp
             .Name = "NonDefaultInstanceErr"
             .number = ErrNo.NonDefaultInstanceErr
             .source = TypeName(classVar) & " Class"
-            .message = "Default (" & TypeName(classVar) & ") object instance must be used"
+            .Message = "Default (" & TypeName(classVar) & ") object instance must be used"
             .description = vbNullString
             RaiseError errorDetails
         End If
@@ -189,7 +189,7 @@ End Sub
 
 
 '@Description("Raises a run-time error if the specified expression is false.")
-Public Sub Expression(ByVal AssertionResult As Boolean, ByVal source As String, ByVal message As String)
+Public Sub Expression(ByVal AssertionResult As Boolean, ByVal source As String, ByVal Message As String)
 Attribute Expression.VB_Description = "Raises a run-time error if the specified expression is false."
     Dim errorDetails As TError
     With errorDetails
@@ -198,7 +198,7 @@ Attribute Expression.VB_Description = "Raises a run-time error if the specified 
             .Name = "CustomErr"
             .number = ErrNo.CustomErr
             .source = source
-            .message = message
+            .Message = Message
             .description = vbNullString
             RaiseError errorDetails
         End If
@@ -221,7 +221,7 @@ Attribute DefaultInstance.VB_Description = "Raises a run-time error if the speci
             .Name = "DefaultInstanceErr"
             .number = ErrNo.DefaultInstanceErr
             .source = TypeName(classVar) & " Class"
-            .message = "Non-default (" & TypeName(classVar) & ") object instance must be used"
+            .Message = "Non-default (" & TypeName(classVar) & ") object instance must be used"
             .description = vbNullString
             RaiseError errorDetails
         End If
@@ -243,7 +243,7 @@ Attribute FileNotExist.VB_Description = "Raises a run-time error if the specifie
             .Name = "FileNotFoundErr"
             .number = ErrNo.FileNotFoundErr
             .source = FilePathName
-            .message = "File not found " & FilePathName
+            .Message = "File not found " & FilePathName
             .description = vbNullString
             RaiseError errorDetails
         End If
@@ -263,7 +263,7 @@ Attribute InTransaction.VB_Description = "Raises a run-time error if the specifi
             .Name = "InTransaction"
             .number = ErrNo.AdoInTransactionErr
             .source = vbNullString
-            .message = "Current database connection already in transaction"
+            .Message = "Current database connection already in transaction"
             .description = "Attempted operation not permmited when transaction in progress (e.g. starting a new transaction)."
             RaiseError errorDetails
         End If
@@ -283,7 +283,7 @@ Attribute NotInTransaction.VB_Description = "Raises a run-time error if the spec
             .Name = "NotInTransaction"
             .number = ErrNo.AdoNotInTransactionErr
             .source = vbNullString
-            .message = "Current database connection is not in transaction"
+            .Message = "Current database connection is not in transaction"
             .description = "Attempted operation not permmited when no  active transaction in progress (e.g. commit or rollback)."
             RaiseError errorDetails
         End If
@@ -301,8 +301,8 @@ Attribute ConnectionStringError.VB_Description = "Raises a run-time error if the
             .Name = "ConnectionStringError"
             .number = ErrNo.AdoConnectionStringErr
             .source = "Argument is Nothing"
-            .message = "Either the connection string is invalid or provider not found"
-            .description = .message
+            .Message = "Either the connection string is invalid or provider not found"
+            .description = .Message
             RaiseError errorDetails
         End If
     End With

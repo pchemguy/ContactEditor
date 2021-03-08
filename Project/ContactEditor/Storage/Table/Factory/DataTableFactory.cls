@@ -51,6 +51,8 @@ Public Function CreateInstance(ByVal ClassName As String, _
     Select Case ClassName
         Case "Worksheet"
             Set CreateInstance = DataTableWSheet.Create(Model, ConnectionString, TableName)
+        Case "CSV"
+            Set CreateInstance = DataTableCSV.Create(Model, ConnectionString, TableName)
         Case Else
             Dim errorDetails As TError
             With errorDetails
@@ -58,7 +60,7 @@ Public Function CreateInstance(ByVal ClassName As String, _
                 .Name = "NotImplementedErr"
                 .source = "IDataTableFactory"
                 .description = "Unsupported backend: " & ClassName
-                .message = .description
+                .Message = .description
             End With
             RaiseError errorDetails
     End Select

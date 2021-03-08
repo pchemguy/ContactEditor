@@ -48,7 +48,7 @@ Public Function CreateInstance(ByVal ClassName As String, _
                 .Name = "NotImplementedErr"
                 .source = "IDataRecordFactory"
                 .description = "Unsupported backend: " & ClassName
-                .message = .description
+                .Message = .description
             End With
             RaiseError errorDetails
     End Select
