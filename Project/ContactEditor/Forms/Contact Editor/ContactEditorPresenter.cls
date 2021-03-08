@@ -21,10 +21,10 @@ End Type
 Private this As TPresenter
 
 
-Public Sub Show()
+Public Sub Show(ByVal TableBackEnd As String)
     Set view = New ContactEditorForm
     Set this.Dialog = view
-    InitializeModel
+    InitializeModel TableBackEnd
     
     '''' Loads data from the backends into the Model
     this.viewModel.RecordTableManager.LoadDataIntoModel
@@ -108,7 +108,7 @@ End Sub
 
 
 '@Description "Instantiates model and binds it to the desired backends."
-Private Sub InitializeModel()
+Private Sub InitializeModel(ByVal TableBackEnd As String)
 Attribute InitializeModel.VB_Description = "Instantiates model and binds it to the desired backends."
     Set this.viewModel = New ContactEditorModel
     
@@ -117,9 +117,16 @@ Attribute InitializeModel.VB_Description = "Instantiates model and binds it to t
     Dim ConnectionString As String
     
     '''' Binds TableModel to its backend
-    ClassName = "Worksheet"
-    TableName = "Contacts"
-    ConnectionString = ThisWorkbook.Name & "!" & Contacts.Name
+    Select Case TableBackEnd
+        Case "Worksheet"
+            ClassName = "Worksheet"
+            TableName = "Contacts"
+            ConnectionString = ThisWorkbook.Name & "!" & Contacts.Name
+        Case "CSV"
+            ClassName = "CSV"
+            TableName = "Contacts.xsv!sep=,"
+            ConnectionString = ThisWorkbook.Path
+    End Select
     this.viewModel.RecordTableManager.InitTable ClassName, ConnectionString, TableName
     
     '''' Binds RecordModel to its backend

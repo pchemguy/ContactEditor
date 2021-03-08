@@ -1,4 +1,0 @@
-Name	GUID	Major	Minor	FullPath
-VBIDE	{0002E157-0000-0000-C000-000000000046}	5	3	%CommonProgramFiles(x86)%\Microsoft Shared\VBA\VBA6\VBE6EXT.OLB
-Scripting	{420B2830-E718-11CF-893D-00A0C9054228}	1	0	%SystemRoot%\SysWOW64\scrrun.dll
-IWshRuntimeLibrary	{F935DC20-1CF0-11D0-ADB9-00C04FD58A0B}	1	0	%SystemRoot%\SysWOW64\wshom.ocx

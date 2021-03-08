@@ -51,6 +51,8 @@ Public Function CreateInstance(ByVal ClassName As String, _
     Select Case ClassName
         Case "Worksheet"
             Set CreateInstance = DataTableWSheet.Create(Model, ConnectionString, TableName)
+        Case "CSV"
+            Set CreateInstance = DataTableCSV.Create(Model, ConnectionString, TableName)
         Case Else
             Dim errorDetails As TError
             With errorDetails

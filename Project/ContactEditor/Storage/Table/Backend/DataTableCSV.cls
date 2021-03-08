@@ -24,7 +24,8 @@ End Type
 Private this As TDataTable
 
 
-' ConnectionString - "<Path to CSV>"; TableName - "<CSV file name>!sep=<FieldSeparator>"
+' ConnectionString - "<Path to CSV>" or empty to use ThisWorkbook.Path
+' TableName        - "<CSV file name>!sep=<FieldSeparator>" or empty to use <ThisWorkbook.Name>(without ext)".xsv!sep=,"
 '@Description "Returns a new IDataTable object."
 Public Function Create(ByVal Model As DataTableModel, ByVal ConnectionString As String, ByVal TableName As String) As IDataTableStorage
     Dim result As DataTableCSV
@@ -35,26 +36,31 @@ End Function
 
 
 Public Sub Init(ByVal Model As DataTableModel, ByVal ConnectionString As String, ByVal TableName As String)
-    Guard.EmptyString ConnectionString
-    Guard.EmptyString TableName
+    Dim CSVName As String
+    If Len(TableName) > 0 Then
+        CSVName = TableName
+    Else
+        CSVName = Left(ThisWorkbook.Name, Len(ThisWorkbook.Name) - 5 + InStr(Right$(ThisWorkbook.Name, 5), ".")) & "xsv!sep=,"
+    End If
     
     Set this.Model = Model
+    Dim Prefix As String
+    Prefix = IIf(Len(ConnectionString) = 0, ThisWorkbook.Path, ConnectionString) & Application.PathSeparator
     Dim FileName As String
-    If Left$(Right$(TableName, 6), 5) = "!sep=" Then
-        this.FieldSeparator = Right$(TableName, 1)
-        FileName = Left$(TableName, Len(TableName) - 6)
+    If Left$(Right$(CSVName, 6), 5) = "!sep=" Then
+        this.FieldSeparator = Right$(CSVName, 1)
+        FileName = Prefix & Left$(CSVName, Len(CSVName) - 6)
     Else
         this.FieldSeparator = ","
-        FileName = TableName
+        FileName = Prefix & CSVName
     End If
-    FileName = ConnectionString & Application.PathSeparator & FileName
     
     Dim FileExist As Variant
     On Error Resume Next
     FileExist = Dir$(FileName)
     On Error GoTo 0
     If Len(FileExist) = 0 Then
-        VBA.Err.Raise number:=53, source:="DataTableCSV", description:="CSV file <" & FileName & "> not found!"
+        VBA.Err.Raise number:=ErrNo.FileNotFoundErr, source:="DataTableCSV", description:="CSV file <" & FileName & "> not found!"
     End If
     this.CSVFileName = FileName
 End Sub
@@ -92,42 +98,49 @@ Private Sub IDataTableStorage_LoadDataIntoModel()
         Dim Buffer As Variant
         ReDim Buffer(1 To FieldCount)
         
-        .FieldNames = Buffer
         For FieldIndex = 1 To FieldCount
             FieldName = FieldBuffer(FieldIndex - 1)
-            .FieldNames(FieldIndex) = FieldName
+            Buffer(FieldIndex) = FieldName
             .FieldIndices(FieldName) = FieldIndex
         Next FieldIndex
+        .FieldNames = Buffer
         
         Dim RecordIndex As Long
         ReDim Buffer(1 To RecordCount, 1 To FieldCount)
-        .Values = Buffer
         For RecordIndex = 1 To RecordCount
             FieldBuffer = Split(TableRows(RecordIndex), this.FieldSeparator)
             For FieldIndex = 1 To FieldCount
-                .Values(RecordIndex, FieldIndex) = FieldBuffer(FieldIndex - 1)
+                Buffer(RecordIndex, FieldIndex) = FieldBuffer(FieldIndex - 1)
             Next FieldIndex
+            .IdIndices(FieldBuffer(0)) = RecordIndex
         Next RecordIndex
+        .Values = Buffer
     End With
 End Sub
 
 
 Private Sub IDataTableStorage_SaveDataFromModel()
-'    With this.Model
-'        If Not .IsDirty Then Exit Sub
-'        Dim RecordId As Variant
-'        Dim RecordIndex As Long
-'        Dim RecordRange As Excel.Range
-'        Dim FieldIndex As Long
-'        For Each RecordId In .DirtyRecords.Keys
-'            RecordIndex = this.Model.RecordIndexFromId(RecordId)
-'            Set RecordRange = this.TableBodyRange.Rows(RecordIndex)
-'            For FieldIndex = 1 To UBound(this.Model.FieldNames, 1)
-'                RecordRange.Cells(1, FieldIndex) = .Values(RecordIndex, FieldIndex)
-'            Next FieldIndex
-'        Next RecordId
-'        .IsNotDirty
-'    End With
+    Dim FieldIndex As Long
+    Dim FieldCount As Long: FieldCount = UBound(this.Model.FieldNames, 1)
+    Dim RecordIndex As Long
+    Dim RecordCount As Long: RecordCount = UBound(this.Model.Values, 1)
+    
+    Dim TableRows As Variant: ReDim TableRows(0 To RecordCount)
+    Dim Record As Variant: ReDim Record(1 To FieldCount)
+    
+    TableRows(0) = Join(this.Model.FieldNames, this.FieldSeparator)
+    For RecordIndex = 1 To RecordCount
+        For FieldIndex = 1 To FieldCount
+            Record(FieldIndex) = this.Model.Values(RecordIndex, FieldIndex)
+        Next FieldIndex
+        TableRows(RecordIndex) = Join(Record, this.FieldSeparator)
+    Next RecordIndex
+    Dim Buffer As Variant
+    Buffer = Join(TableRows, vbNewLine)
+    Dim FileHandle As Long: FileHandle = FreeFile
+    Open this.CSVFileName For Output As #FileHandle
+    Print #FileHandle, Buffer;
+    Close #FileHandle
 End Sub
 
 
