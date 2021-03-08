@@ -59,7 +59,7 @@ Since UserForm events cannot be programmatically enabled/disabled (at least stra
 ## Limitations and outlook
 
 Presently, this project contains no validation of data read from Excel Worksheets.  
-The CSV backend is at least at present very slow. The bottleneck is appears to be the loop that parses/encodes data, which is not necessary in case of the "Worksheet" backend, where data table can be transferred between an Excel.Range object and a 2D variant array directly. CSV code is adapted from the [CSVParser repo][CSV Parser repo]. Timing tests using the CSVParser actually indicated that the process should be considerably faster then it is now, so further investigation to pinpoint the actual performance issue is necessary.
+The CSV backend is at least at present very slow. The bottleneck is appears to be the loop that parses/encodes data, which is not necessary in case of the "Worksheet" backend, where data table can be transferred between an Excel.Range object and a 2D variant array directly. CSV code is adapted from the [CSVParser repo][CSV Parser repo]. Timing tests using the CSVParser actually indicated that the process should be considerably faster then it is now, so further investigation to pinpoint the actual performance issue is necessary.  
 It also is planned to incorporate the [SecureADODB][SecureADODB] package and implement a backend that pulls data from an actual database (my [fork][SecureADODB fork] of this package with some modifications also incorporates test examples with ADODB mediated quires against CSV and SQLite mock databases).
 
 
