@@ -8,5 +8,5 @@ Private presenter As ContactEditorPresenter
 
 Public Sub RunContactEditor()
     Set presenter = New ContactEditorPresenter
-    presenter.Show "CSV"
+    presenter.Show "Worksheet"
 End Sub

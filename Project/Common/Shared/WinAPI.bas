@@ -1,8 +1,6 @@
 Attribute VB_Name = "WinAPI"
-'@IgnoreModule ConstantNotUsed
-'@Folder "Common.Shared.WinAPI"
+'@Folder "Common.Shared"
 Option Explicit
-
 
 Public Const GWL_STYLE As Long = (-16)           'The offset of a window's style
 Public Const WS_THICKFRAME As Long = &H40000     'Style to add a sizable frame
@@ -11,7 +9,6 @@ Public Const SW_SHOW As Long = 5
 
 #If VBA7 Then
     'For 64-Bit versions of Excel
-    Public Declare PtrSafe Sub Sleep Lib "kernel32" (ByVal dwMilliseconds As LongPtr)
     
     '''' Window functions
     Public Declare PtrSafe Function FindWindow Lib "user32" Alias "FindWindowA" (ByVal lpClassName As String, ByVal lpWindowName As String) As LongPtr
@@ -25,9 +22,12 @@ Public Const SW_SHOW As Long = 5
     Public Declare PtrSafe Function OpenProcess Lib "kernel32" Alias "OpenProcess" (ByVal dwDesiredAccess As Long, ByVal bInheritHandle As Long, ByVal dwProcessId As Long) As LongPtr
     Public Declare PtrSafe Function WaitForSingleObject Lib "kernel32" Alias "WaitForSingleObject" (ByVal hHandle As LongPtr, ByVal dwMilliseconds As Long) As Long
     Public Declare PtrSafe Function CloseHandle Lib "kernel32" Alias "CloseHandle" (ByVal hObject As LongPtr) As Long
+    
+    Public Declare PtrSafe Sub Sleep Lib "kernel32" (ByVal dwMilliseconds As LongPtr)
+    Public Declare PtrSafe Function QueryPerformanceCounter Lib "kernel32" (ByRef lpPerformanceCount As Currency) As Long
+    Public Declare PtrSafe Function QueryPerformanceFrequency Lib "kernel32" (ByRef lpFrequency As Currency) As Long
 #Else
     'For 32-Bit versions of Excel
-    Public Declare Sub Sleep Lib "kernel32" (ByVal dwMilliseconds As Long)
     
     '''' Window functions
     Public Declare Function FindWindow Lib "user32" Alias "FindWindowA" (ByVal lpClassName As String, ByVal lpWindowName As String) As Long
@@ -41,4 +41,8 @@ Public Const SW_SHOW As Long = 5
     Public Declare Function OpenProcess Lib "kernel32" (ByVal dwDesiredAccess As Long, ByVal bInheritHandle As Long, ByVal dwProcessId As Long) As Long
     Public Declare Function WaitForSingleObject Lib "kernel32" (ByVal hHandle As Long, ByVal dwMilliseconds As Long) As Long
     Public Declare Function CloseHandle Lib "kernel32" (ByVal hObject As Long) As Long
+    
+    Public Declare Sub Sleep Lib "kernel32" (ByVal dwMilliseconds As Long)
+    Public Declare Function QueryPerformanceCounter Lib "kernel32" (ByRef lpPerformanceCount As Currency) As Long
+    Public Declare Function QueryPerformanceFrequency Lib "kernel32" (ByRef lpFrequency As Currency) As Long
 #End If

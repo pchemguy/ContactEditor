@@ -58,6 +58,6 @@ Private Sub ProjectFilesImport()
     Dim Project As ProjectUtils
     Set Project = New ProjectUtils
     Dim ImportFolder As String
-    ImportFolder = "Common\CSV Parser" '"Storage\Record"
+    ImportFolder = "" '"Storage\Record"
     Project.ProjectFilesImport ImportFolder
 End Sub
