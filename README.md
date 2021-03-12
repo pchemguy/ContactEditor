@@ -32,7 +32,7 @@ Since id can be of any type, it can not be used directly to index records in the
 
 FieldNames - 1D 1-based Variant array containing the names of the fields in the order they appear in the table from left to right. It is used for transferring the data to/from the DataRecordModel, which stores the values in a Dictionary object.
 
-DirtyRecords - dictionary, mapping a CStr(id) and its index for records that have been modified in the model. This way, only modified records can be send back to the backend if requested.
+DirtyRecords - dictionary, mapping a CStr(id) and its index for records that have been modified in the model. This way, only modified records can be sent back to the backend if requested.
 
 ### Table updating
 
