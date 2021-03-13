@@ -33,11 +33,41 @@ Public Function GenerateSerialID() As Double
 End Function
 
 
-'Public Sub GetSerialIDTest()
-'    Debug.Print GenerateSerialID
-'    Debug.Print GenerateSerialID
-'    Debug.Print GenerateSerialID
-'    Debug.Print GenerateSerialID
-'    Debug.Print GenerateSerialID
-'End Sub
+Public Function VerifyOrGetDefaultPath(ByVal FilePathName As String, ByVal DefaultExts As Variant) As String
+    '''' Check if FilePathName is a valid path to an existing file.
+    '''' If yes, return it.
+    On Error Resume Next
+    Dim FileExist As Variant
+    If Len(FilePathName) > 0 Then FileExist = Dir$(FilePathName)
+    On Error GoTo 0
+    If Len(FileExist) > 0 Then
+        VerifyOrGetDefaultPath = FilePathName
+        Exit Function
+    End If
+    
+    '''' Check defaults:
+    ''''   - path: ThisWorkbook.Path
+    ''''   - name: ThisWorkbook.Name (without extension)
+    ''''   - exts: DefaultExts
+    Dim DefaultName As String: DefaultName = ThisWorkbook.Name
+    Dim DotPos As Long: DotPos = InStr(Len(DefaultName) - 5, DefaultName, ".xl", vbTextCompare)
+    DefaultName = Left$(DefaultName, DotPos)
+    Dim DefaultPath As String
+    DefaultPath = ThisWorkbook.Path & Application.PathSeparator & DefaultName
+    
+    Dim ExtIndex As Long
+    Dim CheckedPath As String
+    For ExtIndex = LBound(DefaultExts) To UBound(DefaultExts)
+        CheckedPath = DefaultPath & DefaultExts(ExtIndex)
+        FileExist = Dir$(CheckedPath)
+        If Len(FileExist) > 0 Then
+            VerifyOrGetDefaultPath = CheckedPath
+            Exit Function
+        End If
+    Next ExtIndex
+    
+    If Len(FileExist) = 0 Then
+        VBA.Err.Raise number:=ErrNo.FileNotFoundErr, source:="DataTableADODB", description:="File <" & FilePathName & "> not found!"
+    End If
+End Function
 

@@ -1,5 +1,5 @@
 Attribute VB_Name = "DataRecordWSheetTests"
-'@Folder("ContactEditor.Storage.Record.Backend")
+'@Folder "ContactEditor.Storage.Record.Backend"
 '@TestModule
 '@IgnoreModule AssignmentNotUsed, VariableNotUsed, LineLabelNotUsed, UnhandledOnErrorResumeNext, IndexedDefaultMemberAccess
 Option Explicit

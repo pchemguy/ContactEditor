@@ -1,5 +1,5 @@
 Attribute VB_Name = "DataTableCSVTests"
-'@Folder("ContactEditor.Storage.Table.Backend")
+'@Folder "ContactEditor.Storage.Table.Backend"
 '@TestModule
 '@IgnoreModule AssignmentNotUsed, VariableNotUsed, LineLabelNotUsed, UnhandledOnErrorResumeNext, IndexedDefaultMemberAccess
 Option Explicit
@@ -67,8 +67,8 @@ Private Sub ztcCreate_ValidatesCreationOfDataStorage()
 
 Arrange:
     Dim StorageModel As DataTableModel: Set StorageModel = New DataTableModel
-    Dim ConnectionString As String: ConnectionString = ""
-    Dim TableName As String: TableName = ""
+    Dim ConnectionString As String: ConnectionString = vbNullString
+    Dim TableName As String: TableName = vbNullString
 Act:
     Dim StorageManager As IDataTableStorage
     Set StorageManager = DataTableCSV.Create(StorageModel, ConnectionString, TableName)
@@ -109,7 +109,7 @@ Private Sub ztcCreate_ThrowsOnInavlidTableName()
 
 Arrange:
     Dim StorageModel As DataTableModel: Set StorageModel = New DataTableModel
-    Dim ConnectionString As String: ConnectionString = ""
+    Dim ConnectionString As String: ConnectionString = vbNullString
     Dim TableName As String: TableName = "TestContacts"
 Act:
     Dim StorageManager As IDataTableStorage

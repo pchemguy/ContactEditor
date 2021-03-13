@@ -49,6 +49,8 @@ Public Function CreateInstance(ByVal ClassName As String, _
                                ByVal ConnectionString As String, _
                                ByVal TableName As String) As IDataTableStorage
     Select Case ClassName
+        Case "ADODB"
+            Set CreateInstance = DataTableADODB.Create(Model, ConnectionString, TableName)
         Case "Worksheet"
             Set CreateInstance = DataTableWSheet.Create(Model, ConnectionString, TableName)
         Case "CSV"

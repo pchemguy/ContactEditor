@@ -58,15 +58,15 @@ End Function
 
 
 ' Runs shell command, waits for completions, sends stdout to file and returns stdout as an array of strings
-Public Function SyncRun(ByVal command As String, Optional ByVal redirectStdout As Boolean = True) As Variant
+Public Function SyncRun(ByVal Command As String, Optional ByVal redirectStdout As Boolean = True) As Variant
     Dim cli As String
     If redirectStdout Then
         Dim GUID As String: GUID = Mid$(CreateObject("Scriptlet.TypeLib").GUID, 2, 36)
         Dim sys As IWshRuntimeLibrary.WshShell: Set sys = New IWshRuntimeLibrary.WshShell
         Dim TempFile As String: TempFile = sys.ExpandEnvironmentStrings("%temp%\stdout-") & GUID & ".txt"
-        cli = command & " >""" & TempFile & """"
+        cli = Command & " >""" & TempFile & """"
     Else
-        cli = command
+        cli = Command
     End If
 
     Dim pid As Long: pid = Shell(cli, vbHide)

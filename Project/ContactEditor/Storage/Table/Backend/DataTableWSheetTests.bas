@@ -1,5 +1,5 @@
 Attribute VB_Name = "DataTableWSheetTests"
-'@Folder("ContactEditor.Storage.Table.Backend")
+'@Folder "ContactEditor.Storage.Table.Backend"
 '@TestModule
 '@IgnoreModule AssignmentNotUsed, VariableNotUsed, LineLabelNotUsed, UnhandledOnErrorResumeNext, IndexedDefaultMemberAccess
 Option Explicit
@@ -48,7 +48,7 @@ Private Function zfxGetDataTableModel() As DataTableModel
     Dim StorageModel As DataTableModel: Set StorageModel = New DataTableModel
     Dim ConnectionString As String: ConnectionString = ThisWorkbook.Name & "!" & TestSheet.Name
     Dim TableName As String: TableName = "TestContacts"
-    
+        
     Dim StorageManager As IDataTableStorage
     Set StorageManager = DataTableWSheet.Create(StorageModel, ConnectionString, TableName)
     StorageManager.LoadDataIntoModel

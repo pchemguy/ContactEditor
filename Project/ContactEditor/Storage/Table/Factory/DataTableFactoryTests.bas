@@ -1,5 +1,5 @@
 Attribute VB_Name = "DataTableFactoryTests"
-'@Folder("ContactEditor.Storage.Table.Factory")
+'@Folder "ContactEditor.Storage.Table.Factory"
 '@TestModule
 '@IgnoreModule AssignmentNotUsed, VariableNotUsed, LineLabelNotUsed, UnhandledOnErrorResumeNext
 Option Explicit

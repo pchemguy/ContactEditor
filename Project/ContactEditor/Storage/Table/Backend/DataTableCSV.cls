@@ -8,10 +8,11 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = True
 Attribute VB_Description = "Abstracts CSV file."
-'@Exposed
-'@Folder("ContactEditor.Storage.Table.Backend")
+'@Folder "ContactEditor.Storage.Table.Backend"
 '@ModuleDescription "Abstracts CSV file."
 '@PredeclaredId
+'@Exposed
+'@IgnoreModule IndexedDefaultMemberAccess
 Option Explicit
 
 Implements IDataTableStorage
@@ -28,6 +29,7 @@ Private this As TDataTable
 ' TableName        - "<CSV file name>!sep=<FieldSeparator>" or empty to use <ThisWorkbook.Name>(without ext)".xsv!sep=,"
 '@Description "Returns a new IDataTable object."
 Public Function Create(ByVal Model As DataTableModel, ByVal ConnectionString As String, ByVal TableName As String) As IDataTableStorage
+Attribute Create.VB_Description = "Returns a new IDataTable object."
     Dim result As DataTableCSV
     Set result = New DataTableCSV
     result.Init Model, ConnectionString, TableName
@@ -95,7 +97,7 @@ Private Sub IDataTableStorage_LoadDataIntoModel()
         
         Dim FieldIndex As Long
         Dim FieldName As String
-        Dim Buffer As Variant
+        Dim Buffer() As Variant
         ReDim Buffer(1 To FieldCount)
         
         For FieldIndex = 1 To FieldCount
@@ -125,15 +127,15 @@ Private Sub IDataTableStorage_SaveDataFromModel()
     Dim RecordIndex As Long
     Dim RecordCount As Long: RecordCount = UBound(this.Model.Values, 1)
     
-    Dim TableRows As Variant: ReDim TableRows(0 To RecordCount)
-    Dim Record As Variant: ReDim Record(1 To FieldCount)
+    Dim TableRows() As Variant: ReDim TableRows(0 To RecordCount)
+    Dim Records() As Variant: ReDim Records(1 To FieldCount)
     
     TableRows(0) = Join(this.Model.FieldNames, this.FieldSeparator)
     For RecordIndex = 1 To RecordCount
         For FieldIndex = 1 To FieldCount
-            Record(FieldIndex) = this.Model.Values(RecordIndex, FieldIndex)
+            Records(FieldIndex) = this.Model.Values(RecordIndex, FieldIndex)
         Next FieldIndex
-        TableRows(RecordIndex) = Join(Record, this.FieldSeparator)
+        TableRows(RecordIndex) = Join(Records, this.FieldSeparator)
     Next RecordIndex
     Dim Buffer As Variant
     Buffer = Join(TableRows, vbNewLine)

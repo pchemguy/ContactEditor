@@ -1,5 +1,5 @@
 Attribute VB_Name = "DataRecordManagerTests"
-'@Folder("ContactEditor.Storage.Record.Manager")
+'@Folder "ContactEditor.Storage.Record.Manager"
 '@TestModule
 '@IgnoreModule AssignmentNotUsed, VariableNotUsed, LineLabelNotUsed, UnhandledOnErrorResumeNext, IndexedDefaultMemberAccess
 Option Explicit

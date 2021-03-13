@@ -8,5 +8,5 @@ Private presenter As ContactEditorPresenter
 
 Public Sub RunContactEditor()
     Set presenter = New ContactEditorPresenter
-    presenter.Show "Worksheet"
+    presenter.Show "ADODB"
 End Sub

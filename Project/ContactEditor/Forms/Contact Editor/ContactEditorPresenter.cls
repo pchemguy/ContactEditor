@@ -118,6 +118,10 @@ Attribute InitializeModel.VB_Description = "Instantiates model and binds it to t
     
     '''' Binds TableModel to its backend
     Select Case TableBackEnd
+        Case "ADODB"
+            ClassName = "ADODB"
+            TableName = "Contacts"
+            ConnectionString = "sqlite:"
         Case "Worksheet"
             ClassName = "Worksheet"
             TableName = "Contacts"
