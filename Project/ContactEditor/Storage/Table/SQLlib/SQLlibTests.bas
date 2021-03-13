@@ -1,5 +1,5 @@
 Attribute VB_Name = "SQLlibTests"
-'@Folder "ContactEditor.Storage.Table.SQL"
+'@Folder "ContactEditor.Storage.Table.SQLlib"
 '@TestModule
 '@IgnoreModule LineLabelNotUsed, IndexedDefaultMemberAccess
 Option Explicit
@@ -182,20 +182,19 @@ TestFail:
 End Sub
 
 
-'@TestMethod("ConnectionString")
-Private Sub ztcGetSQLiteConnectionString_ValidatesDefaultString()
+'@TestMethod("SQL")
+Private Sub ztcUpdateSingleRecord_ValidatesQuery()
     On Error GoTo TestFail
 
 Arrange:
+    Dim SQL As SQLlib: Set SQL = zfxGetSQL
     Dim Expected As String
-    Expected = "Driver=SQLite3 ODBC Driver;Database=" & _
-                VerifyOrGetDefaultPath(vbNullString, Array("db", "sqlite")) & _
-               ";SyncPragma=NORMAL;LongNames=True;NoCreat=True;FKSupport=True;OEMCP=True;"
+    Expected = "UPDATE """ & SQL.TableName & """ SET (FirstName, LastName, Age, Gender, Email) = (?, ?, ?, ?, ?) WHERE id = ?"
 Act:
     Dim Actual As String
-    Actual = SQLlib.GetSQLiteConnectionString(vbNullString)("ADO")
+    Actual = SQL.UpdateSingleRecord(Array("id", "FirstName", "LastName", "Age", "Gender", "Email"))
 Assert:
-    Assert.AreEqual Expected, Actual, "CheckPath failed with default path"
+    Assert.AreEqual Expected, Actual, "UpdateSingleRecord query mismatch"
 
 CleanExit:
     Exit Sub

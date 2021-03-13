@@ -6,10 +6,11 @@ Attribute VB_Name = "SQLlib"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
-Attribute VB_Exposed = True
-'@Folder "ContactEditor.Storage.Table.SQL"
+Attribute VB_Exposed = False
+Attribute VB_Description = "Provides SQL queries and templates"
+'@Folder "ContactEditor.Storage.Table.SQLlib"
+'@ModuleDescription "Provides SQL queries and templates"
 '@PredeclaredId
-'@Exposed
 '@IgnoreModule IndexedDefaultMemberAccess
 Option Explicit
 
@@ -75,13 +76,16 @@ End Function
 
 
 Public Function SelectAllAsText(ByVal FieldNames As Variant, ByVal FieldTypes As Variant) As String
+    '''' Make sure that both FieldNames and FieldTypes are arrays and have the same base and size
     Dim TypeCheck As Boolean
-    TypeCheck = ((VarType(FieldNames) And VBA.VbVarType.vbArray) = VBA.VbVarType.vbArray)
+    TypeCheck = ((VarType(FieldNames) And vbArray) = vbArray)
     Guard.Expression TypeCheck, "SQLlib", "FieldNames is not array"
-    TypeCheck = ((VarType(FieldTypes) And VBA.VbVarType.vbArray) = VBA.VbVarType.vbArray)
+    TypeCheck = ((VarType(FieldTypes) And vbArray) = vbArray)
     Guard.Expression TypeCheck, "SQLlib", "FieldTypes is not array"
-    Guard.Expression LBound(FieldNames) = LBound(FieldTypes), "SQLlib", "FieldNames and FieldTypes array base mismatch"
-    Guard.Expression UBound(FieldNames) = UBound(FieldTypes), "SQLlib", "FieldNames and FieldTypes array size mismatch"
+    TypeCheck = (VarType(FieldNames(LBound(FieldNames))) = vbString)
+    Guard.Expression TypeCheck, "SQLlib", "FieldNames must be strings"
+    Guard.Expression LBound(FieldNames) = LBound(FieldTypes), "SQLlib", "FieldNames and FieldTypes arrays base mismatch"
+    Guard.Expression UBound(FieldNames) = UBound(FieldTypes), "SQLlib", "FieldNames and FieldTypes arrays size mismatch"
     
     Dim Fields() As Variant: ReDim Fields(LBound(FieldNames) To UBound(FieldNames))
     Dim FieldIndex As Long
@@ -97,25 +101,22 @@ Public Function SelectAllAsText(ByVal FieldNames As Variant, ByVal FieldTypes As
 End Function
 
 
-Public Function GetSQLiteConnectionString(Optional ByVal DBPath As String = vbNullString, _
-                                          Optional ByVal Features As String = vbNullString) As Scripting.Dictionary
-    Dim Driver As String
-    Driver = "SQLite3 ODBC Driver"
+Public Function UpdateSingleRecord(ByVal FieldNames As Variant) As String
+    Dim FieldCount As Long
+    Dim PKName As String: PKName = FieldNames(LBound(FieldNames)) ' Assumes that the primary key is the first field
+    Dim SetFieldList As String
+    SetFieldList = Join(FieldNames, ", ") ' Field list for SET clause
+    SetFieldList = Right$(SetFieldList, Len(SetFieldList) - Len(PKName) - 2) ' Remove primary key field, which goes into the WHERE clause
+    FieldCount = UBound(FieldNames, 1) - LBound(FieldNames, 1) + 1
     
-    Dim Database As String
-    Database = Right$(DBPath, Abs(Len(DBPath) - 7))
-    Database = VerifyOrGetDefaultPath(Database, Array("db", "sqlite"))
+    ' Since there is no standarad routine for repeating a multi-character patterns,
+    ' prepare a sequence of placeholder characters with String and use Replace to
+    ' generate the final pattern.
+    Dim ValuePlaceholderList As String
+    ValuePlaceholderList = Replace(String(FieldCount - 2, "@"), "@", "?, ") & "?"
     
-    Dim Options As String
-    Options = IIf(Len(Features) > 0, Features, "SyncPragma=NORMAL;LongNames=True;NoCreat=True;FKSupport=True;OEMCP=True;")
-    
-    Dim ConnectionString As Scripting.Dictionary
-    Set ConnectionString = New Scripting.Dictionary
-    ConnectionString.CompareMode = TextCompare
-    
-    ConnectionString("ADO") = "Driver=" & Driver & ";" & "Database=" & Database & ";" & Options
-    ConnectionString("QT") = "OLEDB;" + ConnectionString("ADO")
-    
-    Set GetSQLiteConnectionString = ConnectionString
+    UpdateSingleRecord = "UPDATE """ & this.TableName & """ " & _
+                         "SET (" & SetFieldList & ") = (" & ValuePlaceholderList & ") " & _
+                         "WHERE " & PKName & " = ?"
 End Function
 

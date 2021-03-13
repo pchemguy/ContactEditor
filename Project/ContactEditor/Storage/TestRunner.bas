@@ -127,3 +127,9 @@ Private Sub TestUpdate()
     ColumnIndex = 3 - 1
     Val = Application.WorksheetFunction.Transpose(Range("Contacts").Offset(1, ColumnIndex).Resize(Range("Contacts").Rows.Count - 1, 1))
 End Sub
+
+
+Private Sub TestEnum()
+    Dim TestVar As ADODB.DataTypeEnum
+    Debug.Print VarType(TestVar)
+End Sub

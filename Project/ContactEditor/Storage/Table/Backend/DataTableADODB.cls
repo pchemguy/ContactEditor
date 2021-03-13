@@ -22,6 +22,7 @@ Implements IDataTableStorage
 Private Type TDataTable
     Model As DataTableModel
     SQL As SQLlib
+    ADO As ADOlib
     AdoCommand As ADODB.Command
     ConnectionString As String
     TableName As String
@@ -42,6 +43,7 @@ End Sub
 Private Sub Class_Terminate()
     Set this.Model = Nothing
     Set this.SQL = Nothing
+    Set this.ADO = Nothing
     Set this.FieldMap = Nothing
     On Error Resume Next
     this.AdoCommand.ActiveConnection.Close
@@ -115,8 +117,9 @@ Public Sub Init(ByVal Model As DataTableModel, ByVal ConnectionString As String,
     
     Set this.Model = Model
     Set this.SQL = SQLlib.Create(TableName)
+    Set this.ADO = ADOlib.Create
     If LCase(Left$(ConnectionString, 7)) = SQLITE_CONNSTR_PREFIX Then
-        this.ConnectionString = this.SQL.GetSQLiteConnectionString(ConnectionString)("ADO")
+        this.ConnectionString = this.ADO.GetSQLiteConnectionString(ConnectionString)("ADO")
     Else
         this.ConnectionString = ConnectionString
     End If
