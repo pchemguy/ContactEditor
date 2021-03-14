@@ -4,7 +4,8 @@ The following are the general class design conventions partly following those of
 
 **Abstract Factory**. When an Abstract Factory pattern is employed, `Create` factory called on the default instance of the AbstractFactoryClass generates a factory instance AbstractFactoryInstance, and `CreateInstance` method called on a factory instance generates an instance of the target class.
 
-[**Hybrid interface**](#hybrid-interface). Some classes implementing a custom interface, may also provide specific functionality not exposed via such an interface, and, thus, only accessible via the default interface. When such functionality needs to be exposed on the same instance along with the custom interface, a second factory `CreateDefault` is added, which returns the default interface reference. Additionally, a getter `Self<Interface name>` is defined on the default class interface, returning a reference of the custom interface. In principle, multiple interfaces maybe exposed this way.
+[](#hybrid-interface)
+**Hybrid interface**. Some classes implementing a custom interface, may also provide specific functionality not exposed via such an interface, and, thus, only accessible via the default interface. When such functionality needs to be exposed on the same instance along with the custom interface, a second factory `CreateDefault` is added, which returns the default interface reference. Additionally, a getter `Self<Interface name>` is defined on the default class interface, returning a reference of the custom interface. In principle, multiple interfaces maybe exposed this way.
 
 
 [RubberDuck VBA examples]: https://github.com/rubberduck-vba/examples
