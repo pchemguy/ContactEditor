@@ -292,8 +292,8 @@ End Sub
 
 
 '@Description("Raises a run-time error if the specified connection string is not valid or provider cannot be found. (Trapped on Nothing or vbNullString)")
-Public Sub ConnectionStringError(ByVal dboOrConnStr As Variant)
-Attribute ConnectionStringError.VB_Description = "Raises a run-time error if the specified connection string is not valid or provider cannot be found. (Trapped on Nothing or vbNullString)"
+Public Sub ConnectionString(ByVal dboOrConnStr As Variant)
+Attribute ConnectionString.VB_Description = "Raises a run-time error if the specified connection string is not valid or provider cannot be found. (Trapped on Nothing or vbNullString)"
     Dim errorDetails As TError
     With errorDetails
         .trapped = IsFalsy(dboOrConnStr)
@@ -308,13 +308,44 @@ Attribute ConnectionStringError.VB_Description = "Raises a run-time error if the
     End With
 End Sub
 
-'            Dim errorDetails As TError
-'            With errorDetails
-'                .number = ErrNo.NoObject
-'                .Name = "NoObject"
-'                .source = "DbCommandFactory"
-'                .message = "Unknown DbCommand class: " & commandClassName
-'                .description = .message
-'            End With
-'            RaiseError errorDetails
-'
+
+'@Description("Raises a run-time error if the specified references are not both arrays having same base and size")
+Public Sub IncompatibleArrays(ByVal ArrayA As Variant, ByVal ArrayB As Variant)
+Attribute IncompatibleArrays.VB_Description = "Raises a run-time error if the specified references are not both arrays having same base and size"
+    Dim errorDetails As TError
+    With errorDetails
+        .trapped = ((VarType(ArrayA) And VarType(ArrayB) And vbArray) <> vbArray)
+        If .trapped Then
+            .Name = "Invalid parameters"
+            .number = ErrNo.InvalidParameterErr
+            .source = "Bad arrays"
+            .Message = "Expected two arrays"
+            .description = .Message
+            RaiseError errorDetails
+        End If
+    End With
+    
+    With errorDetails
+        .trapped = (LBound(ArrayA) <> LBound(ArrayB))
+        If .trapped Then
+            .Name = "Incompatible arrays"
+            .number = ErrNo.IncompatibleArraysErr
+            .source = "Bad arrays"
+            .Message = "Provided arrays have different bases"
+            .description = .Message
+            RaiseError errorDetails
+        End If
+    End With
+    
+    With errorDetails
+        .trapped = (UBound(ArrayA) <> UBound(ArrayB))
+        If .trapped Then
+            .Name = "Incompatible arrays"
+            .number = ErrNo.IncompatibleArraysErr
+            .source = "Bad arrays"
+            .Message = "Provided arrays have different sizes"
+            .description = .Message
+            RaiseError errorDetails
+        End If
+    End With
+End Sub

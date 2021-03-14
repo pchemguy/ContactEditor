@@ -107,7 +107,9 @@ Arrange:
     Expected = "SELECT * FROM """ & SQL.TableName & """ LIMIT 1"
 Act:
     Dim Actual As String
-    Actual = SQL.SelectOne
+    SQL.SetLimit 1
+    Actual = SQL.SelectAll
+    SQL.SetLimit
 Assert:
     Assert.AreEqual Expected, Actual, "SelectOne query mismatch"
 

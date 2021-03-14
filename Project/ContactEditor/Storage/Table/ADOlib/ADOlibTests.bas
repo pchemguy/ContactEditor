@@ -40,6 +40,48 @@ End Sub
 
 
 '===================================================='
+'=================== TEST FIXTURES =================='
+'===================================================='
+
+
+Private Function zfxFieldNames() As Variant
+    Dim FieldNames(1 To 5) As String
+    FieldNames(1) = "id"
+    FieldNames(2) = "FirstName"
+    FieldNames(3) = "LastName"
+    FieldNames(4) = "Age"
+    FieldNames(5) = "Gender"
+    zfxFieldNames = FieldNames
+End Function
+
+
+Private Function zfxFieldTypes() As Variant
+    Dim FieldTypes(1 To 5) As ADODB.DataTypeEnum
+    FieldTypes(1) = adInteger
+    FieldTypes(2) = adVarWChar
+    FieldTypes(3) = adVarWChar
+    FieldTypes(4) = adInteger
+    FieldTypes(5) = adVarWChar
+    zfxFieldTypes = FieldTypes
+End Function
+
+
+Private Function zfxRecordValues() As Scripting.Dictionary
+    Dim RecordValues As Scripting.Dictionary
+    Set RecordValues = New Scripting.Dictionary
+    With RecordValues
+        .CompareMode = TextCompare
+        .Item("id") = 4
+        .Item("FirstName") = "Edna"
+        .Item("LastName") = "Jennings"
+        .Item("Age") = 26
+        .Item("Gender") = "male"
+    End With
+    Set zfxRecordValues = RecordValues
+End Function
+
+
+'===================================================='
 '==================== TEST CASES ===================='
 '===================================================='
 
@@ -71,35 +113,16 @@ Private Sub ztcSetAdoParamsForRecordUpdate_ValidatesParams()
     On Error GoTo TestFail
 
 Arrange:
-    Dim FieldNames(1 To 5) As String
-    Dim FieldTypes(1 To 5) As ADODB.DataTypeEnum
-    FieldNames(1) = "id":        FieldTypes(1) = adInteger
-    FieldNames(2) = "FirstName": FieldTypes(2) = adVarWChar
-    FieldNames(3) = "LastName":  FieldTypes(3) = adVarWChar
-    FieldNames(4) = "Age":       FieldTypes(4) = adInteger
-    FieldNames(5) = "Gender":    FieldTypes(5) = adVarWChar
 Act:
-    Dim AdoCommand As ADODB.Command
-    Set AdoCommand = New ADODB.Command
-    Dim AdoParamsCol As ADODB.Parameters
-    Set AdoParamsCol = AdoCommand.Parameters
-    Dim AdoParamsArray As Variant
-    AdoParamsArray = ADOlib.SetAdoParamsForRecordUpdate(FieldNames, FieldTypes, AdoParamsCol)
+    Dim AdoCommand As ADODB.Command: Set AdoCommand = New ADODB.Command
+    Dim AdoParams As ADODB.Parameters: Set AdoParams = AdoCommand.Parameters
+    ADOlib.MakeAdoParamsForRecordUpdate zfxFieldNames, zfxFieldTypes, AdoCommand
 Assert:
-    Assert.IsTrue VarType(AdoParamsArray) = vbArray + vbObject, "AdoParamsArray - wrong type"
-    Assert.AreEqual 1, LBound(AdoParamsArray), "AdoParamsArray - wrong base"
-    Assert.AreEqual 5, UBound(AdoParamsArray), "AdoParamsArray - wrong count"
-    Assert.IsTrue TypeOf AdoParamsArray(1) Is ADODB.Parameter, "AdoParamsArray - wrong element type"
-    Assert.AreEqual "FirstName", AdoParamsArray(1).Name, "Array - first param name mismatch"
-    Assert.AreEqual adVarWChar, AdoParamsArray(1).Type, "Array - first param type mismatch"
-    Assert.AreEqual "id", AdoParamsArray(5).Name, "Array - last param name mismatch"
-    Assert.AreEqual adInteger, AdoParamsArray(5).Type, "Array - last param type mismatch"
-    
-    Assert.AreEqual 5, AdoParamsCol.Count, "Parameters collection - wrong count"
-    Assert.AreEqual "FirstName", AdoParamsCol(0).Name, "Col - first param name mismatch"
-    Assert.AreEqual adVarWChar, AdoParamsCol(0).Type, "Col - first param type mismatch"
-    Assert.AreEqual "id", AdoParamsCol(4).Name, "Col - last param name mismatch"
-    Assert.AreEqual adInteger, AdoParamsCol(4).Type, "Col - last param type mismatch"
+    Assert.AreEqual 5, AdoParams.Count, "Parameters - wrong count"
+    Assert.AreEqual "FirstName", AdoParams(0).Name, "First param name mismatch"
+    Assert.AreEqual adVarWChar, AdoParams(0).Type, "First param type mismatch"
+    Assert.AreEqual "id", AdoParams(4).Name, "Last param name mismatch"
+    Assert.AreEqual adInteger, AdoParams(4).Type, "Last param type mismatch"
 
 CleanExit:
     Exit Sub
@@ -113,42 +136,64 @@ Private Sub ztcRecordValuesToAdoParams_ValidatesUpdatedParams()
     On Error GoTo TestFail
 
 Arrange:
-    Dim FieldNames(1 To 5) As String
-    Dim FieldTypes(1 To 5) As ADODB.DataTypeEnum
-    FieldNames(1) = "id":        FieldTypes(1) = adInteger
-    FieldNames(2) = "FirstName": FieldTypes(2) = adVarWChar
-    FieldNames(3) = "LastName":  FieldTypes(3) = adVarWChar
-    FieldNames(4) = "Age":       FieldTypes(4) = adInteger
-    FieldNames(5) = "Gender":    FieldTypes(5) = adVarWChar
-    
-    Dim RecordValues() As Variant
-    RecordValues = Array(4, "Edna", "Jennings", 26, "male")
-    
-    Dim AdoCommand As ADODB.Command
-    Set AdoCommand = New ADODB.Command
-    Dim AdoParamsCol As ADODB.Parameters
-    Set AdoParamsCol = AdoCommand.Parameters
-    Dim AdoParamsArray As Variant
-    AdoParamsArray = ADOlib.SetAdoParamsForRecordUpdate(FieldNames, FieldTypes, AdoParamsCol)
+    Dim AdoCommand As ADODB.Command: Set AdoCommand = New ADODB.Command
+    Dim AdoParams As ADODB.Parameters: Set AdoParams = AdoCommand.Parameters
+    ADOlib.MakeAdoParamsForRecordUpdate zfxFieldNames, zfxFieldTypes, AdoCommand
 Act:
-    ADOlib.RecordValuesToAdoParams RecordValues, AdoParamsArray
-    ADOlib.RecordValuesToAdoParams RecordValues, AdoParamsCol
+    ADOlib.RecordToAdoParams zfxRecordValues, AdoCommand
 Assert:
-    Assert.AreEqual "Edna", AdoParamsArray(1).Value, "Array - updated value mismatch"
-    Assert.AreEqual "Jennings", AdoParamsArray(2).Value, "Array - updated value mismatch"
-    Assert.AreEqual 26, AdoParamsArray(3).Value, "Array - updated value mismatch"
-    Assert.AreEqual "male", AdoParamsArray(4).Value, "Array - updated value mismatch"
-    Assert.AreEqual 4, AdoParamsArray(5).Value, "Array - updated value mismatch"
-
-    Assert.AreEqual "Edna", AdoParamsCol(0).Value, "Col - updated value mismatch"
-    Assert.AreEqual "Jennings", AdoParamsCol(1).Value, "Col - updated value mismatch"
-    Assert.AreEqual 26, AdoParamsCol(2).Value, "Col - updated value mismatch"
-    Assert.AreEqual "male", AdoParamsCol(3).Value, "Col - updated value mismatch"
-    Assert.AreEqual 4, AdoParamsCol(4).Value, "Col - updated value mismatch"
+    Assert.AreEqual "Edna", AdoParams(0).Value, "Updated value mismatch"
+    Assert.AreEqual "Jennings", AdoParams(1).Value, "Updated value mismatch"
+    Assert.AreEqual 26, AdoParams(2).Value, "Updated value mismatch"
+    Assert.AreEqual "male", AdoParams(3).Value, "Updated value mismatch"
+    Assert.AreEqual 4, AdoParams(4).Value, "Updated value mismatch"
 
 CleanExit:
     Exit Sub
 TestFail:
     Assert.Fail "Error: " & Err.number & " - " & Err.description
 End Sub
+
+
+'@TestMethod("ADO Parameters")
+Private Sub ztcRecordValuesToAdoParams_ValidatesUpdatedParamsIdAsText()
+    On Error GoTo TestFail
+
+Arrange:
+    Dim AdoCommand As ADODB.Command: Set AdoCommand = New ADODB.Command
+    Dim AdoParams As ADODB.Parameters: Set AdoParams = AdoCommand.Parameters
+    ADOlib.MakeAdoParamsForRecordUpdate zfxFieldNames, zfxFieldTypes, AdoCommand, CastIdAsText
+Act:
+    ADOlib.RecordToAdoParams zfxRecordValues, AdoCommand
+Assert:
+    Assert.AreEqual adInteger, AdoParams(2).Type, "Param type mismatch"
+    Assert.AreEqual adVarWChar, AdoParams(4).Type, "Param type mismatch"
+
+CleanExit:
+    Exit Sub
+TestFail:
+    Assert.Fail "Error: " & Err.number & " - " & Err.description
+End Sub
+
+
+'@TestMethod("ADO Parameters")
+Private Sub ztcRecordValuesToAdoParams_ValidatesUpdatedParamsAllAsText()
+    On Error GoTo TestFail
+
+Arrange:
+    Dim AdoCommand As ADODB.Command: Set AdoCommand = New ADODB.Command
+    Dim AdoParams As ADODB.Parameters: Set AdoParams = AdoCommand.Parameters
+    ADOlib.MakeAdoParamsForRecordUpdate zfxFieldNames, zfxFieldTypes, AdoCommand, CastAllAsText
+Act:
+    ADOlib.RecordToAdoParams zfxRecordValues, AdoCommand
+Assert:
+    Assert.AreEqual adVarWChar, AdoParams(2).Type, "Param type mismatch"
+    Assert.AreEqual adVarWChar, AdoParams(4).Type, "Param type mismatch"
+
+CleanExit:
+    Exit Sub
+TestFail:
+    Assert.Fail "Error: " & Err.number & " - " & Err.description
+End Sub
+
 

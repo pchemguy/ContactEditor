@@ -6,16 +6,24 @@ Attribute VB_Name = "SQLlib"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
-Attribute VB_Exposed = False
+Attribute VB_Exposed = True
 Attribute VB_Description = "Provides SQL queries and templates"
 '@Folder "ContactEditor.Storage.Table.SQLlib"
 '@ModuleDescription "Provides SQL queries and templates"
 '@PredeclaredId
+'@Exposed
 '@IgnoreModule IndexedDefaultMemberAccess
 Option Explicit
 
+Public Enum FieldFormat
+    CastAsIs
+    CastIdAsText
+    CastAllAsText
+End Enum
+
 Private Type TSQL
     TableName As String
+    LIMIT As Long
 End Type
 Private this As TSQL
 
@@ -39,6 +47,11 @@ Public Sub Init(ByVal TableName As String)
 End Sub
 
 
+Public Sub SetLimit(Optional ByVal LimitValue As Long = 0)
+    this.LIMIT = LimitValue
+End Sub
+
+
 Public Function SelectAll(Optional ByVal FieldArray As Variant = Empty) As String
     Dim Fields As String
     If (VarType(FieldArray) And VBA.VbVarType.vbArray) = VBA.VbVarType.vbArray Then
@@ -48,12 +61,9 @@ Public Function SelectAll(Optional ByVal FieldArray As Variant = Empty) As Strin
     Else
         Fields = "*"
     End If
-    SelectAll = "SELECT " & Fields & " FROM """ & this.TableName & """"
-End Function
-
-
-Public Function SelectOne() As String
-    SelectOne = "SELECT * FROM """ & this.TableName & """ LIMIT 1"
+    Dim LimitClause As String
+    If this.LIMIT > 0 Then LimitClause = " LIMIT " & CStr(this.LIMIT)
+    SelectAll = "SELECT " & Fields & " FROM """ & this.TableName & """" & LimitClause
 End Function
 
 
@@ -119,4 +129,3 @@ Public Function UpdateSingleRecord(ByVal FieldNames As Variant) As String
                          "SET (" & SetFieldList & ") = (" & ValuePlaceholderList & ") " & _
                          "WHERE " & PKName & " = ?"
 End Function
-

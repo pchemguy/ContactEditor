@@ -42,7 +42,7 @@ Public Sub Init(ByVal Model As DataTableModel, ByVal ConnectionString As String,
     If Len(TableName) > 0 Then
         CSVName = TableName
     Else
-        CSVName = Left(ThisWorkbook.Name, Len(ThisWorkbook.Name) - 5 + InStr(Right$(ThisWorkbook.Name, 5), ".")) & "xsv!sep=,"
+        CSVName = Left$(ThisWorkbook.Name, Len(ThisWorkbook.Name) - 5 + InStr(Right$(ThisWorkbook.Name, 5), ".")) & "xsv!sep=,"
     End If
     
     Set this.Model = Model

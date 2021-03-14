@@ -30,6 +30,7 @@ Private Type TDataTable
     FieldTypes() As ADODB.DataTypeEnum
     FieldMap As Scripting.Dictionary
     Ids() As String
+    TypeCast As FieldFormat
 End Type
 Private this As TDataTable
 
@@ -90,6 +91,12 @@ End Property
 
 
 '@Ignore ProcedureNotUsed
+Public Sub SetTypeCast(Optional ByVal TypeCast As FieldFormat = FieldFormat.CastAsIs)
+    this.TypeCast = TypeCast
+End Sub
+
+
+'@Ignore ProcedureNotUsed
 '@Description "Returns a new IDataTable object."
 Public Function Create(ByVal Model As DataTableModel, ByVal ConnectionString As String, ByVal TableName As String) As IDataTableStorage
 Attribute Create.VB_Description = "Returns a new IDataTable object."
@@ -118,7 +125,7 @@ Public Sub Init(ByVal Model As DataTableModel, ByVal ConnectionString As String,
     Set this.Model = Model
     Set this.SQL = SQLlib.Create(TableName)
     Set this.ADO = ADOlib.Create
-    If LCase(Left$(ConnectionString, 7)) = SQLITE_CONNSTR_PREFIX Then
+    If LCase$(Left$(ConnectionString, 7)) = SQLITE_CONNSTR_PREFIX Then
         this.ConnectionString = this.ADO.GetSQLiteConnectionString(ConnectionString)("ADO")
     Else
         this.ConnectionString = ConnectionString
@@ -126,7 +133,9 @@ Public Sub Init(ByVal Model As DataTableModel, ByVal ConnectionString As String,
     this.TableName = TableName
     
     '@Ignore FunctionReturnValueDiscarded
-    AdoCommandInit this.SQL.SelectOne, ADODB.CursorLocationEnum.adUseClient
+    this.SQL.SetLimit 1
+    AdoCommandInit this.SQL.SelectAll, ADODB.CursorLocationEnum.adUseClient
+    this.SQL.SetLimit
     If AdoCommand.ActiveConnection.State <> ADODB.ObjectStateEnum.adStateOpen Then
         Guard.Expression False, "DataTableADODB", "Test connection failed"
     End If
@@ -248,4 +257,25 @@ End Function
 
 
 Private Sub IDataTableStorage_SaveDataFromModel()
+    If Not this.Model.IsDirty Then Exit Sub
+    
+    Dim AdoCmd As ADODB.Command
+    Set AdoCmd = AdoCommandInit(this.SQL.UpdateSingleRecord(this.FieldNames))
+    this.ADO.MakeAdoParamsForRecordUpdate this.FieldNames, this.FieldTypes, AdoCmd
+
+    Dim RecordsAffected As Long: RecordsAffected = 0
+    Dim Record As Scripting.Dictionary
+    Set Record = New Scripting.Dictionary
+    Record.CompareMode = TextCompare
+    With this.Model
+        AdoCmd.ActiveConnection.BeginTrans
+        Dim RecordId As Variant
+        For Each RecordId In .DirtyRecords.Keys
+            .CopyRecordToDictionary Record, RecordId
+            this.ADO.RecordToAdoParams Record, AdoCmd
+            AdoCmd.Execute RecordsAffected, , adExecuteNoRecords
+        Next RecordId
+        AdoCmd.ActiveConnection.CommitTrans
+        .IsNotDirty
+    End With
 End Sub
