@@ -1,0 +1,1 @@
+[Data Model](https://github.com/pchemguy/ContactEditor/wiki/Data-Model)
