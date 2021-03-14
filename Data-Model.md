@@ -36,7 +36,7 @@ The main record id is its primary key (which at present to be assumed to be a si
 `Record` field wraps a Scripting.Dictionary object, storing the current record data as a "Field Name"<>"Value" map. Additionally, a dirty flag is also included to indicated that the user made changes to the data.  
 
 #### Data Transfer
-<a name="pookie"></a>
+
 DataTableModel also provides two important methods, `UpdateRecordFromDictionary` and `CopyRecordToDictionary`. The former takes a dictionary "Field Name"<>"Value" map, such as provided by the DataRecordModel, and updates data in the corresponding record in the Values array using the FieldIndices map. The latter does the opposite, based on supplied RecordId and IdIndices map.
 
 [Composite classes]: https://github.com/pchemguy/ContactEditor/blob/develop/Assets/Diagrams/Class%20Diagram.svg
