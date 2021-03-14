@@ -37,7 +37,7 @@ The main record id is its primary key (which at present to be assumed to be a si
 
 #### Data Transfer
 
-[ ](#hybrid-interface)
+[_](#hybrid-interface)
 DataTableModel also provides two important methods, `UpdateRecordFromDictionary` and `CopyRecordToDictionary`. The former takes a dictionary "Field Name"<>"Value" map, such as provided by the DataRecordModel, and updates data in the corresponding record in the Values array using the FieldIndices map. The latter does the opposite, based on supplied RecordId and IdIndices map.
 
 [Composite classes]: https://github.com/pchemguy/ContactEditor/blob/develop/Assets/Diagrams/Class%20Diagram.svg
