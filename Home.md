@@ -6,5 +6,5 @@
 
 ### Backends
 
-[Worksheet](https://github.com/pchemguy/ContactEditor/wiki/Worksheet-Backend)
+[Worksheet](https://github.com/pchemguy/ContactEditor/wiki/Worksheet-Backend)  
 [CSV](https://github.com/pchemguy/ContactEditor/wiki/CSV-Backend)
