@@ -21,3 +21,14 @@ The main entry for the demo is `RunContactEditor` from \ContactEditor\Forms\Cont
 ## Documentation and further information
 
 Documentation and technical details are available from the project [WiKi][WiKi].
+
+
+[Rubber Duck VBA]: https://rubberduckvba.com
+[RDVBA blog]: https://rubberduckvba.wordpress.com
+[RDVBA No Worksheet]: https://rubberduckvba.wordpress.com/2017/12/08/there-is-no-worksheet
+[RDVBA Project Utils]: https://github.com/pchemguy/RDVBA-Project-Utils
+[Overview]: https://github.com/pchemguy/ContactEditor/blob/develop/Assets/Diagrams/Overview.jpg
+[Contact Editor]: https://github.com/pchemguy/ContactEditor/blob/master/ContactEditor.xls
+[Project]: https://github.com/pchemguy/ContactEditor/tree/master/Project
+[ContactEditor.db]:  https://github.com/pchemguy/ContactEditor/blob/master/ContactEditor.db
+[WiKi]: https://github.com/pchemguy/ContactEditor/wiki
