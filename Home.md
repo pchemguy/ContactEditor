@@ -3,9 +3,11 @@
 ### General
 
 [Class Module Design Convention](Class-Module-Design-Convention)  
-[Data Model](https://github.com/pchemguy/ContactEditor/wiki/Data-Model)  
+[Data Model](Data-Model)  
+[Main Form and Persistence Modes](Main-Form-and-Persistence-Modes)  
 
 ### Backends
 
-[Worksheet](https://github.com/pchemguy/ContactEditor/wiki/Worksheet-Backend)  
-[CSV](https://github.com/pchemguy/ContactEditor/wiki/CSV-Backend)
+[ADODB](ADODB-Backend)
+[CSV](CSV-Backend)  
+[Worksheet](Worksheet-Backend)  
