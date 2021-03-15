@@ -10,8 +10,7 @@ Attribute VB_Exposed = True
 Attribute VB_Description = "Represents a data table."
 '@Folder "ContactEditor.Storage.Table.Model"
 '@ModuleDescription "Represents a data table."
-'@IgnoreModule ProcedureNotUsed
-'@IgnoreModule IndexedDefaultMemberAccess
+'@IgnoreModule ProcedureNotUsed, IndexedDefaultMemberAccess
 '@Exposed
 Option Explicit
 

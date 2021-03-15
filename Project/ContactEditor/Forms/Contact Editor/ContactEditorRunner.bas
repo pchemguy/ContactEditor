@@ -8,5 +8,15 @@ Private presenter As ContactEditorPresenter
 
 Public Sub RunContactEditor()
     Set presenter = New ContactEditorPresenter
-    presenter.Show "ADODB"
+    Dim DataTableBackEnd As String
+    
+    '''' Available DataTable backends:
+    ''''    "ADODB"
+    ''''    "Worksheet"
+    ''''    "CSV"
+    ''''
+    '''' Configuration - ContactEditorPresenter.InitializeModel
+    ''''
+    DataTableBackEnd = "ADODB"
+    presenter.Show DataTableBackEnd
 End Sub

@@ -14,6 +14,11 @@ Attribute VB_Description = "Provides ADO related helpers"
 '@IgnoreModule IndexedDefaultMemberAccess
 Option Explicit
 
+Private Type TADOlib
+    ConnectionString As String
+End Type
+Private this As TADOlib
+
 
 Public Function Create() As ADOlib
     Dim ADOTool As ADOlib
@@ -21,6 +26,11 @@ Public Function Create() As ADOlib
     'ADOTool.Init
     Set Create = ADOTool
 End Function
+
+
+Public Sub SetConnectionString(ByVal ConnectionString As String)
+    this.ConnectionString = ConnectionString
+End Sub
 
 
 Public Function GetSQLiteConnectionString(Optional ByVal DBPath As String = vbNullString, _
@@ -46,6 +56,26 @@ Public Function GetSQLiteConnectionString(Optional ByVal DBPath As String = vbNu
 End Function
 
  
+'@Ignore ParameterCanBeByVal
+Public Sub GetTableMeta(ByVal TableName As String, ByRef FieldNames As Variant, ByRef FieldTypes As Variant, ByVal FieldMap As Scripting.Dictionary)
+    Dim Catalog As New ADOX.Catalog: Catalog.ActiveConnection = this.ConnectionString
+    Dim Table As ADOX.Table: Set Table = Catalog.Tables(TableName)
+    Dim FieldCount As Long: FieldCount = Table.Columns.Count
+    
+    ReDim FieldNames(1 To FieldCount)
+    ReDim FieldTypes(1 To FieldCount)
+    
+    Dim Column As ADOX.Column
+    Dim FieldIndex As Long
+    For FieldIndex = 1 To FieldCount
+        Set Column = Table.Columns(FieldIndex - 1)
+        FieldNames(FieldIndex) = Column.Name
+        FieldTypes(FieldIndex) = Column.Type
+        FieldMap(Column.Name) = FieldIndex
+    Next FieldIndex
+End Sub
+
+
 ' Takes and array of field names and types (ADODB.DataTypeEnum) collected by the
 ' DataTableADODB.CollectTableMetadata routine, and empties and populates
 ' ADODB.Command.Parameters.

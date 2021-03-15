@@ -52,24 +52,35 @@ Public Sub SetLimit(Optional ByVal LimitValue As Long = 0)
 End Sub
 
 
-Public Function SelectAll(Optional ByVal FieldArray As Variant = Empty) As String
+Public Function SelectAll(Optional ByVal FieldArray As Variant = Empty, _
+                          Optional ByVal EscapeFields As Boolean = True) As String
+                          
+    Dim EscapeOpen As String: EscapeOpen = IIf(EscapeFields, "[", vbNullString)
+    Dim EscapeClose As String: EscapeClose = IIf(EscapeFields, "]", vbNullString)
+    
     Dim Fields As String
     If (VarType(FieldArray) And VBA.VbVarType.vbArray) = VBA.VbVarType.vbArray Then
-        Fields = Join(FieldArray, ", ")
+        Fields = EscapeOpen & Join(FieldArray, EscapeClose & ", " & EscapeOpen) & EscapeClose
     ElseIf Len(FieldArray) > 0 Then
-        Fields = FieldArray
+        Fields = EscapeOpen & FieldArray & EscapeClose
     Else
         Fields = "*"
     End If
     Dim LimitClause As String
     If this.LIMIT > 0 Then LimitClause = " LIMIT " & CStr(this.LIMIT)
-    SelectAll = "SELECT " & Fields & " FROM """ & this.TableName & """" & LimitClause
+    SelectAll = "SELECT " & Fields & " FROM [" & this.TableName & "]" & LimitClause
 End Function
 
 
 Public Function AsText(ByVal FieldName As String) As String
     Guard.EmptyString FieldName
-    AsText = "CAST(" & FieldName & " AS TEXT) AS " & FieldName
+    AsText = "CAST([" & FieldName & "] AS TEXT) AS [" & FieldName & "]"
+End Function
+
+
+Public Function AliasedField(ByVal FieldName As String) As String
+    Guard.EmptyString FieldName
+    AliasedField = "[" & FieldName & "] AS [" & FieldName & "]"
 End Function
 
 
@@ -78,36 +89,32 @@ Public Function SelectIdAsText(ByVal FieldNames As Variant) As String
     TypeCheck = ((VarType(FieldNames) And VBA.VbVarType.vbArray) = VBA.VbVarType.vbArray)
     Guard.Expression TypeCheck, "SQLlib", "FieldNames is not array"
     
-    Dim Fields As Variant: Fields = FieldNames
-    Dim IdIndex As Long: IdIndex = LBound(FieldNames, 1)
-    Fields(IdIndex) = AsText(Fields(IdIndex))
-    SelectIdAsText = SelectAll(Fields)
+    Dim Fields() As String: ReDim Fields(LBound(FieldNames) To UBound(FieldNames))
+    Dim FieldIndex As Long: FieldIndex = LBound(FieldNames)
+    Fields(FieldIndex) = AsText(FieldNames(FieldIndex))
+    For FieldIndex = LBound(FieldNames) + 1 To UBound(FieldNames)
+        Fields(FieldIndex) = AliasedField(FieldNames(FieldIndex))
+    Next FieldIndex
+    SelectIdAsText = SelectAll(Fields, False)
 End Function
 
 
 Public Function SelectAllAsText(ByVal FieldNames As Variant, ByVal FieldTypes As Variant) As String
     '''' Make sure that both FieldNames and FieldTypes are arrays and have the same base and size
-    Dim TypeCheck As Boolean
-    TypeCheck = ((VarType(FieldNames) And vbArray) = vbArray)
-    Guard.Expression TypeCheck, "SQLlib", "FieldNames is not array"
-    TypeCheck = ((VarType(FieldTypes) And vbArray) = vbArray)
-    Guard.Expression TypeCheck, "SQLlib", "FieldTypes is not array"
-    TypeCheck = (VarType(FieldNames(LBound(FieldNames))) = vbString)
-    Guard.Expression TypeCheck, "SQLlib", "FieldNames must be strings"
-    Guard.Expression LBound(FieldNames) = LBound(FieldTypes), "SQLlib", "FieldNames and FieldTypes arrays base mismatch"
-    Guard.Expression UBound(FieldNames) = UBound(FieldTypes), "SQLlib", "FieldNames and FieldTypes arrays size mismatch"
+    Guard.IncompatibleArrays FieldNames, FieldTypes
+    Guard.EmptyString FieldNames(LBound(FieldNames))
     
     Dim Fields() As Variant: ReDim Fields(LBound(FieldNames) To UBound(FieldNames))
     Dim FieldIndex As Long
     For FieldIndex = LBound(FieldNames) To UBound(FieldNames)
         Select Case FieldTypes(FieldIndex)
             Case ADODB.DataTypeEnum.adVarWChar
-                Fields(FieldIndex) = FieldNames(FieldIndex)
+                Fields(FieldIndex) = AliasedField(FieldNames(FieldIndex))
             Case Else
                 Fields(FieldIndex) = AsText(FieldNames(FieldIndex))
         End Select
     Next FieldIndex
-    SelectAllAsText = SelectAll(Fields)
+    SelectAllAsText = SelectAll(Fields, False)
 End Function
 
 
@@ -115,8 +122,8 @@ Public Function UpdateSingleRecord(ByVal FieldNames As Variant) As String
     Dim FieldCount As Long
     Dim PKName As String: PKName = FieldNames(LBound(FieldNames)) ' Assumes that the primary key is the first field
     Dim SetFieldList As String
-    SetFieldList = Join(FieldNames, ", ") ' Field list for SET clause
-    SetFieldList = Right$(SetFieldList, Len(SetFieldList) - Len(PKName) - 2) ' Remove primary key field, which goes into the WHERE clause
+    SetFieldList = "[" & Join(FieldNames, "], [") & "]" ' Field list for SET clause
+    SetFieldList = Right$(SetFieldList, Len(SetFieldList) - Len(PKName) - 4) ' Remove primary key field, which goes into the WHERE clause
     FieldCount = UBound(FieldNames, 1) - LBound(FieldNames, 1) + 1
     
     ' Since there is no standarad routine for repeating a multi-character patterns,
@@ -125,7 +132,7 @@ Public Function UpdateSingleRecord(ByVal FieldNames As Variant) As String
     Dim ValuePlaceholderList As String
     ValuePlaceholderList = Replace(String(FieldCount - 2, "@"), "@", "?, ") & "?"
     
-    UpdateSingleRecord = "UPDATE """ & this.TableName & """ " & _
+    UpdateSingleRecord = "UPDATE [" & this.TableName & "] " & _
                          "SET (" & SetFieldList & ") = (" & ValuePlaceholderList & ") " & _
-                         "WHERE " & PKName & " = ?"
+                         "WHERE [" & PKName & "] = ?"
 End Function

@@ -68,7 +68,7 @@ End Property
 
 Public Property Get AdoCommand() As ADODB.Command
     If this.AdoCommand Is Nothing Then
-        Set AdoCommand = AdoCommandInit
+        Set AdoCommand = AdoCommandInit(this.SQL.SelectAll)
     Else
         Set AdoCommand = this.AdoCommand
     End If
@@ -97,9 +97,9 @@ End Sub
 
 
 '@Ignore ProcedureNotUsed
-'@Description "Returns a new IDataTable object."
+'@Description "Returns a new IDataTableStorage object."
 Public Function Create(ByVal Model As DataTableModel, ByVal ConnectionString As String, ByVal TableName As String) As IDataTableStorage
-Attribute Create.VB_Description = "Returns a new IDataTable object."
+Attribute Create.VB_Description = "Returns a new IDataTableStorage object."
     Dim result As DataTableADODB
     Set result = New DataTableADODB
     result.Init Model, ConnectionString, TableName
@@ -130,37 +130,14 @@ Public Sub Init(ByVal Model As DataTableModel, ByVal ConnectionString As String,
     Else
         this.ConnectionString = ConnectionString
     End If
+    this.ADO.SetConnectionString this.ConnectionString
     this.TableName = TableName
     
-    '@Ignore FunctionReturnValueDiscarded
-    this.SQL.SetLimit 1
-    AdoCommandInit this.SQL.SelectAll, ADODB.CursorLocationEnum.adUseClient
-    this.SQL.SetLimit
-    If AdoCommand.ActiveConnection.State <> ADODB.ObjectStateEnum.adStateOpen Then
-        Guard.Expression False, "DataTableADODB", "Test connection failed"
-    End If
-    
-    CollectTableMetadata
+    this.ADO.GetTableMeta this.TableName, this.FieldNames, this.FieldTypes, this.FieldMap
 End Sub
 
 
-Private Sub CollectTableMetadata()
-    Dim Fields As Fields: Set Fields = AdoRecordset.Fields
-    Dim FieldCount As Long: FieldCount = Fields.Count
-    Dim FieldIndex As Long
-    With this
-        ReDim .FieldNames(1 To FieldCount)
-        ReDim .FieldTypes(1 To FieldCount)
-        For FieldIndex = 1 To FieldCount
-            .FieldNames(FieldIndex) = Replace(Fields(FieldIndex - 1).Name, .TableName & ".", vbNullString, 1, 1, vbTextCompare)
-            .FieldTypes(FieldIndex) = Fields(FieldIndex - 1).Type
-            .FieldMap(.FieldNames(FieldIndex)) = FieldIndex
-        Next FieldIndex
-    End With
-End Sub
-
-
-Public Function AdoCommandInit(Optional ByVal SQLQuery As String = vbNullString, _
+Public Function AdoCommandInit(ByVal SQLQuery As String, _
                                Optional ByVal CursorLocation As ADODB.CursorLocationEnum = adUseClient) As ADODB.Command
     If Not this.AdoCommand Is Nothing Then
         On Error Resume Next
@@ -189,8 +166,8 @@ Public Function AdoRecordset(Optional ByVal SQLQuery As String = vbNullString) A
     With Rst
         Set .source = IIf(SQLQuery = vbNullString, this.AdoCommand, AdoCommandInit(SQLQuery))
         .CursorLocation = this.AdoCommand.ActiveConnection.CursorLocation
-        .CursorType = adOpenKeyset
-        .LockType = adLockReadOnly
+        .CursorType = adOpenStatic
+        .LockType = adLockBatchOptimistic
         .CacheSize = 10
         .Open Options:=adAsyncFetch
     

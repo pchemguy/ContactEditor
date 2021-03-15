@@ -80,7 +80,7 @@ Arrange:
     Dim SMiDefault As DataTableADODB: Set SMiDefault = zfxGetDataTableADODB
     Dim SQLQuery As String: SQLQuery = SQLlib.Create(TEST_TABLE).SelectAll
 Act:
-    Dim AdoCommand As ADODB.Command: Set AdoCommand = SMiDefault.AdoCommandInit
+    Dim AdoCommand As ADODB.Command: Set AdoCommand = SMiDefault.AdoCommandInit(SQLQuery)
 Assert:
     Assert.AreEqual SQLQuery, AdoCommand.CommandText, "SQL query mismatch"
     Assert.AreEqual ADODB.CommandTypeEnum.adCmdText, AdoCommand.CommandType, "Command type mismatch"
@@ -129,7 +129,7 @@ Private Sub ztcCollectTableMetadata_ValidatesTableMetadata()
 Arrange:
     Dim SMiDefault As DataTableADODB: Set SMiDefault = zfxGetDataTableADODB
 Act:
-    SMiDefault.AdoCommandInit
+    SMiDefault.AdoCommandInit SQLlib.Create(TEST_TABLE).SelectAll
 Assert:
     Assert.AreEqual 8, SMiDefault.FieldMap.Count, "FiledMap count mismatch"
     Assert.AreEqual 1, SMiDefault.FieldMap("id"), "FiledMap 'id' index mismatch"
@@ -156,7 +156,7 @@ Private Sub ztcAdoRecordset_ValidatesAdoRecordset()
 Arrange:
     Dim SMiDefault As DataTableADODB: Set SMiDefault = zfxGetDataTableADODB
 Act:
-    SMiDefault.AdoCommandInit
+    SMiDefault.AdoCommandInit SQLlib.Create(TEST_TABLE).SelectAll
     Dim AdoRecordset As ADODB.Recordset
     Set AdoRecordset = SMiDefault.AdoRecordset
 Assert:
