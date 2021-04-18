@@ -1,37 +1,34 @@
-## Welcome to GitHub Pages
+# Contact Editor
 
-You can use the [editor on GitHub](https://github.com/pchemguy/ContactEditor/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
+## Acknowledgments
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+This project is largely an exercise for me aimed at both learning and making VBA templates for the Model-View-Presenter (MVP) pattern backed by persistent storage. A special thanks goes to Mathieu Guindon, a co-founder of the [Rubber Duck VBA][Rubber Duck VBA] project and his [RDVBA blog][RDVBA blog]. Initially, I followed the [post][RDVBA No Worksheet] describing a possible approach to abstracting a Worksheet based persistent storage, as well as a template provided in the comments. Eventually, I started from scratch borrowing some code and design elements.
 
-### Markdown
+## Overview
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+Contact Editor is NOT actually a real application. Rather, it is a template and a demo, targeting the User <---> Database interaction workflow. Such a workflow would typically involve the user sending a query to the database, receiving a response table, browsing/editing record data with user form, and, possibly, updating the database, as shown in the figure below.
 
-```markdown
-Syntax highlighted code block
+![Overview][Overview]
 
-# Header 1
-## Header 2
-### Header 3
+## Development environment and repo structure
 
-- Bulleted
-- List
+Contact Editor demo is a VBA app, and it lives within an Excel Workbook [Contact Editor.xls][Contact Editor] available from the root of this repo. Additionally, all code modules and UserForms are available from the [Project][Project] folder (which acts as a container and corresponds to the VBA project root within the .xls file). Development process is greatly facilitated by the [Rubber Duck VBA][Rubber Duck VBA] add-in, and the project structure is exported/imported using [RDVBA Project Utils][RDVBA Project Utils] VBA module. Primarily, I use Excel 2002 for development, and also run tests on Excel 2016.
 
-1. Numbered
-2. List
+## Running the demo with different backends
 
-**Bold** and _Italic_ and `Code` text
+The main entry for the demo is `RunContactEditor` from \ContactEditor\Forms\Contact Editor\ContactEditorRunner.bas module. Basic backend configuration is a part of `ContactEditorPresenter.InitializeModel` (\ContactEditor\Forms\Contact Editor\ContactEditorPresenter.cls). The `DataTableBackEnd` variable found in the entry point sub determines the type of the main storage backend. Three different backends has been implemented, pulling data from an Excel Worksheet ("Worksheet"),  a text delimited file ("CSV"), and the most recent addition - ADODB backend ("ADODB"), which pulls data from a generic database. Both CSV and Worksheet based databases can be processed through the ADODB backend with appropriate configuration, but its primary purpose is to abstract relational database management system. The latter is illustrated with a mock [SQLite database][ContactEditor.db], provided in the root of the repo.
 
-[Link](url) and ![Image](src)
-```
+## Documentation and further information
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
+Documentation and technical details are available from the project [WiKi][WiKi].
 
-### Jekyll Themes
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/pchemguy/ContactEditor/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+[Rubber Duck VBA]: https://rubberduckvba.com
+[RDVBA blog]: https://rubberduckvba.wordpress.com
+[RDVBA No Worksheet]: https://rubberduckvba.wordpress.com/2017/12/08/there-is-no-worksheet
+[RDVBA Project Utils]: https://github.com/pchemguy/RDVBA-Project-Utils
+[Overview]: https://github.com/pchemguy/ContactEditor/blob/develop/Assets/Diagrams/Overview.jpg
+[Contact Editor]: https://github.com/pchemguy/ContactEditor/blob/master/ContactEditor.xls
+[Project]: https://github.com/pchemguy/ContactEditor/tree/master/Project
+[ContactEditor.db]:  https://github.com/pchemguy/ContactEditor/blob/master/ContactEditor.db
+[WiKi]: https://github.com/pchemguy/ContactEditor/wiki
