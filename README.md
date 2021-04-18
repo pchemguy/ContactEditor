@@ -27,7 +27,7 @@ Documentation and technical details are available from the project [WiKi][WiKi].
 [RDVBA blog]: https://rubberduckvba.wordpress.com
 [RDVBA No Worksheet]: https://rubberduckvba.wordpress.com/2017/12/08/there-is-no-worksheet
 [RDVBA Project Utils]: https://github.com/pchemguy/RDVBA-Project-Utils
-[Overview]: https://github.com/pchemguy/ContactEditor/blob/develop/Assets/Diagrams/Overview.jpg
+[Overview]: https://raw.githubusercontent.com/pchemguy/ContactEditor/master/Assets/Diagrams/Overview.jpg
 [Contact Editor]: https://github.com/pchemguy/ContactEditor/blob/master/ContactEditor.xls
 [Project]: https://github.com/pchemguy/ContactEditor/tree/master/Project
 [ContactEditor.db]:  https://github.com/pchemguy/ContactEditor/blob/master/ContactEditor.db
