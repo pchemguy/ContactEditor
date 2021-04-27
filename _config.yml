@@ -1,1 +1,11 @@
-theme: jekyll-theme-slate
+remote_theme: benbalter/retlab
+minimal_mistakes_skin: "air"
+
+#title: 
+#description: 
+
+# Plugins
+plugins:
+  - jekyll-seo-tag
+  - jekyll-avatar
+  - jekyll-github-metadata
