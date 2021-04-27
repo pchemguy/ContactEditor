@@ -2,13 +2,13 @@
 
 ## Overview
 
-"Contact Editor" demos the Model-View-Presenter (MVP) pattern backed by persistent storage (MVP-DB) in VBA. While studying OOP design patterns, I developed this mock application as a course project to serve as an MVP-DB template/prototype for my VBA experiments. It partially implements the "user <---> database" interaction workflow represented as a loop shown in the [figure](#FigUserDbLoop). Typically, the user sends a query to the database, receives a response table, browses record data via a user form, and, possibly, updates the database.
+"Contact Editor" demos the Model-View-Presenter (MVP) pattern backed by persistent storage (MVP-DB) in VBA. While studying OOP design patterns, I developed this mock application as a course project to serve as an MVP-DB template/prototype for my VBA experiments. It partially implements the "user <---> database" interaction workflow shown in the [figure](#FigUserDbLoop). Typically, the user sends a query to the database, receives a response table, browses record data via a user form, and, possibly, updates the database.
 
 <a name="FigUserDbLoop"></a>
 
 ![Overview][Overview]
 
-<p align="center"><b>User - database interaction loop.</b></p>
+<p align="center"><b>User - database interaction workflow.</b></p>
 
 ## Development environment and repo structure
 
