@@ -1,8 +1,6 @@
-# Contact Editor
-
 ## Overview
 
-"Contact Editor" demos the Model-View-Presenter (MVP) pattern backed by persistent storage (MVP-DB) in VBA. While studying OOP design patterns, I developed this mock application as a course project to serve as an MVP-DB template/prototype for my VBA experiments. It partially implements the "user <---> database" interaction workflow shown in the [figure](#FigUserDbLoop). Typically, the user sends a query to the database, receives a response table, browses record data via a user form, and, possibly, updates the database.
+"Contact Editor" demos the Model-View-Presenter (MVP) pattern backed by persistent storage (MVP-DB) in VBA. While studying OOP design patterns, I developed this mock application as a course project to serve as an MVP-DB template/prototype for my VBA experiments. It partially implements the "user <---> database" interaction workflow schematically shown in the [figure](#FigUserDbLoop). Typically, the user sends a query to the database, receives a response table, browses record data via a user form, and, possibly, updates the database.
 
 <a name="FigUserDbLoop"></a>
 
@@ -43,6 +41,7 @@ A special thanks goes to Mathieu Guindon, a co-founder of the [Rubber Duck VBA][
 [RDVBA Modeless Form]: https://stackoverflow.com/questions/47357708/vba-destroy-a-modeless-userform-instance-properly#answer-47358692
 [RDVBA Project Utils]: https://github.com/pchemguy/RDVBA-Project-Utils
 [Overview]: https://github.com/pchemguy/ContactEditor/blob/develop/Assets/Diagrams/Overview.jpg?raw=true
+[Project]: https://github.com/pchemguy/ContactEditor/tree/master/Project
 [Contact Editor]: https://github.com/pchemguy/ContactEditor/blob/master/ContactEditor.xls
 [ContactEditor.db]:  https://github.com/pchemguy/ContactEditor/blob/master/ContactEditor.db
 [ContactEditor.xsv]: https://github.com/pchemguy/ContactEditor/blob/master/ContactEditor.xsv
