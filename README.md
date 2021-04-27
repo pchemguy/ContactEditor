@@ -4,7 +4,7 @@
 
 <a name="FigUserDbLoop"></a>
 
-![Overview][Overview]
+<img src="https://github.com/pchemguy/ContactEditor/blob/develop/Assets/Diagrams/Overview.jpg?raw=true" alt="Overview" width="100%" />
 
 <p align="center"><b>User - database interaction workflow.</b></p>
 
