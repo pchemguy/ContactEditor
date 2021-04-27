@@ -1,11 +1,9 @@
 remote_theme: benbalter/retlab
-minimal_mistakes_skin: "air"
+#remote_theme: mmistakes/minimal-mistakes
+#minimal_mistakes_skin: "air"
 
-#title: 
-#description: 
+# title:
+# description: 
 
 # Plugins
 plugins:
-  - jekyll-seo-tag
-  - jekyll-avatar
-  - jekyll-github-metadata
