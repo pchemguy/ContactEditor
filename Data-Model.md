@@ -14,7 +14,9 @@
 
 <p align="center"><b>Figure 1. Base class diagram</b></p>
 
-*DataRecordModel* and *DataTableModel* work cooperatively: *DataRecordModel* holds row from the row set held in *DataTableModel*. Since data needs to be transferred between the two model classes, a composite manager, *DataCompositeManager*, handling such transfers is necessary. The composite manager can either incorporate two "backend-managed" classes or two model and two backend classes directly. *DataCompositeManager* uses the latter option. Finally, the *ContactEditorModel*, the main application backend-managed model, incorporates *DataCompositeManager*. See [Fig. 2](#FigCompositeManager).
+*DataRecordModel* and *DataTableModel* work cooperatively: *DataRecordModel* holds a row from the row set held in *DataTableModel*. Since data needs to be transferred between the two model classes, a composite manager, *DataCompositeManager*, handling such transfers is necessary. The composite manager can either incorporate two "backend-managed" classes or two model and two backend classes directly. 
+
+*DataCompositeManager* uses the latter option. Finally, the *ContactEditorModel*, the main application backend-managed model, incorporates *DataCompositeManager*. See [Fig. 2](#FigCompositeManager).
 
 <a name="FigCompositeManager"></a>
 
@@ -22,29 +24,33 @@
 
 <p align="center"><b>Figure 2. Composite manager</b></p>
 
+
 ### Implementation Details
-
-#### DataTableModel
-
-`Values` Variant is the main data field in the DataTableModel. This field is populated with a record-wise 2D 1-based (in both dimensions) array (the faster changing index is the field index).  The first column is assumed to be the id/primary key (PK) field (multi-column PKs are not supported by the present implementation).  
-
-`FieldNames` - 1D 1-based Variant array containing the names of the fields in the order they appear in the table from left to right. This array is automatically populated by the Table backend, so no field names need to be hardcoded for this purpose.  
-
-The main record id is its primary key (which at present is assumed to be a single left-most column). Since id can, in general, be numeric (not necessarily continuous) or textual, the current approach is to cast the id field as String (`RecordId`) and use the record identifier. Similarly, field names act as field/column IDs, and both need to be mapped to the respective indices in the Values array. Hence, two dictionary-based mapping fields have been added to the DataTableModel.  
-
-`IdIndices` maps RecordId to RecordIndex.  
-
-`FieldIndices` maps FieldName to FieldIndex.  
-
-`DirtyRecords` is the last field of the DataTableModel, used to store RecordId's for modified records. Only these records need to be saved to the backend when the user requests to save the changes.
 
 #### DataRecordModel
 
-`Record` field wraps a Scripting.Dictionary object, storing the current record data as a "Field Name"<>"Value" map. Additionally, a dirty flag is also included to indicated that the user made changes to the data.  
+*Record* field wraps a Dictionary object, storing the current record as a "Field Name"<>"Value" map. *ContactEditorPresenter* takes this model's data and populates *ContactEditorForm*. The  "Change" events of the controls in *ContactEditorForm* perform the reverse update. Additionally, a dirty flag is also included to indicated that the user made changes to the data.  
 
-#### Data Transfer
+#### DataTableModel
 
-DataTableModel also provides two important methods, `UpdateRecordFromDictionary` and `CopyRecordToDictionary`. The former takes a dictionary "Field Name"<>"Value" map, such as provided by the DataRecordModel, and updates data in the corresponding record in the Values array using the FieldIndices map. The latter does the opposite, based on supplied RecordId and IdIndices map.
+The *DataTableModel* class handles tabular data and acts as an intermediary between the user and persistent storage. A typical data flow in this arrangement involves three essential tasks:
 
-[Composite classes]: https://github.com/pchemguy/ContactEditor/blob/develop/Assets/Diagrams/Class%20Diagram.svg
-[Base classes]: https://github.com/pchemguy/ContactEditor/blob/develop/Assets/Diagrams/Class%20Diagram%20-%20Table%20and%20Record.svg
+1. saving received records in the *DataTableModel*,
+2. enabling the user access to specific data elements, and
+3. persisting modified data if necessary.
+
+Naturally, *DataTableModel* uses a 2D record-wise Variant array called *Values* for internal storage of a set of table rows. (The field index is the faster changing index, and both indices are 1-based.) Accessing a specific data element is about addressing it. For a 2D array, the address of a data element is its (record/field) indices. Finally, to persist a record, the backend must map record/field indices to the primary key and field name coordinates used by persistent storage. Further, field indices are meaningless to the user, so the GUI layer also needs the field index to field name map.
+
+Since *DataTableModel* deals with tabular data only, saving the mapping metadata does not introduce additional coupling. However, since relational databases should be the dominant data source, the following assumptions about the field names and primary keys have simplified this implementation.
+
+It is safe to assume that field names are strings (textual). Therefore, the model includes two structures to support conversion between the field name and its index. *FieldNames* is a 1D 1-based Variant array containing the names of the fields in the order they appear in the table from left to right and providing the index to name mapping. Table backend populates this field automatically, avoiding the use of hardcoded names. *FieldIndices* is a Dictionary providing the reverse name to index mapping. 
+
+The assumption that the first record field (called *RecordId*) is a scalar (single field) primary key (PK) is not always valid, but it simplifies code logic. Further, string casting *RecordId* removes type-related ambiguity and provides two other benefits. *IdIndices* uses the string *RecordId* key in the Dictionary mapping RecordId to record index; the *Values* array provides the reverse mapping.
+
+The other GUI-related benefit is more subtle and, in general, is not the model's concern. *ContactEditorForm* uses PKs for record selection via a drop-down combo list control. The control's 1D Variant array attribute takes PKs from the *Values* array, and its other attribute holds the "current value" of this control, which is always a string. If the populated PK array is numeric, typing in RecordId will not match an existing list element because the combo control does not do typecasting (String("1") <> Integer(1)).
+
+*DirtyRecords* is a Dictionary, collecting (*RecordId*, *RecordIndex*) pairs of modified records. Only these records need to be saved by the backend when the user requests to save the changes.
+
+*UpdateRecordFromDictionary* takes "Field Name"<>"Value" Dictionary and updates data in the corresponding record in the *Values* array using the *FieldIndices* map.
+
+*CopyRecordToDictionary* does the opposite operation based on supplied *RecordId* and *IdIndices* map.
