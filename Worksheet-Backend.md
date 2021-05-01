@@ -1,3 +1,11 @@
+---
+layout: default
+title: Worksheet
+nav_order: 1
+parent: Backends
+permalink: /backends/worksheet
+---
+
 *DataTableWSheet* uses the "Contacts" worksheet filled with mock data. The *ConnectionString* parameter supplied to the backend factory should be in the form "\<Thisworkbook&#x2E;name\>!\<worksheet name\>" (e.g., "ContactEditor\.xls!Contacts"). The backend expects the table name as a globally scoped named range, so the worksheet name is not necessary for further processing. The first row of the table range should contain field names, and the first column should be the table's primary key ("id"). To simplify the VBA code, the backend expects two more named Ranges prefixed with the table name: a "Body" suffixed range containing only the data and an "Id" suffixed range with record IDs. 
 
 For example, the named range "Contacts" contains the table, "ContactsBody" Range refers to the data area without the header, and "ContactsId" Range refers to the "id" column. Additionally, the "ContactsHeader" range refers to the header row only. (Note, because these ranges use the formula-based definition, the range name/address bar (top left corner) does not display their names.)

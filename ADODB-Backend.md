@@ -1,3 +1,11 @@
+---
+layout: default
+title: ADODB
+nav_order: 3
+parent: Backends
+permalink: /backends/adodb
+---
+
 ### Overview
 
 While there is a plan to integrate [SecureADODB][SecureADODB] or its [fork][SecureADODB fork], a plain ADODB backend has been added to the project. Apart from the main class module, DataTableADODB.cls, two additional modules, ADOlib and SQLlib have also been added, with one helper routine added to CommonRoutines.bas module.
