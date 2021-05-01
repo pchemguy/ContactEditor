@@ -80,23 +80,13 @@ layout: table_wrappers
         </div>
       {% endif %}
       {% include header_custom.html %}
-      {% if site.aux_links %}
-        <nav aria-label="Auxiliary" class="aux-nav">
-          <ul class="aux-nav-list">
-            {% for link in site.aux_links %}
-              <li class="aux-nav-list-item">
-                <a href="{{ link.last }}" class="site-button"
-                  {% if site.aux_links_new_tab %}
-                  target="_blank" rel="noopener noreferrer"
-                  {% endif %}
-                >
-                  {{ link.first }}
-                </a>
-              </li>
-            {% endfor %}
-          </ul>
-        </nav>
-      {% endif %}
+      <nav aria-label="Auxiliary" class="aux-nav">
+        <ul class="aux-nav-list">
+            <li class="aux-nav-list-item">
+              <a class="site-button" href="{{ site.github.repository_url }}">{{ site.title }}</a>
+            </li>
+        </ul>
+      </nav>
     </div>
     <div id="main-content-wrap" class="main-content-wrap">
       {% unless page.url == "/" %}
