@@ -1,3 +1,11 @@
+---
+layout: default
+title: Home
+nav_order: 1
+description: "Just the Docs is a responsive Jekyll theme with built-in search that is easily customizable and hosted on GitHub Pages."
+permalink: /
+---
+
 ## Overview
 
 "Contact Editor" demos the Model-View-Presenter (MVP) pattern backed by persistent storage (MVP-DB) in VBA. While studying OOP design patterns, I developed this mock application as a course project to serve as an MVP-DB template/prototype for my VBA experiments. It partially implements the "user <---> database" interaction workflow schematically shown in the [figure](#FigUserDbLoop). Typically, the user sends a query to the database, receives a response table, browses record data via a user form, and, possibly, updates the database.
