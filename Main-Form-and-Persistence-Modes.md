@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Main form and persistence modes
+title: Main form and persistence
 nav_order: 4
 permalink: /main-form
 ---
