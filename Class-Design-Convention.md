@@ -1,3 +1,10 @@
+---
+layout: default
+title: Class design convention
+nav_order: 2
+permalink: /class-design
+---
+
 *Parametrized class instantiation*  
 A pair of a factory and a custom constructor performs parametrized class instantiation. Default factory *Create* and default constructor *Init* are defined on the class's default interface only. Both methods have the same parameter signature but different return values. Factory should be a function returning a class instance, and constructor should be a sub with no return value. The factory method called on the default (predeclared) class's instance (enabled via the "Predeclared" attribute) generates a new object and then calls its constructor with all received arguments to complete initialization. To simulate rudimentary introspection, *Class* and *Self* getters can also be defined. The *Class* getter returns the class's default instance. If a class instance presents a non-default interface, *Self* should return it as well.
 

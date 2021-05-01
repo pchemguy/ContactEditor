@@ -1,3 +1,10 @@
+---
+layout: default
+title: Data model
+nav_order: 3
+permalink: /data-model
+---
+
 ### Overview
 
 "Contact Editor" uses two base model classes. *DataRecordModel* holds a single record (data table row) and is behind the "record editor" user form. *DataTableModel* represents a whole data table or a subset of rows, abstracting persistent storage. Storage backends transfer data between data models and persistent storage.
