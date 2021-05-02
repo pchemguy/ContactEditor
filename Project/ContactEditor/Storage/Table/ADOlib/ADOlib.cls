@@ -76,9 +76,8 @@ Public Sub GetTableMeta(ByVal TableName As String, ByRef FieldNames As Variant, 
 End Sub
 
 
-' Takes and array of field names and types (ADODB.DataTypeEnum) collected by the
-' DataTableADODB.CollectTableMetadata routine, and empties and populates
-' ADODB.Command.Parameters.
+' Takes an array of field names and types (ADODB.DataTypeEnum) collected by
+' GetTableMeta, empties AdoCommand.Parameters and repopulates it.
 '
 ' LIMITATIONS:
 ' The first field in FieldNames/FieldTypes is assumed to be primary key, which is added last,
