@@ -114,13 +114,17 @@ Attribute MakeAdoParamsForRecordUpdate.VB_Description = "Prepares ADODB.Paramete
         AdoParams.Delete ParamIndex
     Next ParamIndex
     
+    Const DUMMY_PARAM_SIZE As Long = 1
+    Const DUMMY_PARAM_VALUE As Long = 0
     Dim AdoParam As ADODB.Parameter
     For FieldIndex = LBound(FieldNames) + 1 To UBound(FieldNames)
-        Set AdoParam = AdoCommand.CreateParameter(FieldNames(FieldIndex), AdjustedTypes(FieldIndex), , 1, 0)
+        Set AdoParam = AdoCommand.CreateParameter( _
+            FieldNames(FieldIndex), AdjustedTypes(FieldIndex), , DUMMY_PARAM_SIZE, DUMMY_PARAM_VALUE)
         AdoParams.Append AdoParam
     Next FieldIndex
     FieldIndex = LBound(FieldNames)
-    Set AdoParam = AdoCommand.CreateParameter(FieldNames(FieldIndex), AdjustedTypes(FieldIndex), , 1, 0)
+    Set AdoParam = AdoCommand.CreateParameter( _
+        FieldNames(FieldIndex), AdjustedTypes(FieldIndex), , DUMMY_PARAM_SIZE, DUMMY_PARAM_VALUE)
     AdoParams.Append AdoParam
 End Sub
 
