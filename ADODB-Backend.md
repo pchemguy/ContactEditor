@@ -6,7 +6,14 @@ parent: Backends
 permalink: /backends/adodb
 ---
 
-DataTableADODB constructor needs a proper *ConnectionString* to complete initialization. To simplify the code, ADOlib provides connection string building helpers. Currently, only an SQLite helper is available. The constructor checks whether the provided connection string has a database-specific prefix and calls the appropriate helper if necessary. In the case of SQLite, the GetSQLiteConnectionString helper, in turn, calls *CommonRoutines.VerifyOrGetDefaultPath*. The latter takes a *FilePathName* candidate and an array containing default extensions. If *FilePathName* is not a valid path-name to an existing file, this helper also checks the folder containing the Workbook for a file named <workbook name>.<supplied extension>. If any such file exists, the connection string helper uses its path for connection string construction.
+*DataTableADODB* enables the application to load data into *DataTableModel* from a relational database via the ADODB library. The backend consists of the main module, the *DataTableADODB* class, and two additional classes.  The *ADOlib* class contains ADODB related helper routines, and the *SQLlib* class provides SQL templates and generates typical SQL queries. To make internal class methods accessible to unit testing, they are declared as Public. Additionally, *DataTableADODB* uses one generic helper routine from the "CommonRoutines" module.
+
+The current implementation provides limited functionality using ADODB directly. *DataTableADODB* assumes that
+- the first record field is a single field primary key, and
+- each *DataTableADODB* instance accesses a single database table.
+This functionality may be extended in the future, e.g., via the [SecureADODB][SecureADODB] or its [fork][SecureADODB fork].
+
+DataTableADODB constructor needs a proper *ConnectionString* to complete initialization. To simplify the code, ADOlib provides connection string building helpers. Currently, only an SQLite helper is available. The constructor checks whether the provided connection string has a database-specific prefix and calls the appropriate helper if necessary. In the case of SQLite, the GetSQLiteConnectionString helper, in turn, calls *CommonRoutines.VerifyOrGetDefaultPath*. The latter takes a *FilePathName* candidate and an array containing default extensions. If *FilePathName* is not a valid path-name to an existing file, this helper also checks the folder containing the Workbook for a file named \<workbook name\>.\<supplied extension\>. If any such file exists, the connection string helper uses its path for connection string construction.
 
 Database introspection reduces the need to hardcode table metadata, with basic metadata being available via either the ADOX extension library or dummy ADODB queries. During instantiation, the backend calls *ADOLib.GetTableMeta* and populates *FieldNames*, *FieldTypes*, and *FieldMap* (renamed *FieldIndicies* from [DataTableModel][DataTableModel]).
 
@@ -20,6 +27,7 @@ Warning: it turned out that "WorksheetFunction.Transpose" is limited and should 
 
 As discussed in the [Data Model section][DataTableModel], string-casting the "ID" column is desirable. The tests module illustrates the use of *SQLlib.SelectIdAsText* for the generation of a "SELECT" query template with the typecasting request. Similarly, *SQLlib.SelectAllAsText* requests string-casting for all fields. Also, note that apart from string-casting, these two routines also spell out each field name and perform aliasing (\<FieldName\> AS \<FieldName\>). Without it, the returned field names follow the verbose template \<TableName\>.\<FieldName\>.
 
+
 **Update query helpers**. Two other routines from ADOlib, *MakeAdoParamsForRecordUpdate* and *RecordToAdoParams* are used for performing database update. 
 
 *MakeAdoParamsForRecordUpdate* take a list of FieldNames, FieldTypes, and an ADODB.Command. It constructs a basic single record update query, assuming that the first field is the primary key used in the WHERE clause. The update query is parameterized with respect to all field values, and for each field, a parameter objected is created and added to ADODB.Command.Parameters. Then this command can be used to update multiple records by setting the values of Parameter members to the corresponding field values. *RecordToAdoParams* takes a record dictionary and updates parameters by matching the names of the fields with the names of parameters. *IDataTableStorage_SaveDataFromModel* interface from DataTableADODB takes the list of dirty records from the table model, it uses its routine that copies individual records to a dictionary object, then it calls the helper to update parameter values, and executes update query. This process loops through the dirty record list, reusing the same *prepared* command, and the loop is placed inside a transaction.
@@ -29,6 +37,6 @@ As discussed in the [Data Model section][DataTableModel], string-casting the "ID
 
 [SecureADODB]: https://github.com/rubberduck-vba/examples/tree/master/SecureADODB
 [SecureADODB fork]: https://github.com/pchemguy/RDVBA-examples
-[Multiple interfaces]:  https://github.com/pchemguy/ContactEditor/wiki/Class-Module-Design-Convention
+[Multiple interfaces]: https://pchemguy.github.io/ContactEditor/class-design
 [DataTableModel]: https://pchemguy.github.io/ContactEditor/data-model#datatablemodel
 [VBAArrayLib]: http://cpearson.com/excel/vbaarrays.htm
