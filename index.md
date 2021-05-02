@@ -31,10 +31,6 @@ The *DataTableBackEnd* variable found in the entry point sub determines the type
 
 While the "ADODB" backend can connect to both "CSV" and "Worksheet" databases, the dedicated backends should be more efficient.
 
-### Documentation and further information
-
-Documentation and technical details are available from the project [WiKi][WiKi].
-
 ### Acknowledgments
 
 A special thanks goes to Mathieu Guindon, a co-founder of the [Rubber Duck VBA][Rubber Duck VBA] project and his [RDVBA blog][RDVBA blog]. RDVBA [blog post][RDVBA No Worksheet] describing a possible approach to abstracting a Worksheet-based persistent storage and a [demo file][RDVBA No Worksheet Demo] helped me jump-start with storage integration. I also followed the [blog post][RDVBA UserForm1.Show] regarding the best practices for UserForm handling and the [SO answer][RDVBA Modeless Form] (and the last comment to that answer) regarding the modeless user forms.
@@ -50,6 +46,5 @@ A special thanks goes to Mathieu Guindon, a co-founder of the [Rubber Duck VBA][
 [Overview]: https://github.com/pchemguy/ContactEditor/blob/develop/Assets/Diagrams/Overview.jpg?raw=true
 [Project]: https://github.com/pchemguy/ContactEditor/tree/master/Project
 [Contact Editor]: https://github.com/pchemguy/ContactEditor/blob/master/ContactEditor.xls
-[ContactEditor.db]:  https://github.com/pchemguy/ContactEditor/blob/master/ContactEditor.db
+[ContactEditor.db]: https://github.com/pchemguy/ContactEditor/blob/master/ContactEditor.db
 [ContactEditor.xsv]: https://github.com/pchemguy/ContactEditor/blob/master/ContactEditor.xsv
-[WiKi]: https://github.com/pchemguy/ContactEditor/wiki
