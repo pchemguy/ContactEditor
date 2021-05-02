@@ -6,12 +6,18 @@ parent: Backends
 permalink: /backends/adodb
 ---
 
+### Overview
+
 *DataTableADODB* enables the application to load data into *DataTableModel* from a relational database via the ADODB library. The backend consists of the main module, the *DataTableADODB* class, and two additional classes.  The *ADOlib* class contains ADODB related helper routines, and the *SQLlib* class provides SQL templates and generates typical SQL queries. To make internal class methods accessible to unit testing, they are declared as Public. Additionally, *DataTableADODB* uses one generic helper routine from the "CommonRoutines" module.
 
 The current implementation provides limited functionality using ADODB directly. *DataTableADODB* assumes that
+
 - the first record field is a single field primary key, and
 - each *DataTableADODB* instance accesses a single database table.
+
 This functionality may be extended in the future, e.g., via the [SecureADODB][SecureADODB] or its [fork][SecureADODB fork].
+
+### Core attributes and methods
 
 DataTableADODB constructor needs a proper *ConnectionString* to complete initialization. To simplify the code, ADOlib provides connection string building helpers. Currently, only an SQLite helper is available. The constructor checks whether the provided connection string has a database-specific prefix and calls the appropriate helper if necessary. In the case of SQLite, the GetSQLiteConnectionString helper, in turn, calls *CommonRoutines.VerifyOrGetDefaultPath*. The latter takes a *FilePathName* candidate and an array containing default extensions. If *FilePathName* is not a valid path-name to an existing file, this helper also checks the folder containing the Workbook for a file named \<workbook name\>.\<supplied extension\>. If any such file exists, the connection string helper uses its path for connection string construction.
 
@@ -27,12 +33,17 @@ Warning: it turned out that "WorksheetFunction.Transpose" is limited and should 
 
 As discussed in the [Data Model section][DataTableModel], string-casting the "ID" column is desirable. The tests module illustrates the use of *SQLlib.SelectIdAsText* for the generation of a "SELECT" query template with the typecasting request. Similarly, *SQLlib.SelectAllAsText* requests string-casting for all fields. Also, note that apart from string-casting, these two routines also spell out each field name and perform aliasing (\<FieldName\> AS \<FieldName\>). Without it, the returned field names follow the verbose template \<TableName\>.\<FieldName\>.
 
+### Persisting changes
 
-**Update query helpers**. Two other routines from ADOlib, *MakeAdoParamsForRecordUpdate* and *RecordToAdoParams* are used for performing database update. 
+When I had been working on the current version of the backend, I could not make Recordset.UpdateBatch to work, so I had to resort to generating SQL UPDATEs. Two helper routines, *MakeAdoParamsForRecordUpdate* and *RecordToAdoParams*, from the ADOlib library and *UpdateSingleRecord* from SQLlib help prepare UPDATE statements within the same assumptions as discussed above. 
 
-*MakeAdoParamsForRecordUpdate* take a list of FieldNames, FieldTypes, and an ADODB.Command. It constructs a basic single record update query, assuming that the first field is the primary key used in the WHERE clause. The update query is parameterized with respect to all field values, and for each field, a parameter objected is created and added to ADODB.Command.Parameters. Then this command can be used to update multiple records by setting the values of Parameter members to the corresponding field values. *RecordToAdoParams* takes a record dictionary and updates parameters by matching the names of the fields with the names of parameters. *IDataTableStorage_SaveDataFromModel* interface from DataTableADODB takes the list of dirty records from the table model, it uses its routine that copies individual records to a dictionary object, then it calls the helper to update parameter values, and executes update query. This process loops through the dirty record list, reusing the same *prepared* command, and the loop is placed inside a transaction.
+*UpdateSingleRecord* generates a single record UPDATE statement fully parametrized with respect to all fields, including the ID column in the WHERE clause.
 
+*MakeAdoParamsForRecordUpdate* takes the *FieldNames* and *FieldTypes* arrays and the *AdoCommand*. It clears AdoCommand.Parameters and repopulates it with dummy Parameter objects. For a new Parameter, three attributes must be provided explicitly, including *type*, *length*, and *value*. The name attribute is also set to field name for easier matching with the corresponding record field value. The Parameter type is set to the actual value collected during introspection. Length and value dummies must be provided; otherwise, they remain *Empty*, triggering an error. At the same time, dummy integers (length=1 and value=0) can be supplied to the factory regardless of type, and the factory performs type coercion as necessary. The first field (PK) goes last in the UPDATE statement (in the WHERE clause), so it is added to the Parameters collection at the end.
 
+*RecordToAdoParams* takes a record dictionary and updates the Parameters collection by matching field and parameter names. It updates the length attribute before the value to prevent potential errors. Again, the string-cast primary key value can be added to the corresponding parameter, and the setter will do type coercion if necessary.
+
+*IDataTableStorage_SaveDataFromModel* interface from DataTableADODB takes the *DirtyRecords* Dictionary from the table model and loops through it inside a transaction. Inside the loop, *CopyRecordToDictionary* copies individual records from the *Values* array to a Dictionary; the helper updates field values into the Parameters collection of *AdoCommand*, and *AdoCommand* is executed.
 
 
 [SecureADODB]: https://github.com/rubberduck-vba/examples/tree/master/SecureADODB
