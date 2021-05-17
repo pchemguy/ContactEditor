@@ -72,7 +72,7 @@ Assert:
 CleanExit:
     Exit Sub
 TestFail:
-    Assert.Fail "Error: " & Err.number & " - " & Err.description
+    Assert.Fail "Error: " & Err.Number & " - " & Err.Description
 End Sub
 
 
@@ -93,7 +93,7 @@ Assert:
 CleanExit:
     Exit Sub
 TestFail:
-    Assert.Fail "Error: " & Err.number & " - " & Err.description
+    Assert.Fail "Error: " & Err.Number & " - " & Err.Description
 End Sub
 
 
@@ -116,7 +116,7 @@ Assert:
 CleanExit:
     Exit Sub
 TestFail:
-    Assert.Fail "Error: " & Err.number & " - " & Err.description
+    Assert.Fail "Error: " & Err.Number & " - " & Err.Description
 End Sub
 
 
@@ -137,7 +137,7 @@ Assert:
 CleanExit:
     Exit Sub
 TestFail:
-    Assert.Fail "Error: " & Err.number & " - " & Err.description
+    Assert.Fail "Error: " & Err.Number & " - " & Err.Description
 End Sub
 
 
@@ -148,7 +148,7 @@ Private Sub ztcSelectIdAsText_ValidatesQuery()
 Arrange:
     Dim SQL As SQLlib: Set SQL = zfxGetSQL
     Dim Expected As String
-    Expected = "SELECT CAST([id] AS TEXT) AS [id], [FirstName] AS [FirstName], [LastName] AS [LastName], [Age] AS [Age] FROM [" & SQL.TableName & "]"
+    Expected = "SELECT CAST([id] AS TEXT) AS [id], [FirstName], [LastName], [Age] FROM [" & SQL.TableName & "]"
                 
 Act:
     Dim Actual As String
@@ -159,7 +159,7 @@ Assert:
 CleanExit:
     Exit Sub
 TestFail:
-    Assert.Fail "Error: " & Err.number & " - " & Err.description
+    Assert.Fail "Error: " & Err.Number & " - " & Err.Description
 End Sub
 
 
@@ -170,7 +170,7 @@ Private Sub ztcSelectAllAsText_ValidatesQuery()
 Arrange:
     Dim SQL As SQLlib: Set SQL = zfxGetSQL
     Dim Expected As String
-    Expected = "SELECT CAST([id] AS TEXT) AS [id], [FirstName] AS [FirstName], [LastName] AS [LastName], CAST([Age] AS TEXT) AS [Age], [Gender] AS [Gender] FROM [" & SQL.TableName & "]"
+    Expected = "SELECT CAST([id] AS TEXT) AS [id], [FirstName], [LastName], CAST([Age] AS TEXT) AS [Age], [Gender] FROM [" & SQL.TableName & "]"
 Act:
     Dim Actual As String
     Actual = SQL.SelectAllAsText(Array("id", "FirstName", "LastName", "Age", "Gender"), _
@@ -181,7 +181,7 @@ Assert:
 CleanExit:
     Exit Sub
 TestFail:
-    Assert.Fail "Error: " & Err.number & " - " & Err.description
+    Assert.Fail "Error: " & Err.Number & " - " & Err.Description
 End Sub
 
 
@@ -202,7 +202,7 @@ Assert:
 CleanExit:
     Exit Sub
 TestFail:
-    Assert.Fail "Error: " & Err.number & " - " & Err.description
+    Assert.Fail "Error: " & Err.Number & " - " & Err.Description
 End Sub
 
 

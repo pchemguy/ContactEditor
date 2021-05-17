@@ -43,20 +43,20 @@ Public Sub Init(ByVal Model As DataTableModel, ByVal ConnectionString As String,
     On Error Resume Next
     Dim WSheet As Excel.Worksheet
     Set WSheet = Application.Workbooks(BookSheet(0)).Worksheets(BookSheet(1))
-    Select Case Err.number
+    Select Case Err.Number
         Case ErrNo.SubscriptOutOfRange
             Err.Clear
             Guard.Expression False, "DataTableWSheet constructor", "Invalid connection string"
             Exit Sub
         Case Is > 0
-            Err.Raise Err.number, Err.source, Err.description, Err.HelpFile, Err.HelpContext
+            Err.Raise Err.Number, Err.Source, Err.Description, Err.HelpFile, Err.HelpContext
     End Select
     With WSheet
         Set this.TableRange = .Range(TableName)
         Set this.TableBodyRange = .Range(TableName & "Body")
         Set this.TableIdColumn = .Range(TableName & "Id")
     End With
-    Select Case Err.number
+    Select Case Err.Number
         Case ErrNo.PassedNoErr
             On Error GoTo 0
         Case 1004
@@ -64,7 +64,7 @@ Public Sub Init(ByVal Model As DataTableModel, ByVal ConnectionString As String,
             Guard.Expression False, "DataTableWSheet constructor", "Verify named ranges"
             Exit Sub
         Case Else
-            Err.Raise Err.number, Err.source, Err.description, Err.HelpFile, Err.HelpContext
+            Err.Raise Err.Number, Err.Source, Err.Description, Err.HelpFile, Err.HelpContext
     End Select
 End Sub
 

@@ -14,9 +14,9 @@ Public Sub AssertExpectedError(ByVal Assert As Rubberduck.PermissiveAssertClass,
     Debug.Assert TypeOf Assert Is Rubberduck.PermissiveAssertClass
     
     Dim ActualErrNo As Long
-    ActualErrNo = VBA.Err.number
+    ActualErrNo = VBA.Err.Number
     Dim errorDetails As String
-    errorDetails = " Error: #" & ActualErrNo & " - " & VBA.Err.description
+    errorDetails = " Error: #" & ActualErrNo & " - " & VBA.Err.Description
     VBA.Err.Clear
     
     Select Case ActualErrNo

@@ -59,7 +59,7 @@ Public Function SelectAll(Optional ByVal FieldArray As Variant = Empty, _
     Dim EscapeClose As String: EscapeClose = IIf(EscapeFields, "]", vbNullString)
     
     Dim Fields As String
-    If (VarType(FieldArray) And VBA.VbVarType.vbArray) = VBA.VbVarType.vbArray Then
+    If (VarType(FieldArray) And vbArray) = vbArray Then
         Fields = EscapeOpen & Join(FieldArray, EscapeClose & ", " & EscapeOpen) & EscapeClose
     ElseIf Len(FieldArray) > 0 Then
         Fields = EscapeOpen & FieldArray & EscapeClose
@@ -86,14 +86,14 @@ End Function
 
 Public Function SelectIdAsText(ByVal FieldNames As Variant) As String
     Dim TypeCheck As Boolean
-    TypeCheck = ((VarType(FieldNames) And VBA.VbVarType.vbArray) = VBA.VbVarType.vbArray)
+    TypeCheck = ((VarType(FieldNames) And vbArray) = vbArray)
     Guard.Expression TypeCheck, "SQLlib", "FieldNames is not array"
     
     Dim Fields() As String: ReDim Fields(LBound(FieldNames) To UBound(FieldNames))
     Dim FieldIndex As Long: FieldIndex = LBound(FieldNames)
     Fields(FieldIndex) = AsText(FieldNames(FieldIndex))
     For FieldIndex = LBound(FieldNames) + 1 To UBound(FieldNames)
-        Fields(FieldIndex) = AliasedField(FieldNames(FieldIndex))
+        Fields(FieldIndex) = "[" & FieldNames(FieldIndex) & "]"
     Next FieldIndex
     SelectIdAsText = SelectAll(Fields, False)
 End Function
@@ -109,7 +109,7 @@ Public Function SelectAllAsText(ByVal FieldNames As Variant, ByVal FieldTypes As
     For FieldIndex = LBound(FieldNames) To UBound(FieldNames)
         Select Case FieldTypes(FieldIndex)
             Case ADODB.DataTypeEnum.adVarWChar
-                Fields(FieldIndex) = AliasedField(FieldNames(FieldIndex))
+                Fields(FieldIndex) = "[" & FieldNames(FieldIndex) & "]"
             Case Else
                 Fields(FieldIndex) = AsText(FieldNames(FieldIndex))
         End Select

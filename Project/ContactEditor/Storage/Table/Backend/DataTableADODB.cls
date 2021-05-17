@@ -164,7 +164,7 @@ Public Function AdoRecordset(Optional ByVal SQLQuery As String = vbNullString) A
     Dim Rst As ADODB.Recordset
     Set Rst = New ADODB.Recordset
     With Rst
-        Set .source = IIf(SQLQuery = vbNullString, this.AdoCommand, AdoCommandInit(SQLQuery))
+        Set .Source = IIf(SQLQuery = vbNullString, this.AdoCommand, AdoCommandInit(SQLQuery))
         .CursorLocation = this.AdoCommand.ActiveConnection.CursorLocation
         .CursorType = adOpenStatic
         .LockType = adLockBatchOptimistic

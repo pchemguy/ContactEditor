@@ -94,7 +94,7 @@ Arrange:
     Dim Expected As String
     Expected = "Driver=SQLite3 ODBC Driver;Database=" & _
                 VerifyOrGetDefaultPath(vbNullString, Array("db", "sqlite")) & _
-               ";SyncPragma=NORMAL;LongNames=True;NoCreat=True;FKSupport=True;OEMCP=True;"
+               ";SyncPragma=NORMAL;FKSupport=True;"
 Act:
     Dim Actual As String
     Actual = ADOlib.GetSQLiteConnectionString(vbNullString)("ADO")
@@ -104,7 +104,7 @@ Assert:
 CleanExit:
     Exit Sub
 TestFail:
-    Assert.Fail "Error: " & Err.number & " - " & Err.description
+    Assert.Fail "Error: " & Err.Number & " - " & Err.Description
 End Sub
 
 
@@ -127,7 +127,7 @@ Assert:
 CleanExit:
     Exit Sub
 TestFail:
-    Assert.Fail "Error: " & Err.number & " - " & Err.description
+    Assert.Fail "Error: " & Err.Number & " - " & Err.Description
 End Sub
 
 
@@ -151,7 +151,7 @@ Assert:
 CleanExit:
     Exit Sub
 TestFail:
-    Assert.Fail "Error: " & Err.number & " - " & Err.description
+    Assert.Fail "Error: " & Err.Number & " - " & Err.Description
 End Sub
 
 
@@ -172,7 +172,7 @@ Assert:
 CleanExit:
     Exit Sub
 TestFail:
-    Assert.Fail "Error: " & Err.number & " - " & Err.description
+    Assert.Fail "Error: " & Err.Number & " - " & Err.Description
 End Sub
 
 
@@ -193,7 +193,7 @@ Assert:
 CleanExit:
     Exit Sub
 TestFail:
-    Assert.Fail "Error: " & Err.number & " - " & Err.description
+    Assert.Fail "Error: " & Err.Number & " - " & Err.Description
 End Sub
 
 

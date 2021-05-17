@@ -43,7 +43,7 @@ Public Function GetSQLiteConnectionString(Optional ByVal DBPath As String = vbNu
     Database = VerifyOrGetDefaultPath(Database, Array("db", "sqlite"))
     
     Dim Options As String
-    Options = IIf(Len(Features) > 0, Features, "SyncPragma=NORMAL;LongNames=True;NoCreat=True;FKSupport=True;OEMCP=True;")
+    Options = IIf(Len(Features) > 0, Features, "SyncPragma=NORMAL;FKSupport=True;")
     
     Dim ConnectionString As Scripting.Dictionary
     Set ConnectionString = New Scripting.Dictionary

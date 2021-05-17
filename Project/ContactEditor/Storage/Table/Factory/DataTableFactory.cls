@@ -58,11 +58,11 @@ Public Function CreateInstance(ByVal ClassName As String, _
         Case Else
             Dim errorDetails As TError
             With errorDetails
-                .number = ErrNo.NotImplementedErr
+                .Number = ErrNo.NotImplementedErr
                 .Name = "NotImplementedErr"
-                .source = "IDataTableFactory"
-                .description = "Unsupported backend: " & ClassName
-                .Message = .description
+                .Source = "IDataTableFactory"
+                .Description = "Unsupported backend: " & ClassName
+                .Message = .Description
             End With
             RaiseError errorDetails
     End Select

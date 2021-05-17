@@ -62,7 +62,7 @@ Public Sub Init(ByVal Model As DataTableModel, ByVal ConnectionString As String,
     FileExist = Dir$(FileName)
     On Error GoTo 0
     If Len(FileExist) = 0 Then
-        VBA.Err.Raise number:=ErrNo.FileNotFoundErr, source:="DataTableCSV", description:="CSV file <" & FileName & "> not found!"
+        VBA.Err.Raise Number:=ErrNo.FileNotFoundErr, Source:="DataTableCSV", Description:="CSV file <" & FileName & "> not found!"
     End If
     this.CSVFileName = FileName
 End Sub
@@ -88,7 +88,7 @@ Private Sub IDataTableStorage_LoadDataIntoModel()
         TableRows = Split(ReadBuffer, vbNewLine)
         Dim RecordCount As Long: RecordCount = UBound(TableRows, 1) ' 0-based array with header row in position zero.
         If Len(TableRows(RecordCount)) = 0 Then
-            VBA.Err.Raise number:=59, source:="CSVParser.BasicParse", description:="Empty lines at the end of the file must be removed for the basic parser!"
+            VBA.Err.Raise Number:=59, Source:="CSVParser.BasicParse", Description:="Empty lines at the end of the file must be removed for the basic parser!"
         End If
         
         Dim FieldBuffer As Variant

@@ -92,7 +92,7 @@ Assert:
 CleanExit:
     Exit Sub
 TestFail:
-    Assert.Fail "Error: " & Err.number & " - " & Err.description
+    Assert.Fail "Error: " & Err.Number & " - " & Err.Description
 End Sub
 
 
@@ -118,7 +118,7 @@ Assert:
 CleanExit:
     Exit Sub
 TestFail:
-    Assert.Fail "Error: " & Err.number & " - " & Err.description
+    Assert.Fail "Error: " & Err.Number & " - " & Err.Description
 End Sub
 
 
@@ -145,7 +145,7 @@ Assert:
 CleanExit:
     Exit Sub
 TestFail:
-    Assert.Fail "Error: " & Err.number & " - " & Err.description
+    Assert.Fail "Error: " & Err.Number & " - " & Err.Description
 End Sub
 
 
@@ -165,12 +165,12 @@ Assert:
     Assert.AreEqual 10, AdoRecordset.CacheSize, "CacheSize mismatch"
     Assert.AreEqual 1000, AdoRecordset.RecordCount, "RecordCount mismatch"
     Assert.AreEqual 8, AdoRecordset.Fields.Count, "Fields.Count mismatch"
-    Assert.AreEqual TEST_TABLE & ".LastName", AdoRecordset.Fields(2).Name, "Field name mismatch"
+    Assert.AreEqual "LastName", AdoRecordset.Fields(2).Name, "Field name mismatch"
         
 CleanExit:
     Exit Sub
 TestFail:
-    Assert.Fail "Error: " & Err.number & " - " & Err.description
+    Assert.Fail "Error: " & Err.Number & " - " & Err.Description
 End Sub
 
 
@@ -196,7 +196,7 @@ Assert:
 CleanExit:
     Exit Sub
 TestFail:
-    Assert.Fail "Error: " & Err.number & " - " & Err.description
+    Assert.Fail "Error: " & Err.Number & " - " & Err.Description
 End Sub
 
 
@@ -223,7 +223,7 @@ Assert:
 CleanExit:
     Exit Sub
 TestFail:
-    Assert.Fail "Error: " & Err.number & " - " & Err.description
+    Assert.Fail "Error: " & Err.Number & " - " & Err.Description
 End Sub
 
 
@@ -251,7 +251,7 @@ Assert:
 CleanExit:
     Exit Sub
 TestFail:
-    Assert.Fail "Error: " & Err.number & " - " & Err.description
+    Assert.Fail "Error: " & Err.Number & " - " & Err.Description
 End Sub
 
 
@@ -293,5 +293,5 @@ Assert:
 CleanExit:
     Exit Sub
 TestFail:
-    Assert.Fail "Error: " & Err.number & " - " & Err.description
+    Assert.Fail "Error: " & Err.Number & " - " & Err.Description
 End Sub

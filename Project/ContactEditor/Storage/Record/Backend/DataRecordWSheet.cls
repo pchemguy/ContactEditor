@@ -41,7 +41,7 @@ Public Sub Init(ByVal Model As DataRecordModel, ByVal ConnectionString As String
     Guard.Expression UBound(BookSheet) = 1, "DataRecordWSheet", "Invalid connection string: " & ConnectionString
     On Error Resume Next
     Set this.WSheet = Application.Workbooks(BookSheet(0)).Worksheets(BookSheet(1))
-    Select Case Err.number
+    Select Case Err.Number
         Case ErrNo.PassedNoErr
             On Error GoTo 0
             Exit Sub
@@ -49,7 +49,7 @@ Public Sub Init(ByVal Model As DataRecordModel, ByVal ConnectionString As String
             Err.Clear
             Guard.Expression False, "DataRecordWSheet constructor", "Invalid connection string"
         Case Else
-            Err.Raise Err.number, Err.source, Err.description, Err.HelpFile, Err.HelpContext
+            Err.Raise Err.Number, Err.Source, Err.Description, Err.HelpFile, Err.HelpContext
     End Select
 End Sub
 

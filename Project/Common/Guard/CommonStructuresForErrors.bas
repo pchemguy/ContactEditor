@@ -35,12 +35,12 @@ End Enum
 
 
 Public Type TError
-    number As ErrNo
+    Number As ErrNo
     Name As String
-    source As String
+    Source As String
     Message As String
-    description As String
-    trapped As Boolean
+    Description As String
+    Trapped As Boolean
 End Type
 
 
@@ -49,9 +49,9 @@ End Type
 Public Sub RethrowOnError()
 Attribute RethrowOnError.VB_Description = "Re-raises the current error, if there is one."
     With VBA.Err
-        If .number <> 0 Then
-            Debug.Print "Error " & .number, .description
-            .Raise .number
+        If .Number <> 0 Then
+            Debug.Print "Error " & .Number, .Description
+            .Raise .Number
         End If
     End With
 End Sub
@@ -64,12 +64,12 @@ Attribute RaiseError.VB_Description = "Formats and raises a run-time error."
         Dim Message As Variant
         Message = Array("Error:", _
             "name: " & .Name, _
-            "number: " & .number, _
+            "number: " & .Number, _
             "message: " & .Message, _
-            "description: " & .description, _
-            "source: " & .source)
+            "description: " & .Description, _
+            "source: " & .Source)
         Debug.Print Join(Message, vbNewLine & vbTab)
-        VBA.Err.Raise .number, .source, .Message
+        VBA.Err.Raise .Number, .Source, .Message
     End With
 End Sub
 

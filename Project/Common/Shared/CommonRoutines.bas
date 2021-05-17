@@ -67,7 +67,7 @@ Public Function VerifyOrGetDefaultPath(ByVal FilePathName As String, ByVal Defau
     Next ExtIndex
     
     If Len(FileExist) = 0 Then
-        VBA.Err.Raise number:=ErrNo.FileNotFoundErr, source:="DataTableADODB", description:="File <" & FilePathName & "> not found!"
+        VBA.Err.Raise Number:=ErrNo.FileNotFoundErr, Source:="DataTableADODB", Description:="File <" & FilePathName & "> not found!"
     End If
 End Function
 

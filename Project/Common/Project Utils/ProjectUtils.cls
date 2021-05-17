@@ -175,12 +175,12 @@ Attribute ReferencesAddFromFile.VB_Description = "Add references from the tsv/cs
     If UseGUID Then
         For refj = 0 To UBound(ReferencesArray, 1)
             this.Project.References.AddFromGuid ReferencesArray(refj)(1), CLng(ReferencesArray(refj)(2)), CLng(ReferencesArray(refj)(3))
-            If VBA.Information.Err.number > 0 Then Debug.Print VBA.Information.Err.description
+            If VBA.Information.Err.Number > 0 Then Debug.Print VBA.Information.Err.Description
         Next refj
     Else
         For refj = 0 To UBound(ReferencesArray, 1)
             this.Project.References.AddFromFile ReferencesArray(refj)(4)
-            If VBA.Information.Err.number > 0 Then Debug.Print VBA.Information.Err.description
+            If VBA.Information.Err.Number > 0 Then Debug.Print VBA.Information.Err.Description
         Next refj
     End If
     On Error GoTo 0

@@ -73,7 +73,7 @@ Private Sub ztcSaveDataFromModel_ValidatesDirtyStatus()
 CleanExit:
     Exit Sub
 TestFail:
-    Assert.Fail "Error: " & Err.number & " - " & Err.description
+    Assert.Fail "Error: " & Err.Number & " - " & Err.Description
 End Sub
 
 
