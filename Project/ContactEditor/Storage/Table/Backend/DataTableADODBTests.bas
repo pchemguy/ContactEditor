@@ -188,9 +188,9 @@ Assert:
     Assert.AreEqual 1000, UBound(Records, 1), "Records mismatch"
     Assert.AreEqual 1, LBound(Records, 2), "Fields base is not 1"
     Assert.AreEqual 8, UBound(Records, 2), "Fields count mismatch"
-    Assert.AreEqual VBA.VbVarType.vbDouble, VarType(Records(1, 1)) And VBA.VbVarType.vbDouble, "ID field type mismatch"
-    Assert.AreEqual VBA.VbVarType.vbString, VarType(Records(1, 2)) And VBA.VbVarType.vbString, "FirstName field type mismatch"
-    Assert.AreEqual VBA.VbVarType.vbDouble, VarType(Records(1, 4)) And VBA.VbVarType.vbDouble, "Age field type mismatch"
+    Assert.AreEqual vbLong, VarType(Records(1, 1)), "ID field type mismatch"
+    Assert.AreEqual vbString, VarType(Records(1, 2)), "FirstName field type mismatch"
+    Assert.AreEqual vbLong, VarType(Records(1, 4)), "Age field type mismatch"
     Assert.AreEqual "Edna.Jennings@neuf.fr", Records(4, 6), "Field value mismatch"
         
 CleanExit:
@@ -215,9 +215,9 @@ Assert:
     Assert.AreEqual 1000, UBound(Records, 1), "Records mismatch"
     Assert.AreEqual 1, LBound(Records, 2), "Fields base is not 1"
     Assert.AreEqual 8, UBound(Records, 2), "Fields count mismatch"
-    Assert.AreEqual VBA.VbVarType.vbString, VarType(Records(1, 1)) And VBA.VbVarType.vbString, "ID field type mismatch"
-    Assert.AreEqual VBA.VbVarType.vbString, VarType(Records(1, 2)) And VBA.VbVarType.vbString, "FirstName field type mismatch"
-    Assert.AreEqual VBA.VbVarType.vbDouble, VarType(Records(1, 4)) And VBA.VbVarType.vbDouble, "Age field type mismatch"
+    Assert.AreEqual vbString, VarType(Records(1, 1)), "ID field type mismatch"
+    Assert.AreEqual vbString, VarType(Records(1, 2)), "FirstName field type mismatch"
+    Assert.AreEqual vbLong, VarType(Records(1, 4)), "Age field type mismatch"
     Assert.AreEqual "Edna.Jennings@neuf.fr", Records(4, 6), "Field value mismatch"
         
 CleanExit:

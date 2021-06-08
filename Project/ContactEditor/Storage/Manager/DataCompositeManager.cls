@@ -54,8 +54,8 @@ Public Property Get Values() As Variant
     Values = this.TableModel.Values
 End Property
 
-Public Property Get Ids() As Variant
-    Ids = this.TableStorage.GetIds
+Public Property Get IDs() As Variant
+    IDs = this.TableStorage.GetIds
 End Property
 
 Public Sub InitRecord(ByVal ClassName As String, ByVal ConnectionString As String, ByVal TableName As String)

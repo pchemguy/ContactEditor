@@ -30,10 +30,10 @@ Private this As TDataTable
 '@Description "Returns a new IDataTable object."
 Public Function Create(ByVal Model As DataTableModel, ByVal ConnectionString As String, ByVal TableName As String) As IDataTableStorage
 Attribute Create.VB_Description = "Returns a new IDataTable object."
-    Dim result As DataTableCSV
-    Set result = New DataTableCSV
-    result.Init Model, ConnectionString, TableName
-    Set Create = result
+    Dim Result As DataTableCSV
+    Set Result = New DataTableCSV
+    Result.Init Model, ConnectionString, TableName
+    Set Create = Result
 End Function
 
 
@@ -148,13 +148,13 @@ End Sub
 
 Private Function IDataTableStorage_GetIds() As Variant
     '''' Ids should be strings (cast if necessary), not numeric
-    Dim Ids() As Variant
-    ReDim Ids(1 To this.Model.IdIndices.Count)
+    Dim IDs() As Variant
+    ReDim IDs(1 To this.Model.IdIndices.Count)
     Dim IdIndex As Long
-    For IdIndex = 1 To UBound(Ids)
-        Ids(IdIndex) = this.Model.Values(IdIndex, 1)
+    For IdIndex = 1 To UBound(IDs)
+        IDs(IdIndex) = this.Model.Values(IdIndex, 1)
     Next IdIndex
-    IDataTableStorage_GetIds = Ids
+    IDataTableStorage_GetIds = IDs
 End Function
 
 

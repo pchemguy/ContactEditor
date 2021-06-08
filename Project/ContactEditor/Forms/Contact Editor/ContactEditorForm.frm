@@ -126,7 +126,7 @@ End Sub
 
 Private Sub InitializeId()
     id.Clear
-    id.List = this.Model.RecordTableManager.Ids
+    id.List = this.Model.RecordTableManager.IDs
 End Sub
 
 

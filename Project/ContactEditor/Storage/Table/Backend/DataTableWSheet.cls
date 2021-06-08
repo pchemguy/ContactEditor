@@ -29,10 +29,10 @@ Private this As TDataTable
 '@Description "Returns a new IDataTable object."
 Public Function Create(ByVal Model As DataTableModel, ByVal ConnectionString As String, ByVal TableName As String) As IDataTableStorage
 Attribute Create.VB_Description = "Returns a new IDataTable object."
-    Dim result As DataTableWSheet
-    Set result = New DataTableWSheet
-    result.Init Model, ConnectionString, TableName
-    Set Create = result
+    Dim Result As DataTableWSheet
+    Set Result = New DataTableWSheet
+    Result.Init Model, ConnectionString, TableName
+    Set Create = Result
 End Function
 
 
@@ -90,11 +90,11 @@ Private Sub IDataTableStorage_LoadDataIntoModel()
             .FieldIndices(CStr(.FieldNames(ColumnIndex))) = ColumnIndex
         Next ColumnIndex
         
-        Dim Ids As Variant: Ids = Application.WorksheetFunction.Transpose(this.TableIdColumn.Value)
-        Dim RecordCount As Long: RecordCount = UBound(Ids, 1)
+        Dim IDs As Variant: IDs = Application.WorksheetFunction.Transpose(this.TableIdColumn.Value)
+        Dim RecordCount As Long: RecordCount = UBound(IDs, 1)
         Dim RecordIndex As Long
         For RecordIndex = 1 To RecordCount
-            .IdIndices(CStr(Ids(RecordIndex))) = RecordIndex
+            .IdIndices(CStr(IDs(RecordIndex))) = RecordIndex
         Next RecordIndex
         
         '''' Data records start from the second row. Get a range reference to the
@@ -130,14 +130,14 @@ End Sub
 
 Private Function IDataTableStorage_GetIds() As Variant
     '''' Ids should be strings (cast if necessary), not numeric
-    Dim Ids() As Variant
-    ReDim Ids(1 To this.Model.IdIndices.Count)
+    Dim IDs() As Variant
+    ReDim IDs(1 To this.Model.IdIndices.Count)
     Dim IdColumn As Variant: IdColumn = Application.WorksheetFunction.Transpose(this.TableIdColumn)
     Dim IdIndex As Long
-    For IdIndex = 1 To UBound(Ids)
-        Ids(IdIndex) = CStr(IdColumn(IdIndex))
+    For IdIndex = 1 To UBound(IDs)
+        IDs(IdIndex) = CStr(IdColumn(IdIndex))
     Next IdIndex
-    IDataTableStorage_GetIds = Ids
+    IDataTableStorage_GetIds = IDs
 End Function
 
 

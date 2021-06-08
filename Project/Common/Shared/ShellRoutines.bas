@@ -81,7 +81,7 @@ Public Function SyncRun(ByVal Command As String, Optional ByVal redirectStdout A
         
         'If successful, wait for the application to end and close the handle.
         If handle <> 0 Then
-            Dim result As Long: result = WaitForSingleObject(handle, WAIT_TIMEOUT)
+            Dim Result As Long: Result = WaitForSingleObject(handle, WAIT_TIMEOUT)
             CloseHandle hObject:=handle
         End If
     End If

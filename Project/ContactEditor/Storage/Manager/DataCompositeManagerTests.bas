@@ -126,12 +126,12 @@ Arrange:
     Dim Storman As DataCompositeManager
     Set Storman = zfxDataCompositeManager
 Act:
-    Dim Ids As Variant: Ids = Storman.Ids
+    Dim IDs As Variant: IDs = Storman.IDs
 Assert:
-    Assert.IsTrue IsArray(Ids), "Ids is not set"
-    Assert.AreEqual 1, LBound(Ids, 1), "Ids - wrong base index"
-    Assert.AreEqual 100, UBound(Ids, 1), "Ids - wrong count"
-    Assert.AreEqual vbString, VarType(Ids(1)), "Ids - expected array of strings"
+    Assert.IsTrue IsArray(IDs), "Ids is not set"
+    Assert.AreEqual 1, LBound(IDs, 1), "Ids - wrong base index"
+    Assert.AreEqual 100, UBound(IDs, 1), "Ids - wrong count"
+    Assert.AreEqual vbString, VarType(IDs(1)), "Ids - expected array of strings"
     
 CleanExit:
     Exit Sub

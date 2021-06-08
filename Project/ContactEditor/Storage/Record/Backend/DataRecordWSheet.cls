@@ -27,10 +27,10 @@ Private this As TDataRecord
 '@Description "Returns a new IDataRecord object."
 Public Function Create(ByVal Model As DataRecordModel, ByVal ConnectionString As String, ByVal TableName As String) As IDataRecordStorage
 Attribute Create.VB_Description = "Returns a new IDataRecord object."
-    Dim result As DataRecordWSheet
-    Set result = New DataRecordWSheet
-    result.Init Model, ConnectionString, TableName
-    Set Create = result
+    Dim Result As DataRecordWSheet
+    Set Result = New DataRecordWSheet
+    Result.Init Model, ConnectionString, TableName
+    Set Create = Result
 End Function
 
 

@@ -29,7 +29,7 @@ Private Type TDataTable
     FieldNames() As String
     FieldTypes() As ADODB.DataTypeEnum
     FieldMap As Scripting.Dictionary
-    Ids() As String
+    IDs As Variant
     TypeCast As FieldFormat
 End Type
 Private this As TDataTable
@@ -100,10 +100,10 @@ End Sub
 '@Description "Returns a new IDataTableStorage object."
 Public Function Create(ByVal Model As DataTableModel, ByVal ConnectionString As String, ByVal TableName As String) As IDataTableStorage
 Attribute Create.VB_Description = "Returns a new IDataTableStorage object."
-    Dim result As DataTableADODB
-    Set result = New DataTableADODB
-    result.Init Model, ConnectionString, TableName
-    Set Create = result
+    Dim Result As DataTableADODB
+    Set Result = New DataTableADODB
+    Result.Init Model, ConnectionString, TableName
+    Set Create = Result
 End Function
 
 
@@ -111,10 +111,10 @@ End Function
 '@Description "Returns a new DataTableADODB object."
 Public Function CreateDefault(ByVal Model As DataTableModel, ByVal ConnectionString As String, ByVal TableName As String) As DataTableADODB
 Attribute CreateDefault.VB_Description = "Returns a new DataTableADODB object."
-    Dim result As DataTableADODB
-    Set result = New DataTableADODB
-    result.Init Model, ConnectionString, TableName
-    Set CreateDefault = result
+    Dim Result As DataTableADODB
+    Set Result = New DataTableADODB
+    Result.Init Model, ConnectionString, TableName
+    Set CreateDefault = Result
 End Function
 
 
@@ -182,14 +182,14 @@ End Function
 Public Function Records(Optional ByVal SQLQuery As String = vbNullString) As Variant
     Dim Rst As ADODB.Recordset
     Set Rst = AdoRecordset(SQLQuery)
-    Records = Application.WorksheetFunction.Transpose(Rst.GetRows)
+    Records = ArrayLib.TransposeArray(Rst.GetRows, OutputArrBase:=1)
 End Function
 
 
 Public Function RecordsAsText() As Variant
     Dim Rst As ADODB.Recordset
     Set Rst = AdoRecordset(this.SQL.SelectAllAsText(this.FieldNames, this.FieldTypes))
-    RecordsAsText = Application.WorksheetFunction.Transpose(Rst.GetRows)
+    RecordsAsText = ArrayLib.TransposeArray(Rst.GetRows, OutputArrBase:=1)
 End Function
 
 
@@ -204,32 +204,31 @@ Private Sub IDataTableStorage_LoadDataIntoModel()
             .FieldIndices(FieldName) = this.FieldMap(FieldName)
         Next FieldName
         
-        Dim RecordCount As Long: RecordCount = UBound(.Values, 1)
-        ReDim this.Ids(LBound(.Values, 1) To UBound(.Values, 1))
+        Dim IDs As Variant
+        IDs = ArrayLib.GetColumn(.Values, ColumnNumber:=1, OutputArrBase:=1)
+        this.IDs = IDs
+        
+        Dim RecordCount As Long: RecordCount = UBound(IDs)
         Dim IdFieldIndex As Long: IdFieldIndex = 1
         Dim RecordIndex As Long
         For RecordIndex = 1 To RecordCount
-            this.Ids(RecordIndex) = .Values(RecordIndex, IdFieldIndex)
-            .IdIndices(this.Ids(RecordIndex)) = RecordIndex
+            .IdIndices(IDs(RecordIndex)) = RecordIndex
         Next RecordIndex
     End With
 End Sub
 
 
 Private Function IDataTableStorage_GetIds() As Variant
-    IDataTableStorage_GetIds = this.Ids
+    IDataTableStorage_GetIds = this.IDs
 End Function
 
 
 Private Function IDataTableStorage_GetColumnValues(ByVal FieldName As String) As Variant
-    Dim FieldIndex As Long: FieldIndex = this.FieldMap(FieldName)
-    Dim RecordIndex As Long
-    Dim ColumnValues() As Variant
-    ReDim ColumnValues(LBound(this.Model.Values, 1) To UBound(this.Model.Values, 1))
-    For RecordIndex = LBound(ColumnValues) To UBound(ColumnValues)
-        ColumnValues(RecordIndex) = this.Model.Values(RecordIndex, FieldIndex)
-    Next RecordIndex
-    IDataTableStorage_GetColumnValues = ColumnValues
+    IDataTableStorage_GetColumnValues = ArrayLib.GetColumn( _
+        this.Model.Values, _
+        ColumnNumber:=this.FieldMap(FieldName), _
+        OutputArrBase:=1 _
+    )
 End Function
 
 

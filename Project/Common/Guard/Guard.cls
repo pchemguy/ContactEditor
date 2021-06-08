@@ -35,9 +35,9 @@ End Property
 '@Description("Default class factory")
 Public Function Create() As Guard
 Attribute Create.VB_Description = "Default class factory"
-    Dim result As Guard
-    Set result = Guard 'For singleton, return the predeclared class object
-    Set Create = result
+    Dim Result As Guard
+    Set Result = Guard 'For singleton, return the predeclared class object
+    Set Create = Result
 End Function
 
 

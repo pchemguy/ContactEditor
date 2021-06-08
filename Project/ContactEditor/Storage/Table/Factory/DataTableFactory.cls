@@ -32,10 +32,10 @@ End Property
 Public Function Create(ByVal ClassName As String) As IDataTableFactory
     Guard.NonDefaultInstance Me
     
-    Dim result As DataTableFactory
-    Set result = New DataTableFactory
-    result.Init ClassName
-    Set Create = result
+    Dim Result As DataTableFactory
+    Set Result = New DataTableFactory
+    Result.Init ClassName
+    Set Create = Result
 End Function
 
 

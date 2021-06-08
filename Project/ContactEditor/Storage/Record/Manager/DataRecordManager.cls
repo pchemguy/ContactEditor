@@ -22,10 +22,10 @@ Private this As TDataRecordManager
 
 
 Public Function Create(ByVal ClassName As String, ByVal ConnectionString As String, ByVal TableName As String) As IDataRecordManager
-    Dim result As DataRecordManager
-    Set result = New DataRecordManager
-    result.Init ClassName, ConnectionString, TableName
-    Set Create = result
+    Dim Result As DataRecordManager
+    Set Result = New DataRecordManager
+    Result.Init ClassName, ConnectionString, TableName
+    Set Create = Result
 End Function
 
 Public Sub Init(ByVal ClassName As String, ByVal ConnectionString As String, ByVal TableName As String)

@@ -22,10 +22,10 @@ Private this As TDataTableManager
 
 
 Public Function Create(ByVal ClassName As String, ByVal ConnectionString As String, ByVal TableName As String) As IDataTableManager
-    Dim result As DataTableManager
-    Set result = New DataTableManager
-    result.Init ClassName, ConnectionString, TableName
-    Set Create = result
+    Dim Result As DataTableManager
+    Set Result = New DataTableManager
+    Result.Init ClassName, ConnectionString, TableName
+    Set Create = Result
 End Function
 
 Public Sub Init(ByVal ClassName As String, ByVal ConnectionString As String, ByVal TableName As String)
