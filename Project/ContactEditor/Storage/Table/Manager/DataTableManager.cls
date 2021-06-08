@@ -21,7 +21,7 @@ End Type
 Private this As TDataTableManager
 
 
-Public Function Create(ByVal ClassName As String, ByVal ConnectionString As String, ByVal TableName As String) As DataTableManager
+Public Function Create(ByVal ClassName As String, ByVal ConnectionString As String, ByVal TableName As String) As IDataTableManager
     Dim result As DataTableManager
     Set result = New DataTableManager
     result.Init ClassName, ConnectionString, TableName

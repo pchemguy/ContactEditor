@@ -21,7 +21,7 @@ End Type
 Private this As TDataRecordManager
 
 
-Public Function Create(ByVal ClassName As String, ByVal ConnectionString As String, ByVal TableName As String) As DataRecordManager
+Public Function Create(ByVal ClassName As String, ByVal ConnectionString As String, ByVal TableName As String) As IDataRecordManager
     Dim result As DataRecordManager
     Set result = New DataRecordManager
     result.Init ClassName, ConnectionString, TableName
