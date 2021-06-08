@@ -78,6 +78,7 @@ Public Function AsText(ByVal FieldName As String) As String
 End Function
 
 
+'@Ignore ProcedureNotUsed
 Public Function AliasedField(ByVal FieldName As String) As String
     Guard.EmptyString FieldName
     AliasedField = "[" & FieldName & "] AS [" & FieldName & "]"

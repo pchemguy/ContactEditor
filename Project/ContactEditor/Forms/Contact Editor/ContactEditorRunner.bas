@@ -6,6 +6,7 @@ Option Explicit
 Private presenter As ContactEditorPresenter
 
 
+'@EntryPoint
 Public Sub RunContactEditor()
     Set presenter = New ContactEditorPresenter
     Dim DataTableBackEnd As String

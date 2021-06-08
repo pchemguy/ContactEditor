@@ -6,6 +6,7 @@ Option Explicit
 Private lastID As Double
 
 
+'@EntryPoint
 Public Function GetTimeStampMs() As String
     '''' On Windows, the Timer resolution is subsecond, the fractional part (the four characters at the end
     '''' given the format) is concatenated with DateTime. It appears that the Windows' high precision time
@@ -18,6 +19,7 @@ End Function
 '''' four fractional places in Timer value into the whole part before trancation.
 '''' Long on a 32bit machine does not provide sufficient number of digits,
 '''' so returning double. Alternatively, a Currency type could be used.
+'@EntryPoint
 Public Function GenerateSerialID() As Double
     Dim newID As Double
     Dim secTillLastMidnight As Double

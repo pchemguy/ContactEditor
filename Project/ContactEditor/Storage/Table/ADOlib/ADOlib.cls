@@ -58,6 +58,7 @@ End Function
  
 '@Ignore ParameterCanBeByVal
 Public Sub GetTableMeta(ByVal TableName As String, ByRef FieldNames As Variant, ByRef FieldTypes As Variant, ByVal FieldMap As Scripting.Dictionary)
+    '@Ignore SelfAssignedDeclaration
     Dim Catalog As New ADOX.Catalog: Catalog.ActiveConnection = this.ConnectionString
     Dim Table As ADOX.Table: Set Table = Catalog.Tables(TableName)
     Dim FieldCount As Long: FieldCount = Table.Columns.Count

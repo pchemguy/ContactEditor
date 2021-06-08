@@ -29,6 +29,7 @@ Option Explicit
 ''''
 
 
+'@EntryPoint
 Public Function GetTopLeftCell(ByVal RangeName As String) As Variant
     '@Ignore ImplicitActiveSheetReference
     GetTopLeftCell = Range(RangeName).Range("A1").Value

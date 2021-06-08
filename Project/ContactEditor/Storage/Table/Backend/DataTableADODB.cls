@@ -58,14 +58,15 @@ Public Property Get SelfIDataTableStorage() As IDataTableStorage
 End Property
 
 
-'@Description("Returns class reference.")
 '@Ignore ProcedureNotUsed
+'@Description("Returns class reference.")
 Public Property Get Class() As DataTableADODB
 Attribute Class.VB_Description = "Returns class reference."
     Set Class = DataTableADODB
 End Property
 
 
+'@Ignore ProcedureNotUsed
 Public Property Get AdoCommand() As ADODB.Command
     If this.AdoCommand Is Nothing Then
         Set AdoCommand = AdoCommandInit(this.SQL.SelectAll)
@@ -208,8 +209,8 @@ Private Sub IDataTableStorage_LoadDataIntoModel()
         IDs = ArrayLib.GetColumn(.Values, ColumnNumber:=1, OutputArrBase:=1)
         this.IDs = IDs
         
-        Dim RecordCount As Long: RecordCount = UBound(IDs)
-        Dim IdFieldIndex As Long: IdFieldIndex = 1
+        Dim RecordCount As Long
+        RecordCount = UBound(IDs)
         Dim RecordIndex As Long
         For RecordIndex = 1 To RecordCount
             .IdIndices(IDs(RecordIndex)) = RecordIndex

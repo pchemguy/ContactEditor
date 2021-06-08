@@ -1,6 +1,6 @@
 Attribute VB_Name = "WinAPI"
 '@Folder "Common.Shared"
-'@IgnoreModule ConstantNotUsed
+'@IgnoreModule ConstantNotUsed, ProcedureNotUsed
 Option Explicit
 
 Public Const GWL_STYLE As Long = (-16)           'The offset of a window's style
