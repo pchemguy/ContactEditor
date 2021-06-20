@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Data model
-nav_order: 3
+nav_order: 2
 permalink: /data-model
 ---
 
