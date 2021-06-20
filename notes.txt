@@ -3,6 +3,8 @@ A pair of a factory and a custom constructor performs parametrized class instant
 
 Special consideration should be given to the returned value. Typically, a class's factory should return an instance of that class. Further, if the class implements an interface, it is customarily to define the factory's return type as an instance of such an interface. *Abstract factory pattern* may be used to encapsulate a group of classes implementing the same interface. *CreateInstance* method of an abstract factory should call a concrete factory of the selected class, so the *CreateInstance* method and individual concrete factories should return an instance of the interface class.
 
-To extend a class implementing an interface, a second interface may be added to preserve backward compatibility. If the abstract factory pattern is not used, the default factory may return the default class interface, while the desired interface is selected by the calling code. 
+Alternatively, factories may be specified as returning Object/Variant as a means of implementing polymorphism. However, this approach imposes limitations on static code analysis, compile-time checks, and IntelliSense.
+
+To extend a class implementing an interface, a second interface may be added to preserve backward compatibility. If the abstract factory pattern is not used, the default factory may return the default class interface, while the desired interface is selected by the calling code. On the other hand, if the abstract factory pattern is used to encapsulate a family of classes providing similar functionality, such as various storage back-end classes, either the returned value must be declared as either *Object* or non-default interface.
 
 What happens if the class implements multiple interfaces? Multiple interfaces can be used to extend the functionality of a class programmed against an interface while retaining backward compatibility.
