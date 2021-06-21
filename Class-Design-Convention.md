@@ -9,7 +9,7 @@ permalink: /class-design
 
 A pair of a factory and a custom constructor performs parametrized class instantiation. The default factory *Create* and the default constructor *Init* are defined on the class's default interface only. Both methods have the same parameter signature but different return values. The Factory method should be a function returning a class instance, and the Constructor method should be a sub with no return value. The factory method called on the default (predeclared) class's instance (enabled via the "Predeclared" attribute) generates a new class instance (via the New operator) and then, to perform initialization, calls instance's constructor with all received arguments. For example, here is a snippet from a class, which is a part of the "Storage" library:
 
-```vba
+```vb
 '''' _____ DataTableADODB.cls _____ ''''
 
 Implements IDataTableStorage
@@ -42,7 +42,7 @@ End Sub
 
 To simulate rudimentary introspection, *Class* and *Self* getters can also be defined. The *Class* getter returns the class's default instance. If a class instance presents a non-default interface, *Self* should return the same interface as well.
 
-```vba
+```vb
 '''' Self attribute defined on the default interface
 Public Property Get Self() As IDataTableStorage
     Set Self = Me
@@ -58,7 +58,7 @@ End Property
 
 An abstract factory class has two default factory methods. The *Create* method follows the same convention as for a regular class. It is available on the default predeclared instance of the abstract factory only and generates factory instances:
 
-```vba
+```vb
 '''' _____ DataTableFactory.cls _____ ''''
 
 Implements IDataTableFactory
@@ -74,7 +74,7 @@ End Function
 ```
 The other factory is *CreateInstance*. It must be available on non-default factory instances, but it can also be available on the default instance. This factory generates instances of the target class, e.g.:
 
-```vba
+```vb
 '''' _____ DataTableFactory.cls _____ ''''
 
 Implements IDataTableFactory
@@ -122,7 +122,7 @@ Typically, a class's factory should return an instance of that class. *Abstract 
 
 If a class implements an interface, it is customarily to define the factory's return type as an instance of such an interface:
 
-```vba
+```vb
 '''' _____ DataTableADODB.cls _____ ''''
 
 Implements IDataTableStorage
@@ -139,7 +139,7 @@ End Function
 
 However, this convention is not mandatory. Compare it with the following (the only difference is in the declared return type indicated by an arrow on the right):
 
-```vba
+```vb
 '''' _____ DataTableADODB.cls _____ ''''
 
 Implements IDataTableStorage
@@ -156,7 +156,7 @@ End Function
 
 and yet another option:
 
-```vba
+```vb
 '''' _____ DataTableADODB.cls _____ ''''
 
 Implements IDataTableStorage
@@ -173,7 +173,7 @@ End Function
 
 Now the calling code instantiating IDataTableStorage would look like this:
 
-```vba
+```vb
 	Dim DataTable as IDataTableStorage
 	Set DataTable = DataTableADODB.Create(Model, ConnectionString, TableName)
 ```
@@ -184,7 +184,7 @@ yielding essentially identical behavior for all declaration styles. The subtle a
 
 There is one circumstance, however, in which styles #1 and #2 affect the calling code. Style #1, which returns a specific non-default interface, permits chaining the interface methods directly on the factory (ClassA must have the predeclared attribute set to True):
 
-```vba
+```vb
 '''' _____ ClassA.cls _____ ''''
 
 Implements IClassA
@@ -206,7 +206,7 @@ End Sub
 
 Direct chaining is not possible with style #2, returning the default interface. The returned result must be assigned to an appropriately declared local variable to switch the interface. Another approach would be to add methods returning specific interfaces to the default interface:
 
-```vba
+```vb
 '''' _____ ClassA.cls _____ ''''
 
 Implements IClassA
@@ -242,7 +242,7 @@ End Sub
 
 Let us suppose we want to extend the functionality of *DataTableADODB* and expose it via a new *IDataTableStorageV2* interface while keeping the old interface unaffected for backward compatibility of the "Storage" library (assuming that the factory signature does not need to be changed):
 
-```vba
+```vb
 '''' _____ DataTableADODB.cls _____ ''''
 
 Implements IDataTableStorage
@@ -259,7 +259,7 @@ End Function
 ```
 and the calling code:
 
-```vba
+```vb
 	'''' Code using the old interface
 	Dim DataTable as IDataTableStorage
 	Set DataTable = DataTableADODB.Create(Model, ConnectionString, TableName)
@@ -273,7 +273,7 @@ In other words, the same factory can be used to generate both the old and new in
 
 The design of the abstract factory pattern shown in the previous section is not compatible with style #2, as its *CreateInstance* method, defined on the default interface, must return a common interface (see the snippet in the "Abstract factory" [section](#Abstract%20factory)). But, if we assume a slightly stricter convention, removing *CreateInstance* from the factory's default interface, style #2 will be usable:
 
-```vba
+```vb
 '''' _____ DataTableFactory.cls _____ ''''
 
 Implements IDataTableFactory
@@ -350,7 +350,7 @@ Consider [Fig. 1](#FigDataTableModel). The goal is to extend functionality provi
 
 *IDataTableStorage* is related to two other classes, *DataTableFactory* and *DataTableManager* ([Fig. 1](#FigDataTableModel)). Based on the discussion above, several approaches are available for extending *DataTableFactory*. For example, a second abstract factory can be defined:
 
-```vba
+```vb
 '''' _____ DataTableFactory.cls _____ ''''
 
 Implements IDataTableStorage
