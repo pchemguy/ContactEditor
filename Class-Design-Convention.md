@@ -16,15 +16,15 @@ Implements IDataTableStorage
 
 '''' Encapsulated private fields
 Private Type TDataTableADODB
-	' Define private fields here
+    ' Define private fields here
 End Type
 Private this As TDataTableADODB
 
 '''' A boilerplate template for the default factory
 '''' This method is called on the default predeclared class instance
 Public Function Create(ByVal Model As DataTableModel, _
-					   ByVal ConnectionString As String, _
-					   ByVal TableName As String) As IDataTableStorage
+                       ByVal ConnectionString As String, _
+                       ByVal TableName As String) As IDataTableStorage
     Dim Instance As DataTableADODB
     Set Instance = New DataTableADODB
     Instance.Init Model, ConnectionString, TableName
@@ -34,9 +34,9 @@ End Function
 '''' Constructor
 '''' This method is called on the default interface of the newly generated class instance
 Public Sub Init(ByVal Model As DataTableModel, _
-				ByVal ConnectionString As String, _
-				ByVal TableName As String)
-	' Check input parameters and initialize private data fields here.
+                ByVal ConnectionString As String, _
+                ByVal TableName As String)
+    ' Check input parameters and initialize private data fields here.
 End Sub
 ```
 
@@ -104,11 +104,11 @@ Public Function CreateInstance(ByVal ClassName As String, _
 End Function
 
 Private Function IDataTableFactory_CreateInstance( _
-					ByVal Model As DataTableModel, _
-			        ConnectionString As String, _
-					ByVal TableName As String) As IDataTableStorage
+                    ByVal Model As DataTableModel, _
+                    ConnectionString As String, _
+                    ByVal TableName As String) As IDataTableStorage
     Set IDataTableFactory_CreateInstance = CreateInstance( _
-	    this.ClassName, Model, ConnectionString, TableName)
+        this.ClassName, Model, ConnectionString, TableName)
 End Function
 ```
 
@@ -128,8 +128,8 @@ If a class implements an interface, it is customarily to define the factory's re
 Implements IDataTableStorage
 
 Public Function Create(ByVal Model As DataTableModel, _
-					   ByVal ConnectionString As String, _
-					   ByVal TableName As String) As IDataTableStorage ' <=== style #1
+                       ByVal ConnectionString As String, _
+                       ByVal TableName As String) As IDataTableStorage ' <=== style #1
     Dim Instance As DataTableADODB
     Set Instance = New DataTableADODB
     Instance.Init Model, ConnectionString, TableName
@@ -145,8 +145,8 @@ However, this convention is not mandatory. Compare it with the following (the on
 Implements IDataTableStorage
 
 Public Function Create(ByVal Model As DataTableModel, _
-					   ByVal ConnectionString As String, _
-					   ByVal TableName As String) As DataTableADODB ' <=== style #2
+                       ByVal ConnectionString As String, _
+                       ByVal TableName As String) As DataTableADODB ' <=== style #2
     Dim Instance As DataTableADODB
     Set Instance = New DataTableADODB
     Instance.Init Model, ConnectionString, TableName
@@ -162,8 +162,8 @@ and yet another option:
 Implements IDataTableStorage
 
 Public Function Create(ByVal Model As DataTableModel, _
-					   ByVal ConnectionString As String, _
-					   ByVal TableName As String) As Object ' <=== style #3
+                       ByVal ConnectionString As String, _
+                       ByVal TableName As String) As Object ' <=== style #3
     Dim Instance As DataTableADODB
     Set Instance = New DataTableADODB
     Instance.Init Model, ConnectionString, TableName
@@ -174,8 +174,8 @@ End Function
 Now the calling code instantiating IDataTableStorage would look like this:
 
 ```vb
-	Dim DataTable as IDataTableStorage
-	Set DataTable = DataTableADODB.Create(Model, ConnectionString, TableName)
+    Dim DataTable as IDataTableStorage
+    Set DataTable = DataTableADODB.Create(Model, ConnectionString, TableName)
 ```
 
 yielding essentially identical behavior for all declaration styles. The subtle and technically irrelevant in this context detail is at which point *DataTableADODB* is "cast" as *IDataTableStorage* (the interface is changed within the factory in the first case and during assignment of the returned instance reference in the calling code for styles #2 and #3).
@@ -197,11 +197,11 @@ Public Function Create() As IClassA
 End Function
 
 Private Sub IClassA_SomeMethod()
-	' Do something
+    ' Do something
 End Sub
 
 '''' _____ ClassAUser.bas _____ ''''
-	ClassA.Create().SomeMethod()
+    ClassA.Create().SomeMethod()
 ```
 
 Direct chaining is not possible with style #2, returning the default interface. The returned result must be assigned to an appropriately declared local variable to switch the interface. Another approach would be to add methods returning specific interfaces to the default interface:
@@ -228,16 +228,16 @@ Public Function IV2() As IClassAV2
 End Function
 
 Private Sub IClassA_SomeMethod()
-	' Do something
+    ' Do something
 End Sub
 
 '''' _____ ClassAUser.bas _____ ''''
-	ClassA.Create().IV1().SomeMethod()
-	
-	' or
-	Dim Instance as IClassA
-	Set Instance = ClassA.Create()
-	Instance.SomeMethod()
+    ClassA.Create().IV1().SomeMethod()
+    
+    ' or
+    Dim Instance as IClassA
+    Set Instance = ClassA.Create()
+    Instance.SomeMethod()
 ```
 
 Let us suppose we want to extend the functionality of *DataTableADODB* and expose it via a new *IDataTableStorageV2* interface while keeping the old interface unaffected for backward compatibility of the "Storage" library (assuming that the factory signature does not need to be changed):
@@ -249,8 +249,8 @@ Implements IDataTableStorage
 Implements IDataTableStorageV2
 
 Public Function Create(ByVal Model As DataTableModel, _
-					   ByVal ConnectionString As String, _
-					   ByVal TableName As String) As DataTableADODB
+                       ByVal ConnectionString As String, _
+                       ByVal TableName As String) As DataTableADODB
     Dim Instance As DataTableADODB
     Set Instance = New DataTableADODB
     Instance.Init Model, ConnectionString, TableName
@@ -260,13 +260,13 @@ End Function
 and the calling code:
 
 ```vb
-	'''' Code using the old interface
-	Dim DataTable as IDataTableStorage
-	Set DataTable = DataTableADODB.Create(Model, ConnectionString, TableName)
+    '''' Code using the old interface
+    Dim DataTable as IDataTableStorage
+    Set DataTable = DataTableADODB.Create(Model, ConnectionString, TableName)
 
-	'''' Code using the new interface
-	Dim DataTableEx as IDataTableStorageV2
-	Set DataTableEx = DataTableADODB.Create(Model, ConnectionString, TableName)
+    '''' Code using the new interface
+    Dim DataTableEx as IDataTableStorageV2
+    Set DataTableEx = DataTableADODB.Create(Model, ConnectionString, TableName)
 ```
 
 In other words, the same factory can be used to generate both the old and new interfaces. Style #3, which is the most general object declaration, would work here as well. However, this approach imposes limitations on static code analysis, compile-time checks, and IntelliSense. Style #1 would also work based on preliminary testing, though RubberDuck complains about incompatible type assignment; nevertheless, style #2 is preferable over style #1 here.
@@ -288,10 +288,10 @@ Public Function Create(ByVal ClassName As String) As DataTableFactory
 End Function
 
 Private Function IDataTableFactory_CreateInstance( _
-					ByVal Model As DataTableModel, _
-			        ConnectionString As String, _
-					ByVal TableName As String) As IDataTableStorage
-	Dim Instance as IDataTableStorage
+                    ByVal Model As DataTableModel, _
+                    ConnectionString As String, _
+                    ByVal TableName As String) As IDataTableStorage
+    Dim Instance as IDataTableStorage
     Select Case ClassName
         Case "ADODB"
             Set Instance = DataTableADODB.Create(Model, ConnectionString, TableName)
@@ -314,10 +314,10 @@ Private Function IDataTableFactory_CreateInstance( _
 End Function
 
 Private Function IDataTableFactoryV2_CreateInstance( _
-					ByVal Model As DataTableModel, _
-			        ConnectionString As String, _
-					ByVal TableName As String) As IDataTableStorageV2
-	Dim Instance as IDataTableStorageV2
+                    ByVal Model As DataTableModel, _
+                    ConnectionString As String, _
+                    ByVal TableName As String) As IDataTableStorageV2
+    Dim Instance as IDataTableStorageV2
     Select Case ClassName
         Case "ADODB"
             Set Instance = DataTableADODB.Create(Model, ConnectionString, TableName)
@@ -358,8 +358,8 @@ Implements IDataTableStorageV2
 
 '''' Default factory for IDataTableStorage
 Public Function Create(ByVal Model As DataTableModel, _
-					   ByVal ConnectionString As String, _
-					   ByVal TableName As String) As IDataTableStorage
+                       ByVal ConnectionString As String, _
+                       ByVal TableName As String) As IDataTableStorage
     Dim Instance As DataTableADODB
     Set Instance = New DataTableADODB
     Instance.Init Model, ConnectionString, TableName
@@ -368,8 +368,8 @@ End Function
 
 '''' Default factory for IDataTableStorageV2
 Public Function CreateV2(ByVal Model As DataTableModel, _
-					     ByVal ConnectionString As String, _
-					     ByVal TableName As String) As IDataTableStorageV2
+                         ByVal ConnectionString As String, _
+                         ByVal TableName As String) As IDataTableStorageV2
     Dim Instance As DataTableADODB
     Set Instance = New DataTableADODB
     Instance.Init Model, ConnectionString, TableName
