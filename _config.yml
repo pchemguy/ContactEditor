@@ -2,6 +2,8 @@ remote_theme: pmarsceill/just-the-docs
 
 title: "Contact Editor"
 
+markdown: CommonMarkGhPages
+
 webmaster_verifications:
   google: "eeyANkR7sUrPKHD5z5GheWmEg9GY5Sjpn1aCSpbx0J0"
   yandex: "8703f875cde8e0ac"
