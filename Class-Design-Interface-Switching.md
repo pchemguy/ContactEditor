@@ -2,7 +2,7 @@
 layout: default
 title: Interface switching
 nav_order: 4
-parent: Class design conventions
+parent: Class design patterns
 permalink: /class-design/interface-switching
 ---
 

@@ -2,7 +2,7 @@
 layout: default
 title: Introduction to interfaces
 nav_order: 3
-parent: Class design conventions
+parent: Class design patterns
 permalink: /class-design/intro-to-interfaces
 ---
 

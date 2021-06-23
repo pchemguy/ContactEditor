@@ -2,7 +2,7 @@
 layout: default
 title: Factory return type
 nav_order: 5
-parent: Class design conventions
+parent: Class design patterns
 permalink: /class-design/factory-return-type
 ---
 

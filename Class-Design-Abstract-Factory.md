@@ -2,7 +2,7 @@
 layout: default
 title: Abstract factory
 nav_order: 2
-parent: Class design conventions
+parent: Class design patterns
 permalink: /class-design/abstract-factory
 ---
 

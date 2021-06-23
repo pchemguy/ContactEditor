@@ -2,7 +2,7 @@
 layout: default
 title: Factory-Constructor pattern
 nav_order: 1
-parent: Class design conventions
+parent: Class design patterns
 permalink: /class-design/factory-constructor
 ---
 

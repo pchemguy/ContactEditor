@@ -9,23 +9,23 @@ permalink: /data-model
 
 "Contact Editor" uses two base model classes. *DataRecordModel* holds a single record (data table row) and is behind the "record editor" user form. *DataTableModel* represents a whole data table or a subset of rows, abstracting persistent storage. Storage backends transfer data between data models and persistent storage.
 
-*DataRecordModel* has one backend, *DataRecordWSheet*,  which saves the record to Excel Worksheet and populates the model at application startup. "Record backends" implement the *IDataRecordStorage* interface. Abstract factory *DataRecordFactory*, implementing the *IDataRecordFactory* interface, instantiates record backends. See [Fig. 1](#FigDataRecordModel).
+*DataRecordModel* has one backend, *DataRecordWSheet*,  which saves the record to Excel Worksheet and populates the model at application startup. "Record backends" implement the *IDataRecordStorage* interface. Abstract factory *DataRecordFactory*, implementing the *IDataRecordFactory* interface, instantiates record backends. See [Fig. 1](#FigDataRecord).
 
-<a name="FigDataRecordModel"></a>
+<a name="FigDataRecord"></a>
 
 <img src="https://raw.githubusercontent.com/pchemguy/ContactEditor/develop/Assets/Diagrams/Class%20Diagram%20-%20Record.svg" alt="FigDataRecordModel" width="100%" />
 
-<p align="center"><b>Figure 1. DataRecordModel class diagram</b></p>
+<p align="center"><b>Figure 1. DataRecord class diagram</b></p>
 
-*DataTableModel* has three backends, including *DataTableWSheet*, *DataTableCSV*, and *DataTableADODB*. They handle a Worksheet, a delimited text file, and a relational database, respectively. "Table backends" implement the *IDataTableStorage* interface. Abstract factory *DataTableFactory*, implementing the *IDataTableFactory* interface, instantiates table backends. See [Fig. 2](#FigDataTableModel).
+*DataTableModel* has three backends, including *DataTableWSheet*, *DataTableCSV*, and *DataTableADODB*. They handle a Worksheet, a delimited text file, and a relational database, respectively. "Table backends" implement the *IDataTableStorage* interface. Abstract factory *DataTableFactory*, implementing the *IDataTableFactory* interface, instantiates table backends. See [Fig. 2](#FigDataTable).
 
-<a name="FigDataTableModel"></a>
+<a name="FigDataTable"></a>
 
 <img src="https://raw.githubusercontent.com/pchemguy/ContactEditor/develop/Assets/Diagrams/Class%20Diagram%20-%20Table.svg" alt="FigDataTableModel" width="100%" />
 
-<p align="center"><b>Figure 2. DataTableModel class diagram</b></p>
+<p align="center"><b>Figure 2. DataTable class diagram</b></p>
 
-*DataRecordManager* ([Fig. 1](#FigDataRecordModel)) and *DataTableManager* ([Fig. 2](#FigDataTableModel)) are composite classes, implementing *IDataRecordManager* and *IDataTableManager* interfaces. These classes incorporate by composition one model and one backend class, yielding "backend-managed" models.
+*DataRecordManager* ([Fig. 1](#FigDataRecord)) and *DataTableManager* ([Fig. 2](#FigDataTable)) are composite classes, implementing *IDataRecordManager* and *IDataTableManager* interfaces. These classes incorporate by composition one model and one backend class, yielding "backend-managed" models.
 
 *DataRecordModel* and *DataTableModel* work cooperatively: *DataRecordModel* holds a row from the row set held in *DataTableModel*. Since data needs to be transferred between the two model classes, a composite manager, *DataCompositeManager*, handling such transfers is necessary. The composite manager can either incorporate two "backend-managed" classes or two model and two backend classes directly. 
 
