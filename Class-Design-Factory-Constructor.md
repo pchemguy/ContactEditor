@@ -10,9 +10,9 @@ permalink: /class-design/factory-constructor
 
 A pair of a factory and a custom constructor performs parametrized class instantiation. The default factory *Create* and the default constructor *Init* are defined on the class's default interface only. Both methods have the same parameter signature but different return values. The Factory method should be a function returning a class instance, and the Constructor method should be a sub with no return value. The factory method called on the default (predeclared) class's instance (enabled via the "Predeclared" attribute) generates a new class instance (via the New operator) and then, to perform initialization, calls instance's constructor with all received arguments. For example, here is a snippet from a class, which is a part of the "Storage" library:
 
-```vb
-'''' _____ DataTableADODB.cls _____ ''''
+<p align="right"><b>DataTableADODB.cls</b></p>
 
+```vb
 Implements IDataTableStorage
 
 '''' Encapsulated private fields
