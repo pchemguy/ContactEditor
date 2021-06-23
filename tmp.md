@@ -259,18 +259,28 @@ Public Sub Main()
   '''' methods, which are part of the IUserStorage interface, which is now hidden.
   Dim Storage As UserWSheet
   Set Storage = UserWSheet.Create(Model, Source)
+  Storage.LoadData '''' <-- Compile time error
   
-  '''' "GenericStorage" variable is declared as IUserStorage, so an attempt to call the factory
-  '''' would result in an error, but LoadData/SaveData methods are now available
+  '''' "GenericStorage" variable is declared as IUserStorage, so an attempt to call the
+  '''' factory would result in an error, but LoadData/SaveData methods are now available.
   Dim GenericStorage as IUserStorage
   Set GenericStorage = Storage
+  GenericStorage.LoadData '''' <-- Should work fine
+  
+  '''' Direct assignment. Again, an attempt to call the factory would result in an error,
+  '''' but LoadData/SaveData methods are available.
+  Dim SomeStorage as IUserStorage
+  Set SomeStorage = UserWSheet.Create(Model, Source)  
+  SomeStorage.LoadData '''' <-- Should work fine
 End Sub
 
 ```
 
 Importantly, in [DemoInterfaceSwitching.bas](#DemoInterfaceSwitching.bas) we created one object instance of the UserWSheet class, but two references pointing to this object, *Storage* and *GenericStorage*, presenting two different interfaces implemented by the UserWSheet class.
 
-If class, implementing an additional interface, uses the "factory" pattern, such as the new [UserWSheet.cls](#UserWSheetI.cls) class, it is customarily to define the factory return value as non-default (though it can still return the default) interface:
+### Factory return type
+
+If a class, implementing an additional interface, uses the "factory" pattern, such as the new [UserWSheet.cls](#UserWSheetI.cls) class, it is customarily to define the factory return value as non-default (though it can still return the default) interface:
 
 ```vb
 
@@ -288,6 +298,95 @@ End Function
 
 ```
 
-When only one additional interface is implemented, there is a subtle difference between these two options. If the calling code assigns the value returned by the factory to a variable, 
+When only one additional interface is implemented, there is a subtle difference between these two options. If the calling code assigns the value returned by the factory to a variable, then the selected interface is determined by the declaration of the assigned variable (*SomeStorage* assignment in [DemoInterfaceSwitching.bas](#DemoInterfaceSwitching.bas) would yield identical result in both cases).
+
+There is one use case, however, for which the two options are not the same. Consider an abstract factory class [UserStorageFactory.cls](#UserStorageFactory.cls) coded against the [IUserStorageFactory.cls](#IUserStorageFactory.cls) interface:
+
+<a name="IUserStorageFactory.cls"></a>
+<p align="center"><b>IUserStorageFactory.cls</b></p>
+
+```vb
+
+'''' This method takes the name of the source, such as Worksheet name or file name
+'''' and passes it to the appropriate IUserStorage class factory, such as UserWSheet
+'''' or UserCSV (the target class is selected by UserStorageFactory.Create).
+Public Function CreateInstance(ByVal Model As UserModel, ByVal SourceName As String) As IUserStorage
+End Function
+
+```
+
+___
+
+<a name="UserStorageFactory.cls"></a>
+<p align="center"><b>UserStorageFactory.cls</b></p>
+
+```vb
+
+'''' N.B.: This class must be predeclared
+
+Private Type TUserStorageFactory
+	UserStorageType As String
+End Type
+Private this As TUserStorageFactory
+
+'''' This method is called on the predeclared instance.
+'''' It takes the type name of the IUserStorage source, such as "Worksheet" or "CSV"
+'''' and returns an instance of the UserStorageFactory class that should be used as
+'''' a factory for IUserStorage instances.
+Public Function Create(ByVal UserStorageType As String) As IUserStorageFactory
+  Dim Instance As UserStorageFactory
+  Set Instance = New UserStorageFactory
+  Instance.Init UserStorageType
+  Set Create = Instance
+End Function
+  
+Public Sub Init(ByVal UserStorageType As String)
+  Set this.UserStorageType = UserStorageType
+End Sub
+
+Private Function IUserStorageFactory_CreateInstance(ByVal Model As UserModel, _
+                                                    ByVal SourceName As String) As IUserStorage
+  Select Case this.UserStorageType
+    Case "Worksheet"
+      Set IUserStorageFactory_CreateInstance = UserWSheet.Create(Model, SourceName)
+    Case "CSV"
+      Set IUserStorageFactory_CreateInstance = UserCSV.Create(Model, SourceName)
+    Case "SQLite"
+      Set IUserStorageFactory_CreateInstance = UserSQLite.Create(Model, SourceName)
+    Case Else
+      Err.Raise ErrNo.NotImplementedErr, "UserStorageFactory", "Unsupported source"
+  End Select
+End Function
+
+```
+
+This abstract factory can be used like this:
+
+<a name="DemoAbstractFactory.bas"></a>
+<p align="center"><b>DemoAbstractFactory.bas</b></p>
+
+```vb
+
+Public Sub Main()
+  Dim SourceType As String
+  SourceType = "Worksheet"
+  Dim SourceName As String
+  SourceName = "UserData"
+  Dim Model As UserModel
+  Set Model = New UserModel
+  
+  Dim Storage As IUserStorage
+  Set Storage = UserStorageFactory.Create(SourceType).CreateInstance(Model, SourceName)
+
+  '''' Use Storage variable here
+End Sub
+
+```
+
+Note how the *Storage* variable is assigned in [DemoAbstractFactory.bas](#DemoAbstractFactory.bas). What happens there is that the first call to Create factory yields an instance of an abstract factory, which we only need to use once and do not need to save. Because Create factory return type is declared as IUserStorageFactory, the returned reference has CreateInstance immediately accessible on it (compare to *SomeStorage* in [DemoInterfaceSwitching.bas](#DemoInterfaceSwitching.bas)). This is why we can chain calls to Create and CreateInstance here.
+
+At the same time, if we switch the return type of Create in [UserStorageFactory.cls](#UserStorageFactory.cls) from IUserStorageFactory to UserStorageFactory, this will be the case of *Storage* in [DemoInterfaceSwitching.bas](#DemoInterfaceSwitching.bas). *CreateInstance* will not be avaialble on the reference returned by Create and chaining will no longer be possible. Instead, we would need to switch the interfaces explicitly as with *GenericStorage* in [DemoInterfaceSwitching.bas](#DemoInterfaceSwitching.bas).
+
+
 
 [Polymorphism]: https://en.wikipedia.org/wiki/Polymorphism_(computer_science)
