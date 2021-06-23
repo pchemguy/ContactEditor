@@ -22,7 +22,7 @@ Public Function Create(ByVal Model As UserModel, ByVal WSheetName As String) As 
 End Function
 ```
 
-For a class implementing one additional interface, there is a subtle difference between these two options. Usually, the calling code assigns the value returned by the factory to a local variable. This variable's type, in turn, determines the interface it will present (see *SomeStorage* assignment in [DemoInterfaceSwitching.bas](#DemoInterfaceSwitching.bas)). Here, the two declarations would yield identical behavior.
+For a class implementing one foreign interface, there is a subtle difference between these two options. Usually, the calling code assigns the value returned by the factory to a local variable. This variable's type, in turn, determines the interface it will present (see *SomeStorage* assignment in [DemoInterfaceSwitching.bas][]). Here, the two declarations would yield identical behavior.
 
 There is one use case, however, for which the two options are not the same. Consider an abstract factory class [UserStorageFactory.cls](#UserStorageFactory.cls) coded against the [IUserStorageFactory.cls](#IUserStorageFactory.cls) interface:
 
@@ -102,10 +102,11 @@ Public Sub Main()
 End Sub
 ```
 
-Note how the *Storage* variable is assigned in [DemoAbstractFactory.bas](#DemoAbstractFactory.bas). What happens there is that the first call to Create factory yields an instance of an abstract factory, which we only need to use once and do not need to save. Because Create factory return type is declared as IUserStorageFactory, the returned reference has CreateInstance immediately accessible on it (compare to *SomeStorage* in [DemoInterfaceSwitching.bas](#DemoInterfaceSwitching.bas)). That is why we can chain calls to Create and CreateInstance here.
+Note how the *Storage* variable is assigned in [DemoAbstractFactory.bas](#DemoAbstractFactory.bas). The first call to the Create factory on the right-hand side yields an instance of an abstract factory, which we only need to use once and do not need to save. Because Create factory return type is declared as IUserStorageFactory, the returned reference has CreateInstance immediately accessible on it (compare to *SomeStorage* in [DemoInterfaceSwitching.bas][]). That is why we can chain calls to Create and CreateInstance here.
 
-At the same time, if we switch the return type of Create in [UserStorageFactory.cls](#UserStorageFactory.cls) from IUserStorageFactory to UserStorageFactory, this will be the case of *Storage* in [DemoInterfaceSwitching.bas](#DemoInterfaceSwitching.bas). *CreateInstance* will not be avaialble on the reference returned by Create, and chaining will no longer be possible. Instead, we would need to switch the interfaces explicitly as with *GenericStorage* in [DemoInterfaceSwitching.bas](#DemoInterfaceSwitching.bas).
+At the same time, if we switch the return type of Create in [UserStorageFactory.cls](#UserStorageFactory.cls) from IUserStorageFactory to UserStorageFactory, this will be the case of *Storage* in [DemoInterfaceSwitching.bas][]. *CreateInstance* will not be avaialble on the reference returned by Create, and chaining will no longer be possible. Instead, we would need to switch the interfaces explicitly as with *GenericStorage* in [DemoInterfaceSwitching.bas][].
 
 
 
 [UserWSheetI.cls]: https://pchemguy.github.io/ContactEditor/class-design/intro-to-interfaces#UserWSheetI.cls
+[DemoInterfaceSwitching.bas]: https://pchemguy.github.io/ContactEditor/class-design/interface-switching#DemoInterfaceSwitching.bas
