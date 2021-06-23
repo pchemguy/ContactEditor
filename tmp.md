@@ -1,4 +1,5 @@
 
+
 ### Overview
 
 In VBA, *interface* is a class feature comprised of all public declarations of that class, including method signatures (name, parameters, and return type), property signatures, and fields. Given an instance of a class, one can use all its public methods and property getters/setters. The code within those methods and getters/setters comprises an implementation of the interface. In other words, each class implicitly implements its interface. Additionally, a class may implement another class's interface, and this feature is the basis for [polymorphic][Polymorphism] programming in VBA.
@@ -240,7 +241,7 @@ End Sub
 
 </details>
 
-The new [UserWSheet.cls](#UserWSheetI.cls) implements two interfaces (two sets of methods/attributes): the class's default interface, *UserWSheet*, includes its public methods/attributes (in this case, the factory and constructor methods) and the *IUserStorage*. Similarly, classes may implement more than one additional interface.
+The new [UserWSheet.cls](#UserWSheetI.cls) implements two interfaces (two sets of methods/attributes): the class's default interface, *UserWSheet*, includes its public methods/attributes (in this case, the factory and constructor methods) and a foreign interface *IUserStorage*. Similarly, classes may implement more than one foreign interface.
 
 ### Interface switching
 
@@ -393,7 +394,7 @@ At the same time, if we switch the return type of Create in [UserStorageFactory.
 
 ### Factory return type with multiple foreign interfaces
 
-Consider again the [UserWSheet.cls](#UserWSheetI.cls) class. Assume it is a part of, say, "UserLogin" library, and some applications already use it. Now we wish to extend the functionality of the UserWSheet, while preserving backward compatibility of the library. Perhaps, we now have multiple users saved in a table and we want to load a specific user. Assuming that our UserModel class is still satisfactory and does not need to be updated, we need to add new methods for loading/saving data to the UserWSheet, LoadDataRow/SaveDataRow:
+Consider again the [UserWSheet.cls](#UserWSheetI.cls) class. Suppose this class is a part of some "UserLogin" library, and some applications already use it. Now, we wish to extend the functionality of the UserWSheet, while preserving the backward compatibility of the library. Perhaps, we now have multiple users saved in a table and want to load a specific user. Assuming that our UserModel class is still satisfactory and does not need to be updated, we need to add new methods for loading/saving data to the UserWSheet, LoadDataRow/SaveDataRow:
 
 ```vb
 
@@ -415,8 +416,7 @@ End Sub
 
 ```
 
-Changing signatures of existing methods or interfaces would break backward compatibility, so these changes are prohibited. The new functionality still needs to be exposed via an interface. Since we cannot changes the existing one, we create a new one:
-
+Changing signatures of existing methods or interfaces would break backward compatibility, so these changes are prohibited. The new functionality still needs to be exposed via an interface, and since we cannot change the existing one, we create a new one:
 
 <a name="IUserStorageV2.cls"></a>
 <p align="right"><b>IUserStorageV2.cls</b></p>
@@ -443,10 +443,10 @@ End Sub
 
 ```
 
-The new interface [IUserStorageV2.cls](#IUserStorageV2.cls) also incorporates all the functionality of the old interface that will be used on the new interface. Let us extend the UserWSheet class:
+The new interface [IUserStorageV2.cls](#IUserStorageV2.cls) also incorporates the old interface functionality that will be used on the new interface. Let us extend the UserWSheet class:
 
-<a name="UserWSheet.cls"></a>
-<p align="right"><b>UserWSheetEx2.cls</b></p>
+<a name="UserWSheetEx2.cls"></a>
+<p align="right"><b>UserWSheet.cls</b></p>
 
 ```vb
 
@@ -564,10 +564,12 @@ End Sub
 
 </details>
 
-Note that this extended class definition is backward compatible with old software that uses the IUserStorage interface. Now, what should we do about the factory, if we want to be able to generate instances of both new and old interfaces. There are two possible approaches here. The simplest scenario is if the old factory/constructor are compatible with the new extended IUserStorageV2 instances except for the type. Apparently different foreign interfaces of a class can be switched directly the sam way via assignment. That is if an IUserStorageV2 variable is assigned a reference from an IUserStorage, the interface is switched as before. However, RubberDuck VBA extension considers such an assignment as illegal. While this might be a limitation of the RDVBA, a safer approach is to declare the factory as returning the default interface. In this case, the calling code declares a local variable as either IUserStorage (old code) or IUserStorageV2 (new code) and in both cases the default interfaces returned by the factory is automatically switched to the desired foreign interface. Further, to accomodate the extended functionality, factory's argument list can be extended with optional arguments and new private fields can be added to the UserWSheet class and initialized without affecting the old code.
+This definition is backward compatible with old software that uses the IUserStorage interface. Now, what should we do about the factory if we want to generate instances of both new and old interfaces? There are two possible approaches here.  The simplest scenario is if the current factory is compatible with the new IUserStorageV2 instances except for the type. It appears that different foreign interfaces of a class can be switched directly the same way via assignment. For example, if an IUserStorageV2 variable is assigned a reference from an IUserStorage, the interface is switched as before, though the RubberDuck VBA extension flags such an assignment as illegal.
 
-If this approach cannot be accommodated, a new separate factory CreateV2 returning the new interface will need to be defined.
+A better approach is to declare the factory's return type as the default interface. Interface switching will occur in the calling code when the factory's returned reference is assigned to a local variable (see *SomeStorage* assignment in [DemoInterfaceSwitching.bas](#DemoInterfaceSwitching.bas)). Similarly to this demo, the new code would declare the *StorageEx* variable as IUserStorageV2, switching the default interface to IUserStorageV2. Further, the factory's argument list can be extended with optional arguments, and new private fields can be added to the UserWSheet class and initialized without affecting the old code.
 
-These two approaches can, in principle, accommodate any number of foreign interfaces, while ensuring that the class is backward compatible with all previous software.
+If this approach does not provide sufficient flexibility, a new separate factory CreateV2 returning the new or default interface can be defined.
+
+These two approaches can, in principle, accommodate any number of foreign interfaces and code upgrades while preserving full backward compatibility.
 
 [Polymorphism]: https://en.wikipedia.org/wiki/Polymorphism_(computer_science)
