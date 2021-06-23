@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Class design convention
+title: Class design conventions
 nav_order: 3
 permalink: /class-design
 ---
