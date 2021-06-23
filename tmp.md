@@ -6,7 +6,7 @@ In VBA, *interface* is a class feature comprised of all public declarations of t
 Consider an example consisting of three files shown below, one regular and two class modules. In this example, the user's name and login information saved in the file needs to be loaded, presented to the user for editing (outside the scope of this example), and saved back to the file. The [UserModel.cls](#UserModel.cls) class is responsible for holding the user data, the [UserWSheet.cls](#UserWSheet.cls) class loads/saves the data to/from an Excel Worsheet, and the [EditUserData.bas](#EditUserData.bas) module executes the workflow.
 
 <a name="UserModel.cls"></a>
-<p align="center"><b>UserModel.cls</b></p>
+<p align="right"><b>UserModel.cls</b></p>
 
 ```vb
 
@@ -53,7 +53,7 @@ End Property
 
 ___
 <a name="UserWSheet.cls"></a>
-<p align="center"><b>UserWSheet.cls</b></p>
+<p align="right"><b>UserWSheet.cls</b></p>
 
 ```vb
 
@@ -122,7 +122,7 @@ End Property
 
 ___
 <a name="EditUserData.bas"></a>
-<p align="center"><b>EditUserData.bas</b></p>
+<p align="right"><b>EditUserData.bas</b></p>
 
 ```vb
 
@@ -150,7 +150,7 @@ The [UserWSheet.cls](#UserWSheet.cls) class has several sections, including fiel
 Ideally, we would want to have one class module "UserXXX.cls" (similar to UserWSheet.cls) for each source type, set up the *Storage* variable based on the selected source, and be able to use the following code without any modifications regardless of the selected source type. We only require that the *Storage* object has the *Model* attribute and two utility methods LoadData/SaveDate characterized by the specified outcome. This requirement can be formalized by defining an additional class, say, [IUserStorage.cls](#IUserStorage.cls), which includes "declarations" for all our required members:
 
 <a name="IUserStorage.cls"></a>
-<p align="center"><b>IUserStorage.cls</b></p>
+<p align="right"><b>IUserStorage.cls</b></p>
 
 ```vb
 
@@ -161,17 +161,17 @@ Public Property Set Model(ByVal Instance As UserModel)
 End Property
 
 Public Sub LoadData()
-End
+End Sub
 
 Public Sub SaveData()
-End
+End Sub
 
 ```
 
-VBA treats this module like any other class module. Alone, it is not very useful as it does not have any functionality; in a sense, it declares its interface like any other class module, but it does not provide any useful implementation. However, other classes, such as [UserWSheet.cls](#UserWSheet.cls), may implement it:
+VBA treats this module like any other class module. Alone, it is not very useful as it does not have any functionality; in a sense, it declares its interface like any other class module, but it does not provide any useful implementation. However, other classes, such as [UserWSheet.cls](#UserWSheetI.cls), may implement it:
 
 <a name="UserWSheetI.cls"></a>
-<p align="center"><b>UserWSheet.cls</b></p>
+<p align="right"><b>UserWSheet.cls</b></p>
 
 ```vb
 
@@ -247,7 +247,7 @@ The new [UserWSheet.cls](#UserWSheetI.cls) implements two interfaces (two sets o
 An object instance of a class implementing multiple interfaces can present any of the class's interfaces, but only one interface at any given time. Interface selection occurs during the assignment operation based on the declared type of the assigned variable. For this reason, it is not possible to switch the interface of a particular variable directly. Instead, a new variable must be declared specifying the desired interface as its type. Then, the new variable is assigned an object reference from the existing one with a different interface, for example:
 
 <a name="DemoInterfaceSwitching.bas"></a>
-<p align="center"><b>DemoInterfaceSwitching.bas</b></p>
+<p align="right"><b>DemoInterfaceSwitching.bas</b></p>
 
 ```vb
 
@@ -281,7 +281,7 @@ End Sub
 
 In [DemoInterfaceSwitching.bas](#DemoInterfaceSwitching.bas), we created one object instance of the UserWSheet class with two references (*Storage* and *GenericStorage*) pointing to this object and presenting two different interfaces implemented by the UserWSheet class. *SomeStorage* points to a second UserWSheet class instance presenting the IUserStorage interface.
 
-### Factory return type
+### Factory return type with single foreign interface
 
 Suppose we have a class implementing another class's interface and employing the "factory" pattern, such as the new [UserWSheet.cls](#UserWSheetI.cls). In such a case, it is customarily to define the factory return value as the non-default interface (though it can still return the default one):
 
@@ -306,7 +306,7 @@ For a class implementing one additional interface, there is a subtle difference 
 There is one use case, however, for which the two options are not the same. Consider an abstract factory class [UserStorageFactory.cls](#UserStorageFactory.cls) coded against the [IUserStorageFactory.cls](#IUserStorageFactory.cls) interface:
 
 <a name="IUserStorageFactory.cls"></a>
-<p align="center"><b>IUserStorageFactory.cls</b></p>
+<p align="right"><b>IUserStorageFactory.cls</b></p>
 
 ```vb
 
@@ -322,7 +322,7 @@ End Function
 ___
 
 <a name="UserStorageFactory.cls"></a>
-<p align="center"><b>UserStorageFactory.cls</b></p>
+<p align="right"><b>UserStorageFactory.cls</b></p>
 
 ```vb
 
@@ -367,7 +367,7 @@ End Function
 This abstract factory can be used like this:
 
 <a name="DemoAbstractFactory.bas"></a>
-<p align="center"><b>DemoAbstractFactory.bas</b></p>
+<p align="right"><b>DemoAbstractFactory.bas</b></p>
 
 ```vb
 
@@ -391,6 +391,183 @@ Note how the *Storage* variable is assigned in [DemoAbstractFactory.bas](#DemoAb
 
 At the same time, if we switch the return type of Create in [UserStorageFactory.cls](#UserStorageFactory.cls) from IUserStorageFactory to UserStorageFactory, this will be the case of *Storage* in [DemoInterfaceSwitching.bas](#DemoInterfaceSwitching.bas). *CreateInstance* will not be avaialble on the reference returned by Create, and chaining will no longer be possible. Instead, we would need to switch the interfaces explicitly as with *GenericStorage* in [DemoInterfaceSwitching.bas](#DemoInterfaceSwitching.bas).
 
+### Factory return type with multiple foreign interfaces
 
+Consider again the [UserWSheet.cls](#UserWSheetI.cls) class. Assume it is a part of, say, "UserLogin" library, and some applications already use it. Now we wish to extend the functionality of the UserWSheet, while preserving backward compatibility of the library. Perhaps, we now have multiple users saved in a table and we want to load a specific user. Assuming that our UserModel class is still satisfactory and does not need to be updated, we need to add new methods for loading/saving data to the UserWSheet, LoadDataRow/SaveDataRow:
+
+```vb
+
+Public Sub LoadDataRow(ByVal RecordIndex as Long)
+  With this.Model
+    .FirstName = ThisWorkbook.Worksheets(this.WSheet).Range("A" & CStr(RecordIndex)).Value
+    .LastName  = ThisWorkbook.Worksheets(this.WSheet).Range("B" & CStr(RecordIndex)).Value
+    .Login     = ThisWorkbook.Worksheets(this.WSheet).Range("C" & CStr(RecordIndex)).Value
+  End With
+End Sub
+
+Public Sub SaveDataRow(ByVal RecordIndex as Long)
+  With this.Model
+    ThisWorkbook.Worksheets(this.WSheet).Range("A" & CStr(RecordIndex)).Value = .FirstName
+    ThisWorkbook.Worksheets(this.WSheet).Range("B" & CStr(RecordIndex)).Value = .LastName
+    ThisWorkbook.Worksheets(this.WSheet).Range("C" & CStr(RecordIndex)).Value = .Login
+  End With
+End Sub
+
+```
+
+Changing signatures of existing methods or interfaces would break backward compatibility, so these changes are prohibited. The new functionality still needs to be exposed via an interface. Since we cannot changes the existing one, we create a new one:
+
+
+<a name="IUserStorageV2.cls"></a>
+<p align="right"><b>IUserStorageV2.cls</b></p>
+
+```vb
+
+Public Property Get Model() As UserModel
+End Property
+
+Public Property Set Model(ByVal Instance As UserModel)
+End Property
+
+Public Sub LoadData()
+End Sub
+
+Public Sub SaveData()
+End Sub
+
+Public Sub LoadDataRow(ByVal RecordIndex as Long)
+End Sub
+
+Public Sub SaveDataRow(ByVal RecordIndex as Long)
+End Sub
+
+```
+
+The new interface [IUserStorageV2.cls](#IUserStorageV2.cls) also incorporates all the functionality of the old interface that will be used on the new interface. Let us extend the UserWSheet class:
+
+<a name="UserWSheet.cls"></a>
+<p align="right"><b>UserWSheetEx2.cls</b></p>
+
+```vb
+
+'''' N.B.: This class must be predeclared
+
+Implements IUserStorage
+Implements IUserStorageV2
+
+Private Type TUserWSheet
+  Model As UserModel
+  WSheetName As String
+End Type
+Private this As TUserWSheet
+
+```
+
+<details><summary>IUserStorage interface implementation</summary>
+
+```vb
+
+Private Sub IUserStorage_LoadData()
+  With this.Model
+    .FirstName = ThisWorkbook.Worksheets(this.WSheet).Range("A1").Value
+    .LastName  = ThisWorkbook.Worksheets(this.WSheet).Range("B1").Value
+    .Login     = ThisWorkbook.Worksheets(this.WSheet).Range("C1").Value
+  End With
+End Sub
+
+Private Sub IUserStorage_SaveData()
+  With this.Model
+    ThisWorkbook.Worksheets(this.WSheet).Range("A1").Value = .FirstName
+    ThisWorkbook.Worksheets(this.WSheet).Range("B1").Value = .LastName
+    ThisWorkbook.Worksheets(this.WSheet).Range("C1").Value = .Login
+  End With
+End Sub
+
+Private Property Get IUserStorage_Model() As UserModel
+  Set IUserStorage_Model = this.Model
+End Property
+
+Private Property Set IUserStorage_Model(ByVal Instance As UserModel)
+  Set this.Model = Instance
+End Property
+
+```
+
+</details>
+
+<details><summary>IUserStorageV2 interface implementation</summary>
+
+```vb
+
+Private Sub IUserStorageV2_LoadDataRow(ByVal RecordIndex as Long)
+  With this.Model
+    .FirstName = ThisWorkbook.Worksheets(this.WSheet).Range("A" & CStr(RecordIndex)).Value
+    .LastName  = ThisWorkbook.Worksheets(this.WSheet).Range("B" & CStr(RecordIndex)).Value
+    .Login     = ThisWorkbook.Worksheets(this.WSheet).Range("C" & CStr(RecordIndex)).Value
+  End With
+End Sub
+
+Private Sub IUserStorageV2_SaveDataRow(ByVal RecordIndex as Long)
+  With this.Model
+    ThisWorkbook.Worksheets(this.WSheet).Range("A" & CStr(RecordIndex)).Value = .FirstName
+    ThisWorkbook.Worksheets(this.WSheet).Range("B" & CStr(RecordIndex)).Value = .LastName
+    ThisWorkbook.Worksheets(this.WSheet).Range("C" & CStr(RecordIndex)).Value = .Login
+  End With
+End Sub
+
+Private Sub IUserStorageV2_LoadData()
+  With this.Model
+    .FirstName = ThisWorkbook.Worksheets(this.WSheet).Range("A1").Value
+    .LastName  = ThisWorkbook.Worksheets(this.WSheet).Range("B1").Value
+    .Login     = ThisWorkbook.Worksheets(this.WSheet).Range("C1").Value
+  End With
+End Sub
+
+Private Sub IUserStorageV2_SaveData()
+  With this.Model
+    ThisWorkbook.Worksheets(this.WSheet).Range("A1").Value = .FirstName
+    ThisWorkbook.Worksheets(this.WSheet).Range("B1").Value = .LastName
+    ThisWorkbook.Worksheets(this.WSheet).Range("C1").Value = .Login
+  End With
+End Sub
+
+Private Property Get IUserStorageV2_Model() As UserModel
+  Set IUserStorageV2_Model = this.Model
+End Property
+
+Private Property Set IUserStorageV2_Model(ByVal Instance As UserModel)
+  Set this.Model = Instance
+End Property
+
+```
+
+</details>
+
+<details><summary>Factory/Constructor</summary>
+
+```vb
+
+Public Function Create(ByVal Model As UserModel, _
+                       ByVal WSheetName As String) As UserWSheet
+  Dim Instance As UserWSheet
+  Set Instance = New UserWSheet
+  Instance.Init Model, WSheetName
+  Set Create = Instance
+End Function
+  
+Public Sub Init(ByVal Model As UserModel, ByVal WSheetName As String)
+  Set this.Model = Model
+  this.WSheetName = WSheetName
+End Sub
+
+```
+
+</details>
+
+Note that this extended class definition is backward compatible with old software that uses the IUserStorage interface. Now, what should we do about the factory, if we want to be able to generate instances of both new and old interfaces. There are two possible approaches here. The simplest scenario is if the old factory/constructor are compatible with the new extended IUserStorageV2 instances except for the type. Apparently different foreign interfaces of a class can be switched directly the sam way via assignment. That is if an IUserStorageV2 variable is assigned a reference from an IUserStorage, the interface is switched as before. However, RubberDuck VBA extension considers such an assignment as illegal. While this might be a limitation of the RDVBA, a safer approach is to declare the factory as returning the default interface. In this case, the calling code declares a local variable as either IUserStorage (old code) or IUserStorageV2 (new code) and in both cases the default interfaces returned by the factory is automatically switched to the desired foreign interface. Further, to accomodate the extended functionality, factory's argument list can be extended with optional arguments and new private fields can be added to the UserWSheet class and initialized without affecting the old code.
+
+If this approach cannot be accommodated, a new separate factory CreateV2 returning the new interface will need to be defined.
+
+These two approaches can, in principle, accommodate any number of foreign interfaces, while ensuring that the class is backward compatible with all previous software.
 
 [Polymorphism]: https://en.wikipedia.org/wiki/Polymorphism_(computer_science)
