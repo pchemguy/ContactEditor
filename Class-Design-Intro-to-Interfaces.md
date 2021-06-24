@@ -8,6 +8,8 @@ permalink: /class-design/intro-to-interfaces
 
 ### Introduction to interfaces in VBA
 
+Interfaces are a somewhat advanced topic in VBA, and this tutorial is not for beginners. A good starting point might be the [Flyable and Swimable][] tutorial, which uses a simple model example and builds an easy-to-follow working code, or another simple example from [Better Solutions][]. [OOP VBA Examples][] tutorial is also worth mentioning; it discusses a few more advanced topics related to the use of interfaces. The main reason for preparing this tutorial was to form the foundation for discussing more advanced aspects in the following sections. The more elaborate model example used here focuses on a practical application of interfaces relevant to this project. While I only provide code fragments in the text, this tutorial is a part of a complete working demo application.
+
 In VBA, *interface* is a class feature comprised of all public declarations of that class, including method signatures (name, parameters, and return type), property signatures, and fields. Given an instance of a class, one can use all its public methods and property getters/setters. The code within those methods and getters/setters comprises an implementation of the interface. In other words, each class implicitly implements its interface. Additionally, a class may implement another class's interface, and this feature is the basis for [polymorphic][Polymorphism] programming in VBA.
 
 Consider an example consisting of three files shown below, one regular and two class modules. In this example, the user's name and login information saved in the file needs to be loaded, presented to the user for editing (outside the scope of this example), and saved back to the file. The [UserModel.cls](#UserModel.cls) class is responsible for holding the user data, the [UserWSheet.cls](#UserWSheet.cls) class loads/saves the data to/from an Excel Worsheet, and the [EditUserData.bas](#EditUserData.bas) module executes the workflow.
@@ -228,3 +230,8 @@ End Sub
 </details>
 
 The new [UserWSheet.cls](#UserWSheetI.cls) implements two interfaces (two sets of methods/attributes): the class's default interface, *UserWSheet*, includes its public methods/attributes (in this case, the factory and constructor methods) and a foreign interface *IUserStorage*. Similarly, classes may implement more than one foreign interface.
+
+
+[Flyable and Swimable]: https://riptutorial.com/vba/topic/8784/interfaces
+[Better Solutions]: https://bettersolutions.com/vba/class-modules/implements.htm
+[OOP VBA Examples]: https://riptutorial.com/vba/topic/5357/object-oriented-vba
