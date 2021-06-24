@@ -1,12 +1,12 @@
 ---
 layout: default
-title: Interface switching
+title: Interface switching in VBA
 nav_order: 4
 parent: Class design patterns
 permalink: /class-design/interface-switching
 ---
 
-### Interface switching
+### Interface switching in VBA
 
 An object instance of a class implementing multiple interfaces can present any of the class's interfaces, but only one interface at any given time. Interface selection occurs during the assignment operation based on the declared type of the assigned variable. For this reason, it is not possible to switch the interface of a particular variable directly. Instead, a new variable must be declared specifying the desired interface as its type. Then, the new variable is assigned an object reference from the existing one with a different interface, for example:
 

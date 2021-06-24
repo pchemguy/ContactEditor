@@ -1,12 +1,12 @@
 ---
 layout: default
-title: Introduction to interfaces
+title: Introduction to interfaces in VBA
 nav_order: 3
 parent: Class design patterns
 permalink: /class-design/intro-to-interfaces
 ---
 
-### Introduction to interfaces
+### Introduction to interfaces in VBA
 
 In VBA, *interface* is a class feature comprised of all public declarations of that class, including method signatures (name, parameters, and return type), property signatures, and fields. Given an instance of a class, one can use all its public methods and property getters/setters. The code within those methods and getters/setters comprises an implementation of the interface. In other words, each class implicitly implements its interface. Additionally, a class may implement another class's interface, and this feature is the basis for [polymorphic][Polymorphism] programming in VBA.
 
