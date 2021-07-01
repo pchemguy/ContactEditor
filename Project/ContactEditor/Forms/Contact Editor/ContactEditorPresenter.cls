@@ -15,7 +15,7 @@ Private WithEvents view As ContactEditorForm
 Attribute view.VB_VarHelpID = -1
 
 Private Type TPresenter
-    viewModel As ContactEditorModel
+    Model As ContactEditorModel
     Dialog As IDialogView
 End Type
 Private this As TPresenter
@@ -27,20 +27,20 @@ Public Sub Show(ByVal TableBackEnd As String)
     InitializeModel TableBackEnd
     
     '''' Loads data from the backends into the Model
-    this.viewModel.RecordTableManager.LoadDataIntoModel
+    this.Model.RecordTableManager.LoadDataIntoModel
     
-    this.Dialog.ShowDialog this.viewModel
+    this.Dialog.ShowDialog this.Model
 End Sub
 
 
 Private Sub ApplyChanges()
-    this.viewModel.RecordTableManager.SaveRecordDataToRecordStorage
-    Select Case this.viewModel.PersistenceMode
+    this.Model.RecordTableManager.SaveRecordDataToRecordStorage
+    Select Case this.Model.PersistenceMode
         Case DataPersistenceMode.DataPersistenceOnApply
-            this.viewModel.RecordTableManager.UpdateRecordToTable
-            this.viewModel.RecordTableManager.SaveDataFromModel
+            this.Model.RecordTableManager.UpdateRecordToTable
+            this.Model.RecordTableManager.SaveDataFromModel
         Case DataPersistenceMode.DataPersistenceOnExit
-            this.viewModel.RecordTableManager.UpdateRecordToTable
+            this.Model.RecordTableManager.UpdateRecordToTable
         Case DataPersistenceMode.DataPersistenceDisabled
             Exit Sub
     End Select
@@ -58,27 +58,27 @@ End Sub
 
 
 Private Sub LoadFormFromModel()
-    this.viewModel.SuppressEvents = True
+    this.Model.SuppressEvents = True
         
     Dim FieldName As Variant
     Dim FieldIndex As Long
-    Dim FieldNames As Variant: FieldNames = this.viewModel.RecordTableManager.FieldNames
+    Dim FieldNames As Variant: FieldNames = this.Model.RecordTableManager.FieldNames
     For FieldIndex = LBound(FieldNames) To UBound(FieldNames)
         FieldName = FieldNames(FieldIndex)
-        view.Controls(FieldName).Value = CStr(this.viewModel.RecordTableManager.RecordModel.GetField(FieldName))
+        view.Controls(FieldName).Value = CStr(this.Model.RecordTableManager.RecordModel.GetField(FieldName))
     Next FieldIndex
 
-    this.viewModel.SuppressEvents = False
+    this.Model.SuppressEvents = False
 End Sub
 
 
 Private Sub view_LoadRecord(ByVal RecordId As String)
-    If this.viewModel.RecordTableManager.RecordModel.IsDirty Then
+    If this.Model.RecordTableManager.RecordModel.IsDirty Then
         Dim SaveChanges As Boolean
         SaveChanges = MsgBox("Apply unsaved changes?", vbYesNo + vbExclamation + vbDefaultButton2)
         If SaveChanges Then ApplyChanges
     End If
-    this.viewModel.RecordTableManager.LoadRecordFromTable RecordId
+    this.Model.RecordTableManager.LoadRecordFromTable RecordId
     LoadFormFromModel
 End Sub
 
@@ -97,11 +97,11 @@ End Sub
 Private Sub view_FormConfirmed()
     'form was okayed and is now hidden.
     '...
-    If this.viewModel.PersistenceMode <> DataPersistenceDisabled Then
-        this.viewModel.RecordTableManager.UpdateRecordToTable
-        this.viewModel.RecordTableManager.SaveDataFromModel
+    If this.Model.PersistenceMode <> DataPersistenceDisabled Then
+        this.Model.RecordTableManager.UpdateRecordToTable
+        this.Model.RecordTableManager.SaveDataFromModel
     Else
-        this.viewModel.RecordTableManager.SaveRecordDataToRecordStorage
+        this.Model.RecordTableManager.SaveRecordDataToRecordStorage
     End If
     Set view = Nothing
 End Sub
@@ -110,7 +110,7 @@ End Sub
 '@Description "Instantiates model and binds it to the desired backends."
 Private Sub InitializeModel(ByVal TableBackEnd As String)
 Attribute InitializeModel.VB_Description = "Instantiates model and binds it to the desired backends."
-    Set this.viewModel = New ContactEditorModel
+    Set this.Model = New ContactEditorModel
     
     Dim ClassName As String
     Dim TableName As String
@@ -131,11 +131,11 @@ Attribute InitializeModel.VB_Description = "Instantiates model and binds it to t
             TableName = "Contacts.xsv!sep=,"
             ConnectionString = ThisWorkbook.Path
     End Select
-    this.viewModel.RecordTableManager.InitTable ClassName, ConnectionString, TableName
+    this.Model.RecordTableManager.InitTable ClassName, ConnectionString, TableName
     
     '''' Binds RecordModel to its backend
     ClassName = "Worksheet"
     TableName = vbNullString
     ConnectionString = ThisWorkbook.Name & "!" & ContactBrowser.Name
-    this.viewModel.RecordTableManager.InitRecord ClassName, ConnectionString, TableName
+    this.Model.RecordTableManager.InitRecord ClassName, ConnectionString, TableName
 End Sub
