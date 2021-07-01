@@ -5,44 +5,45 @@ nav_order: 2
 permalink: /data-model
 ---
 
-### Overview
+### Storage Library overview
 
-"Contact Editor" uses two base model classes. *DataRecordModel* holds a single record (data table row) and is behind the "record editor" user form. *DataTableModel* represents a whole data table or a subset of rows, abstracting persistent storage. Storage backends transfer data between data models and persistent storage.
+The [Data Container][Data manager application figure] component consists of three model classes. The high-level *ContactEditorModel* class is a part of the [MVP][Data manager application figure] component. *DataRecordModel* and *DataTableModel* are the two base model classes, which are part of the [Storage Library][Data manager application figure]. *ContactEditorModel* incorporates the two base classes via indirect composition through the *DataCompositeManager* class, as illustrated later in this section.
 
-*DataRecordModel* has one backend, *DataRecordWSheet*,  which saves the record to Excel Worksheet and populates the model at application startup. "Record backends" implement the *IDataRecordStorage* interface. Abstract factory *DataRecordFactory*, implementing the *IDataRecordFactory* interface, instantiates record backends. See [Fig. 1](#FigDataRecord).
+Storage backends comprise the other important part of the library. These classes encapsulate details of individual storage types. Each backend type, such as an Excel worksheet or a CSV file, has a corresponding backend class responsible for transferring the data between the model class and the respective persistent storage. Backend classes implement either *IDataRecordStorage* or *IDataTableStorage* interface providing a backend-independent means for retrieving and saving the data.
 
-<a name="FigDataRecord"></a>
+*DataRecordModel* holding a single record (data table row) is behind the "record editor" user form. This model class has one backend, *DataRecordWSheet*, which saves the data to Excel Worksheet and populates the model at application startup. Record backends implement the *IDataRecordStorage* interface, and the *DataRecordFactory* abstract factory, implementing the *IDataRecordFactory* interface, instantiates record backends. See [Fig. 1](#FigDataRecord).
 
-<img src="https://raw.githubusercontent.com/pchemguy/ContactEditor/develop/Assets/Diagrams/Class%20Diagram%20-%20Record.svg" alt="FigDataRecordModel" width="100%" />
+<a name="FigDataRecord"></a>  
+<img src="https://raw.githubusercontent.com/pchemguy/ContactEditor/develop/Assets/Diagrams/Class Diagram - Record.svg" alt="FigDataRecordModel" width="100%" />  
+<p align="center"><b>Figure 1. DataRecord class diagram</b></p>  
 
-<p align="center"><b>Figure 1. DataRecord class diagram</b></p>
+*DataTableModel* represents a whole data table or a subset of rows, abstracting persistent storage. This model class has three backends, including *DataTableWSheet*, *DataTableCSV*, and *DataTableADODB*. They handle a Worksheet, a delimited text file, and a relational database, respectively. Table backends implement the *IDataTableStorage* interface, and the *DataTableFactory* abstract factory, implementing the *IDataTableFactory* interface, instantiates table backends. See [Fig. 2](#FigDataTable).
 
-*DataTableModel* has three backends, including *DataTableWSheet*, *DataTableCSV*, and *DataTableADODB*. They handle a Worksheet, a delimited text file, and a relational database, respectively. "Table backends" implement the *IDataTableStorage* interface. Abstract factory *DataTableFactory*, implementing the *IDataTableFactory* interface, instantiates table backends. See [Fig. 2](#FigDataTable).
+<a name="FigDataTable"></a>  
+<img src="https://raw.githubusercontent.com/pchemguy/ContactEditor/develop/Assets/Diagrams/Class Diagram - Table.svg" alt="FigDataTableModel" width="100%" />  
+<p align="center"><b>Figure 2. DataTable class diagram</b></p>  
 
-<a name="FigDataTable"></a>
+Data Managers comprise the last part of the library. Each such class incorporates by composition a model class and an appropriate backend class, yielding "backend-managed" models. Applications using this library should typically instantiate and keep a reference to one of these classes. The library defines three manager classes, including two simple and one composite.
 
-<img src="https://raw.githubusercontent.com/pchemguy/ContactEditor/develop/Assets/Diagrams/Class%20Diagram%20-%20Table.svg" alt="FigDataTableModel" width="100%" />
+*DataRecordManager* ([Fig. 1](#FigDataRecord)) and *DataTableManager* ([Fig. 2](#FigDataTable)) implement *IDataRecordManager* and *IDataTableManager* interfaces and manage their respective model classes. Additionally, since *DataRecordModel* and *DataTableModel* may work cooperatively (one holding a record from the recordset held in the other), the data may need to be transferred between the two model classes. Thus, a third composite manager is required.
 
-<p align="center"><b>Figure 2. DataTable class diagram</b></p>
+*DataCompositeManager* is used where *DataRecordModel* and *DataTableModel* work together, and it handles data transfers between the model classes. A composite manager can either two backend-managed classes or two model and two backend classes directly. *DataCompositeManager* uses the latter option ([Fig. 3](#FigCompositeManager)).
 
-*DataRecordManager* ([Fig. 1](#FigDataRecord)) and *DataTableManager* ([Fig. 2](#FigDataTable)) are composite classes, implementing *IDataRecordManager* and *IDataTableManager* interfaces. These classes incorporate by composition one model and one backend class, yielding "backend-managed" models.
+<a name="FigCompositeManager"></a>  
+<img src="https://github.com/pchemguy/ContactEditor/blob/develop/Assets/Diagrams/Class Diagram.svg?raw=true" alt="Overview" width="100%" />  
+<p align="center"><b>Figure 3. Composite manager</b></p>  
 
-*DataRecordModel* and *DataTableModel* work cooperatively: *DataRecordModel* holds a row from the row set held in *DataTableModel*. Since data needs to be transferred between the two model classes, a composite manager, *DataCompositeManager*, handling such transfers is necessary. The composite manager can either incorporate two "backend-managed" classes or two model and two backend classes directly. 
+Lets us overlap the structural application schematic from the previous section and the class hierarchy, as shown in [Fig. 4](#FigFunctionalClassMapping). Note that the figure has only one DataTable backend class, one Data Manager class, while abstract factory classes are not shown. The arrows indicate the flow of data, and the classes placed near the middle of these arrows facilitate/implement such transfers (*ContactEditorPresenter* is responsible for "GUI &#x21D4; *DataRecordModel*" transfer). The figure also shows how the MVP and the Storage Library components are connected.
 
-*DataCompositeManager* uses the latter option. Finally, the *ContactEditorModel*, the main application backend-managed model, incorporates *DataCompositeManager*. See [Fig. 3](#FigCompositeManager).
-
-<a name="FigCompositeManager"></a>
-
-<img src="https://github.com/pchemguy/ContactEditor/blob/develop/Assets/Diagrams/Class%20Diagram.svg?raw=true" alt="Overview" width="100%" />
-
-<p align="center"><b>Figure 3. Composite manager</b></p>
-
+<a name="FigFunctionalClassMapping"></a>  
+<img src="https://github.com/pchemguy/ContactEditor/blob/develop/Assets/Diagrams/Overview Class Map.svg?raw=true" alt="Functional class mapping" width="100%" />  
+<p align="center"><b>Figure 4. Functional class mapping.</b></p>  
 
 ### Implementation Details
 
 #### DataRecordModel
 
-*Record* field wraps a Dictionary object, storing the current record as a "Field Name"<>"Value" map. *ContactEditorPresenter* takes this model's data and populates *ContactEditorForm*. The  "Change" events of the controls in *ContactEditorForm* perform the reverse update. Additionally, a dirty flag is also included to indicated that the user made changes to the data.  
+*Record* field wraps a Dictionary object, storing the current record as a "Field Name" &rightarrow; "Value" map. *ContactEditorPresenter* takes this model's data and populates *ContactEditorForm*. The  "Change" events of the controls in *ContactEditorForm* perform the reverse update. Additionally, a dirty flag is also included to indicated that the user made changes to the data.  
 
 #### DataTableModel
 
@@ -60,10 +61,13 @@ It is safe to assume that field names are strings (textual). Therefore, the mode
 
 The assumption that the first record field (called *RecordId*) is a scalar (single field) primary key (PK) is not always valid, but it simplifies code logic. Further, string casting *RecordId* removes type-related ambiguity and provides two other benefits. *IdIndices* uses the string *RecordId* key in the Dictionary mapping RecordId to record index; the *Values* array provides the reverse mapping.
 
-The other GUI-related benefit is more subtle and, in general, is not the model's concern. *ContactEditorForm* uses PKs for record selection via a drop-down combo list control. The control's 1D Variant array attribute takes PKs from the *Values* array, and its other attribute holds the "current value" of this control, which is always a string. If the populated PK array is numeric, typing in RecordId will not match an existing list element because the combo control does not do typecasting (String("1") <> Integer(1)).
+The other GUI-related benefit is more subtle and, in general, is not the model's concern. *ContactEditorForm* uses PKs for record selection via a drop-down combo list control. The control's 1D Variant array attribute takes PKs from the *Values* array, and its other attribute holds the "current value" of this control, which is always a string. If the populated PK array is numeric, typing in RecordId may not match an existing list element, as the combo control may not do typecasting (String("1") <> Numeric(1) at least for Double).
 
 *DirtyRecords* is a Dictionary, collecting (*RecordId*, *RecordIndex*) pairs of modified records. Only these records need to be saved by the backend when the user requests to save the changes.
 
-*UpdateRecordFromDictionary* takes "Field Name"<>"Value" Dictionary and updates data in the corresponding record in the *Values* array using the *FieldIndices* map.
+*UpdateRecordFromDictionary* takes "Field Name" &rightarrow; "Value" Dictionary and updates data in the corresponding record in the *Values* array using the *FieldIndices* map.
 
 *CopyRecordToDictionary* does the opposite operation based on supplied *RecordId* and *IdIndices* map.
+
+
+[Data manager application figure]: https://pchemguy.github.io/ContactEditor/#FigDataManagerApp
