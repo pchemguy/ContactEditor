@@ -135,8 +135,8 @@ Storage<y:LabelModel>
         <y:ShapeNode>
           <y:Geometry height="27.32577319587631" width="37.11633573259621" x="668.811921578355" y="981.8622235495666"/>
           <y:Fill color="#FFFFFF" transparent="false"/>
-          <y:BorderStyle color="#000000" raised="false" type="dashed" width="3.0"/>
-          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="bold" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="30.00390625" x="3.5562147412980494" y="4.312300660438154">MVP<y:LabelModel>
+          <y:BorderStyle color="#008000" raised="false" type="dashed" width="3.0"/>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="bold" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#008000" verticalTextPosition="bottom" visible="true" width="30.00390625" x="3.5562147412980494" y="4.312300660438154">MVP<y:LabelModel>
               <y:SmartNodeLabelModel distance="4.0"/>
             </y:LabelModel>
             <y:ModelParameter>
@@ -153,7 +153,7 @@ Storage<y:LabelModel>
           <y:Geometry height="35.32577319587631" width="54.11633573259621" x="941.642543025237" y="1085.0513881978084"/>
           <y:Fill color="#FFFFFF" transparent="false"/>
           <y:BorderStyle color="#000000" raised="false" type="dashed" width="3.0"/>
-          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="bold" hasBackgroundColor="false" hasLineColor="false" height="33.40234375" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="48.677734375" x="2.719300678798163" y="0.9617147229381544">Storage
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="bold" hasBackgroundColor="false" hasLineColor="false" height="33.40234375" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="48.677734375" x="2.719300678798163" y="0.9617147229380407">Storage
 Library<y:LabelModel>
               <y:SmartNodeLabelModel distance="4.0"/>
             </y:LabelModel>
@@ -189,7 +189,7 @@ Container<y:LabelModel>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0">
             <y:Point x="688.097412109375" y="860.1624755859375"/>
           </y:Path>
-          <y:LineStyle color="#000000" type="dashed" width="3.0"/>
+          <y:LineStyle color="#008000" type="dashed" width="3.0"/>
           <y:Arrows source="standard" target="standard"/>
           <y:Arc height="-1.165856247098418E-5" ratio="-1.6227612320562912E-7" type="fixedRatio"/>
         </y:ArcEdge>
@@ -393,7 +393,7 @@ Container<y:LabelModel>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0">
             <y:Point x="831.9859619140625" y="966.62109375"/>
           </y:Path>
-          <y:LineStyle color="#000000" type="dashed" width="3.0"/>
+          <y:LineStyle color="#008000" type="dashed" width="3.0"/>
           <y:Arrows source="standard" target="standard"/>
           <y:Arc height="-2.7014457373297773E-6" ratio="-5.075100517615283E-8" type="fixedRatio"/>
         </y:ArcEdge>
