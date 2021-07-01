@@ -1,12 +1,16 @@
 ### Overview
 
-"Contact Editor" demos the Model-View-Presenter (MVP) pattern backed by persistent storage (MVP-DB) in VBA. While studying OOP design patterns, I developed this mock application as a course project to serve as an MVP-DB template/prototype for my VBA experiments. It partially implements the "user <---> database" interaction workflow schematically shown in the [figure](#FigUserDbLoop). Typically, the user sends a query to the database, receives a response table, browses record data via a user form, and, possibly, updates the database.
+"Contact Editor" demos the Model-View-Presenter (MVP) pattern backed by persistent storage (MVP-DB) in VBA. I developed this mock *data manager* as a VBA OOP course project to serve as an MVP-DB template/prototype for my VBA experiments.
 
-<a name="FigUserDbLoop"></a>
+<a name="FigDataManagementWorkflows"></a>
+<img src="https://github.com/pchemguy/ContactEditor/blob/develop/Assets/Diagrams/Overview.svg?raw=true" alt="Overview" width="100%" />
+<p align="center"><b>Figure 1. Data management workflows.</b></p>
 
-<img src="https://github.com/pchemguy/ContactEditor/blob/develop/Assets/Diagrams/Overview.jpg?raw=true" alt="Overview" width="100%" />
+The typical data management constituents are shown in [Fig. 1](#FigDataManagementWorkflows). Usually, the user sends a query to the database, receives a response table, browses record data via a user form, and, possibly, updates the database. From the user perspective, the data management process involves three key players: the user, persistent storage, and GUI acting as an intermediary between the first two. Functionally, the actual intermediary is the data manager application responsible for presenting the GUI, maintaining a local data container, and transferring the data (user &#x21D4; GUI &#x21D4; data container &#x21D4; persistent storage), as shown in [Fig. 2](#FigDataManagerApp). The left part of the figure marked with green arrows ("user &#x21D4; GUI" and "GUI &#x21D4; data container" interactions) can be implemented via the MVP pattern, and the remaining "data container &#x21D4; persistent storage" interaction can be handled via a "storage" library.
 
-<p align="center"><b>User - database interaction workflow.</b></p>
+<a name="FigDataManagerApp"></a>
+<img src="https://github.com/pchemguy/ContactEditor/blob/develop/Assets/Diagrams/Data Management Overview.svg?raw=true" alt="Overview" width="100%" />
+<p align="center"><b>Figure 2. Data manager application.</b></p>
 
 ### Development environment and repo structure
 
