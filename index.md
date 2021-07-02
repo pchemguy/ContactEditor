@@ -21,7 +21,7 @@ The typical data management constituents are shown in [Fig. 1](#FigDataManagemen
 
 ### Development environment and repo structure
 
-Contact Editor demo is a VBA app and is part of an Excel Workbook [Contact Editor.xls][Contact Editor] available from the root of this repo. Additionally, all code modules and user forms are available from the [Project][Project] folder (which acts as a container and corresponds to the VBA project root within the .xls file). [Rubber Duck VBA][Rubber Duck VBA] add-in greatly facilitated the development process, and the project structure is exported/imported using the [RDVBA Project Utils][RDVBA Project Utils] VBA module. Primarily, I use Excel 2002 for development and also run tests on Excel 2016.
+Primarily, I use Excel 2002 for development and also run tests on Excel 2016. Contact Editor demo is a VBA app and is part of an Excel Workbook [Contact Editor.xls][Contact Editor] available from the root of this repo. Additionally, all code modules and user forms are available from the [Project][Project] folder (which acts as a container and corresponds to the VBA project root within the .xls file). [Rubber Duck VBA][Rubber Duck VBA] add-in greatly facilitated the development process, and the project structure is exported/imported using the [RDVBA Project Utils][RDVBA Project Utils] VBA module.  The repo includes a sample SQLite database used by one test module. This database is accessed via the "ADODB" backend and relies on the [SQLite ODBC driver][SQLite ODBC Orig]. While the tests should pass when the provided driver distribution is used, I compiled the driver myself, as briefly discussed [here][SQLite ODBC], to use an up-to-date SQLite library with all extensions enabled.
 
 ### Running the demo with different backends
 
@@ -52,3 +52,5 @@ A special thanks goes to Mathieu Guindon, a co-founder of the [Rubber Duck VBA][
 [Contact Editor]: https://github.com/pchemguy/ContactEditor/blob/master/ContactEditor.xls
 [ContactEditor.db]: https://github.com/pchemguy/ContactEditor/blob/master/ContactEditor.db
 [ContactEditor.xsv]: https://github.com/pchemguy/ContactEditor/blob/master/ContactEditor.xsv
+[SQLite ODBC Orig]: http://www.ch-werner.de/sqliteodbc/
+[SQLite ODBC]: https://pchemguy.github.io/SQLite-ICU-MinGW/
