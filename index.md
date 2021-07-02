@@ -7,7 +7,7 @@ permalink: /
 
 ### Overview
 
-"Contact Editor" demos the Model-View-Presenter (MVP) pattern backed by persistent storage (MVP-DB) in VBA. I developed this mock *data manager* as a VBA OOP course project and an MVP-DB template/prototype for my VBA experiments.
+"Contact Editor" demos the Model-View-Presenter (MVP) pattern backed by persistent storage (MVP-DB) in VBA. I developed this mock data manager as a VBA OOP course project and an MVP-DB template/prototype for my VBA experiments.
 
 <a name="FigDataManagementWorkflows"></a>  
 <img src="https://github.com/pchemguy/ContactEditor/blob/develop/Assets/Diagrams/Overview.svg?raw=true" alt="Overview" width="100%" />  
