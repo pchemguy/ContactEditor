@@ -33,6 +33,16 @@ Public Sub Show(ByVal TableBackEnd As String)
 End Sub
 
 
+Private Sub view_FieldChanged(ByVal FieldName As String, ByVal NewValue As Variant)
+    this.Model.RecordTableManager.RecordModel.SetField FieldName, NewValue
+End Sub
+
+
+Private Sub view_ApplyChanges()
+    ApplyChanges
+End Sub
+
+
 Private Sub ApplyChanges()
     this.Model.RecordTableManager.SaveRecordDataToRecordStorage
     Select Case this.Model.PersistenceMode
@@ -44,11 +54,6 @@ Private Sub ApplyChanges()
         Case DataPersistenceMode.DataPersistenceDisabled
             Exit Sub
     End Select
-End Sub
-
-
-Private Sub view_ApplyChanges()
-    ApplyChanges
 End Sub
 
 

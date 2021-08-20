@@ -32,14 +32,14 @@ End Property
 Public Function Create(ByVal ClassName As String) As IDataTableFactory
     Guard.NonDefaultInstance Me
     
-    Dim Result As DataTableFactory
-    Set Result = New DataTableFactory
-    Result.Init ClassName
-    Set Create = Result
+    Dim Instance As DataTableFactory
+    Set Instance = New DataTableFactory
+    Instance.Init ClassName
+    Set Create = Instance
 End Function
 
 
-Public Sub Init(ByVal ClassName As String)
+Friend Sub Init(ByVal ClassName As String)
     this.ClassName = ClassName
 End Sub
 

@@ -27,15 +27,15 @@ Private this As TDataRecord
 '@Description "Returns a new IDataRecord object."
 Public Function Create(ByVal Model As DataRecordModel, ByVal ConnectionString As String, ByVal TableName As String) As IDataRecordStorage
 Attribute Create.VB_Description = "Returns a new IDataRecord object."
-    Dim Result As DataRecordWSheet
-    Set Result = New DataRecordWSheet
-    Result.Init Model, ConnectionString, TableName
-    Set Create = Result
+    Dim Instance As DataRecordWSheet
+    Set Instance = New DataRecordWSheet
+    Instance.Init Model, ConnectionString, TableName
+    Set Create = Instance
 End Function
 
 
 '@Ignore ParameterNotUsed
-Public Sub Init(ByVal Model As DataRecordModel, ByVal ConnectionString As String, ByVal TableName As String)
+Friend Sub Init(ByVal Model As DataRecordModel, ByVal ConnectionString As String, ByVal TableName As String)
     Set this.Model = Model
     Dim BookSheet As Variant: BookSheet = Split(ConnectionString, "!")
     Guard.Expression UBound(BookSheet) = 1, "DataRecordWSheet", "Invalid connection string: " & ConnectionString

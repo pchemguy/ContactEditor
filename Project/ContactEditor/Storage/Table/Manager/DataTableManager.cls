@@ -22,13 +22,13 @@ Private this As TDataTableManager
 
 
 Public Function Create(ByVal ClassName As String, ByVal ConnectionString As String, ByVal TableName As String) As IDataTableManager
-    Dim Result As DataTableManager
-    Set Result = New DataTableManager
-    Result.Init ClassName, ConnectionString, TableName
-    Set Create = Result
+    Dim Instance As DataTableManager
+    Set Instance = New DataTableManager
+    Instance.Init ClassName, ConnectionString, TableName
+    Set Create = Instance
 End Function
 
-Public Sub Init(ByVal ClassName As String, ByVal ConnectionString As String, ByVal TableName As String)
+Friend Sub Init(ByVal ClassName As String, ByVal ConnectionString As String, ByVal TableName As String)
     Set this.Model = New DataTableModel
     Set this.Storage = DataTableFactory.CreateInstance(ClassName, this.Model, ConnectionString, TableName)
 End Sub

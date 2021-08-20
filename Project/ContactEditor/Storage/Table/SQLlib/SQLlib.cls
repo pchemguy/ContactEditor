@@ -34,14 +34,14 @@ End Property
 
 
 Public Function Create(ByVal TableName As String) As SQLlib
-    Dim SQLTool As SQLlib
-    Set SQLTool = New SQLlib
-    SQLTool.Init TableName
-    Set Create = SQLTool
+    Dim Instance As SQLlib
+    Set Instance = New SQLlib
+    Instance.Init TableName
+    Set Create = Instance
 End Function
 
 
-Public Sub Init(ByVal TableName As String)
+Friend Sub Init(ByVal TableName As String)
     Guard.EmptyString TableName
     this.TableName = TableName
 End Sub

@@ -29,14 +29,14 @@ Private this As TDataTable
 '@Description "Returns a new IDataTable object."
 Public Function Create(ByVal Model As DataTableModel, ByVal ConnectionString As String, ByVal TableName As String) As IDataTableStorage
 Attribute Create.VB_Description = "Returns a new IDataTable object."
-    Dim Result As DataTableWSheet
-    Set Result = New DataTableWSheet
-    Result.Init Model, ConnectionString, TableName
-    Set Create = Result
+    Dim Instance As DataTableWSheet
+    Set Instance = New DataTableWSheet
+    Instance.Init Model, ConnectionString, TableName
+    Set Create = Instance
 End Function
 
 
-Public Sub Init(ByVal Model As DataTableModel, ByVal ConnectionString As String, ByVal TableName As String)
+Friend Sub Init(ByVal Model As DataTableModel, ByVal ConnectionString As String, ByVal TableName As String)
     Set this.Model = Model
     Dim BookSheet As Variant: BookSheet = Split(ConnectionString, "!")
     Guard.Expression UBound(BookSheet) = 1, "DataRecordWSheet", "Invalid connection string: " & ConnectionString

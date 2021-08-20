@@ -22,10 +22,10 @@ Private this As TADOlib
 
 
 Public Function Create() As ADOlib
-    Dim ADOTool As ADOlib
-    Set ADOTool = New ADOlib
-    'ADOTool.Init
-    Set Create = ADOTool
+    Dim Instance As ADOlib
+    Set Instance = New ADOlib
+    'Instance.Init
+    Set Create = Instance
 End Function
 
 

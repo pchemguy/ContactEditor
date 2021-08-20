@@ -22,14 +22,14 @@ Private this As TDataRecordFactory
 
 
 Public Function Create(ByVal ClassName As String) As IDataRecordFactory
-    Dim Result As DataRecordFactory
-    Set Result = New DataRecordFactory
-    Result.Init ClassName
-    Set Create = Result
+    Dim Instance As DataRecordFactory
+    Set Instance = New DataRecordFactory
+    Instance.Init ClassName
+    Set Create = Instance
 End Function
 
 
-Public Sub Init(ByVal ClassName As String)
+Friend Sub Init(ByVal ClassName As String)
     this.ClassName = ClassName
 End Sub
 

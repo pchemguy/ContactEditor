@@ -30,14 +30,14 @@ Private this As TDataTable
 '@Description "Returns a new IDataTable object."
 Public Function Create(ByVal Model As DataTableModel, ByVal ConnectionString As String, ByVal TableName As String) As IDataTableStorage
 Attribute Create.VB_Description = "Returns a new IDataTable object."
-    Dim Result As DataTableCSV
-    Set Result = New DataTableCSV
-    Result.Init Model, ConnectionString, TableName
-    Set Create = Result
+    Dim Instance As DataTableCSV
+    Set Instance = New DataTableCSV
+    Instance.Init Model, ConnectionString, TableName
+    Set Create = Instance
 End Function
 
 
-Public Sub Init(ByVal Model As DataTableModel, ByVal ConnectionString As String, ByVal TableName As String)
+Friend Sub Init(ByVal Model As DataTableModel, ByVal ConnectionString As String, ByVal TableName As String)
     Dim CSVName As String
     If Len(TableName) > 0 Then
         CSVName = TableName

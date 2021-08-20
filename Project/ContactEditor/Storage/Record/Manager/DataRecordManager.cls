@@ -22,13 +22,13 @@ Private this As TDataRecordManager
 
 
 Public Function Create(ByVal ClassName As String, ByVal ConnectionString As String, ByVal TableName As String) As IDataRecordManager
-    Dim Result As DataRecordManager
-    Set Result = New DataRecordManager
-    Result.Init ClassName, ConnectionString, TableName
-    Set Create = Result
+    Dim Instance As DataRecordManager
+    Set Instance = New DataRecordManager
+    Instance.Init ClassName, ConnectionString, TableName
+    Set Create = Instance
 End Function
 
-Public Sub Init(ByVal ClassName As String, ByVal ConnectionString As String, ByVal TableName As String)
+Friend Sub Init(ByVal ClassName As String, ByVal ConnectionString As String, ByVal TableName As String)
     Set this.Model = New DataRecordModel
     Set this.Storage = DataRecordFactory.CreateInstance(ClassName, this.Model, ConnectionString, TableName)
 End Sub

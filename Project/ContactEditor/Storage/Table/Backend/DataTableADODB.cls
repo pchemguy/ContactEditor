@@ -103,16 +103,16 @@ End Sub
 '@Description "Returns a new IDataTableStorage object."
 Public Function Create(ByVal Model As DataTableModel, ByVal ConnectionString As String, ByVal TableName As String) As IDataTableStorage
 Attribute Create.VB_Description = "Returns a new IDataTableStorage object."
-    Dim Result As DataTableADODB
-    Set Result = New DataTableADODB
-    Result.Init Model, ConnectionString, TableName
-    Set Create = Result
+    Dim Instance As DataTableADODB
+    Set Instance = New DataTableADODB
+    Instance.Init Model, ConnectionString, TableName
+    Set Create = Instance
 End Function
 
 
 '''' Creates a DataTableADODB instance with default interface, on which .Self can be use to access IDataTableStorage
 '@Description "Returns a new DataTableADODB object."
-Public Function CreateDefault(ByVal Model As DataTableModel, ByVal ConnectionString As String, ByVal TableName As String) As DataTableADODB
+Friend Function CreateDefault(ByVal Model As DataTableModel, ByVal ConnectionString As String, ByVal TableName As String) As DataTableADODB
 Attribute CreateDefault.VB_Description = "Returns a new DataTableADODB object."
     Dim Result As DataTableADODB
     Set Result = New DataTableADODB

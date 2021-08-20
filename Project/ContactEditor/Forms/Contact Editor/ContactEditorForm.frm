@@ -28,6 +28,7 @@ Public Event LoadRecord(ByVal RecordId As String)
 Public Event ApplyChanges()
 Public Event FormConfirmed()
 Public Event FormCancelled(ByRef Cancel As Boolean)
+Public Event FieldChanged(ByVal FieldName As String, ByVal NewValue As Variant)
 
 Private Type TView
     Model As ContactEditorModel
@@ -137,41 +138,41 @@ End Sub
 
 Private Sub FirstName_Change()
     If this.Model.SuppressEvents Then Exit Sub
-    this.Model.RecordTableManager.RecordModel.SetField "FirstName", FirstName.Value
+    RaiseEvent FieldChanged("FirstName", FirstName.Value)
 End Sub
 
 
 Private Sub LastName_Change()
     If this.Model.SuppressEvents Then Exit Sub
-    this.Model.RecordTableManager.RecordModel.SetField "LastName", LastName.Value
+    RaiseEvent FieldChanged("LastName", LastName.Value)
 End Sub
 
 
 Private Sub Age_Change()
     If this.Model.SuppressEvents Then Exit Sub
-    this.Model.RecordTableManager.RecordModel.SetField "Age", Age.Value
+    RaiseEvent FieldChanged("Age", Age.Value)
 End Sub
 
 
 Private Sub Gender_Change()
     If this.Model.SuppressEvents Then Exit Sub
-    this.Model.RecordTableManager.RecordModel.SetField "Gender", Gender.Value
+    RaiseEvent FieldChanged("Gender", Gender.Value)
 End Sub
 
 
 Private Sub Email_Change()
     If this.Model.SuppressEvents Then Exit Sub
-    this.Model.RecordTableManager.RecordModel.SetField "Email", Email.Value
+    RaiseEvent FieldChanged("Email", Email.Value)
 End Sub
 
 
 Private Sub Country_Change()
     If this.Model.SuppressEvents Then Exit Sub
-    this.Model.RecordTableManager.RecordModel.SetField "Country", Country.Value
+    RaiseEvent FieldChanged("Country", Country.Value)
 End Sub
 
 
 Private Sub Domain_Change()
     If this.Model.SuppressEvents Then Exit Sub
-    this.Model.RecordTableManager.RecordModel.SetField "Domain", Domain.Value
+    RaiseEvent FieldChanged("Domain", Domain.Value)
 End Sub
