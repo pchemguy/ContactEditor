@@ -12,6 +12,7 @@ Attribute VB_Description = "Provides ADO related helpers"
 '@ModuleDescription "Provides ADO related helpers"
 '@PredeclaredId
 '@IgnoreModule IndexedDefaultMemberAccess
+'@IgnoreModule ProcedureNotUsed
 Option Explicit
 
 Private Type TADOlib
@@ -145,4 +146,61 @@ Public Sub RecordToAdoParams(ByVal Record As Scripting.Dictionary, ByVal AdoComm
             AdoParam.Value = FieldValue
         End If
     Next AdoParam
+End Sub
+
+
+'@Description "Outputs Recordset to Excel Worksheet via QueryTable"
+Public Sub RecordsetToQT(ByVal AdoRecordset As ADODB.Recordset, ByVal OutputRange As Excel.Range)
+Attribute RecordsetToQT.VB_Description = "Outputs Recordset to Excel Worksheet via QueryTable"
+    Guard.NullReference AdoRecordset
+    Guard.NullReference OutputRange
+    
+    Dim QTs As Excel.QueryTables
+    Set QTs = OutputRange.Worksheet.QueryTables
+    
+    '''' Cleans up target area before binding the data.
+    '''' Provided range reference used to indicate the left column and
+    '''' Recordset.Fields.Count determines the width.
+    '''' If EntireColumn.Delete method is used, Range object becomes invalid, so
+    '''' a textual address must be saved to reset the Range reference.
+    '''' However, when multiple QTs are bound to the same worksheet,
+    '''' EntireColumn.Delete shifts columns to the left, so the target range
+    '''' may not be clear. EntireColumn.Clear clears the contents.
+    Dim FieldsCount As Long
+    FieldsCount = AdoRecordset.Fields.Count
+    Dim QTRangeAddress As String
+    QTRangeAddress = OutputRange.Address(External:=True)
+    Dim QTRange As Excel.Range
+    '@Ignore ImplicitActiveSheetReference
+    Set QTRange = Range(QTRangeAddress)
+    QTRange.Resize(1, FieldsCount).EntireColumn.Clear
+    '@Ignore ImplicitActiveSheetReference
+    Set QTRange = Range(QTRangeAddress)
+    
+    Dim WSQueryTable As Excel.QueryTable
+    For Each WSQueryTable In QTs
+        WSQueryTable.Delete
+    Next WSQueryTable
+    
+    Dim NamedRange As Excel.Name
+    For Each NamedRange In QTRange.Worksheet.Names
+        NamedRange.Delete
+    Next NamedRange
+    
+    Set WSQueryTable = QTs.Add(Connection:=AdoRecordset, Destination:=QTRange.Range("A1"))
+    With WSQueryTable
+        .FieldNames = True
+        .RowNumbers = False
+        .PreserveFormatting = True
+        .RefreshOnFileOpen = False
+        .BackgroundQuery = True
+        .RefreshStyle = xlInsertDeleteCells
+        .SaveData = False
+        .AdjustColumnWidth = True
+        .RefreshPeriod = 0
+        .PreserveColumnInfo = True
+        .EnableEditing = True
+    End With
+    WSQueryTable.Refresh
+    QTRange.Worksheet.UsedRange.Rows(1).HorizontalAlignment = xlCenter
 End Sub
