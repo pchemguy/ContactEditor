@@ -158,7 +158,7 @@ Arrange:
 Act:
     SMiDefault.AdoCommandInit SQLlib.Create(TEST_TABLE).SelectAll
     Dim AdoRecordset As ADODB.Recordset
-    Set AdoRecordset = SMiDefault.AdoRecordset
+    Set AdoRecordset = SMiDefault.GetAdoRecordset
 Assert:
     Assert.IsNothing AdoRecordset.ActiveCommand, "Expected disconnected recordset"
     Assert.IsNothing AdoRecordset.ActiveConnection, "Expected disconnected recordset"
@@ -295,3 +295,4 @@ CleanExit:
 TestFail:
     Assert.Fail "Error: " & Err.Number & " - " & Err.Description
 End Sub
+

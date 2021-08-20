@@ -24,6 +24,7 @@ Private Type TDataTable
     SQL As SQLlib
     ADO As ADOlib
     AdoCommand As ADODB.Command
+    AdoRst As ADODB.Recordset
     ConnectionString As String
     TableName As String
     FieldNames() As String
@@ -46,6 +47,7 @@ Private Sub Class_Terminate()
     Set this.SQL = Nothing
     Set this.ADO = Nothing
     Set this.FieldMap = Nothing
+    Set this.AdoRst = Nothing
     On Error Resume Next
     this.AdoCommand.ActiveConnection.Close
     On Error GoTo 0
@@ -161,10 +163,10 @@ Public Function AdoCommandInit(ByVal SQLQuery As String, _
 End Function
 
 
-Public Function AdoRecordset(Optional ByVal SQLQuery As String = vbNullString) As ADODB.Recordset
-    Dim Rst As ADODB.Recordset
-    Set Rst = New ADODB.Recordset
-    With Rst
+Public Function GetAdoRecordset(Optional ByVal SQLQuery As String = vbNullString) As ADODB.Recordset
+    Set this.AdoRst = Nothing
+    Set this.AdoRst = New ADODB.Recordset
+    With this.AdoRst
         Set .Source = IIf(SQLQuery = vbNullString, this.AdoCommand, AdoCommandInit(SQLQuery))
         .CursorLocation = this.AdoCommand.ActiveConnection.CursorLocation
         .CursorType = adOpenStatic
@@ -176,20 +178,21 @@ Public Function AdoRecordset(Optional ByVal SQLQuery As String = vbNullString) A
             Set .ActiveConnection = Nothing
         End If
     End With
-    Set AdoRecordset = Rst
+    ADOlib.RecordsetToQT this.AdoRst, DataTableADODBxData.Range("A1")
+    Set GetAdoRecordset = this.AdoRst
 End Function
 
 
 Public Function Records(Optional ByVal SQLQuery As String = vbNullString) As Variant
     Dim Rst As ADODB.Recordset
-    Set Rst = AdoRecordset(SQLQuery)
+    Set Rst = GetAdoRecordset(SQLQuery)
     Records = ArrayLib.TransposeArray(Rst.GetRows, OutputArrBase:=1)
 End Function
 
 
 Public Function RecordsAsText() As Variant
     Dim Rst As ADODB.Recordset
-    Set Rst = AdoRecordset(this.SQL.SelectAllAsText(this.FieldNames, this.FieldTypes))
+    Set Rst = GetAdoRecordset(this.SQL.SelectAllAsText(this.FieldNames, this.FieldTypes))
     RecordsAsText = ArrayLib.TransposeArray(Rst.GetRows, OutputArrBase:=1)
 End Function
 
