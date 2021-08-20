@@ -34,7 +34,7 @@ End Function
 
 '''' Constructor
 '''' This method is called on the default interface of the newly generated class instance
-Public Sub Init(ByVal Model As DataTableModel, _
+Friend Sub Init(ByVal Model As DataTableModel, _
                 ByVal ConnectionString As String, _
                 ByVal TableName As String)
     ' Check input parameters and initialize private data fields here.

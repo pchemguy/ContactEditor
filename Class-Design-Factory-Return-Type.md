@@ -62,7 +62,7 @@ Public Function Create(ByVal UserStorageType As String) As IUserStorageFactory
   Set Create = Instance
 End Function
   
-Public Sub Init(ByVal UserStorageType As String)
+Friend Sub Init(ByVal UserStorageType As String)
   Set this.UserStorageType = UserStorageType
 End Sub
 
