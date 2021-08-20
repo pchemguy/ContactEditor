@@ -8,15 +8,14 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Attribute VB_Description = "Class for common guards."
-'@IgnoreModule ProcedureNotUsed
 '@Folder "Common.Guard"
-'@PredeclaredId
 '@ModuleDescription("Class for common guards.")
+'@PredeclaredId
+'@IgnoreModule ProcedureNotUsed
 Option Explicit
 Option Compare Text
 
 
-'@Ignore ProcedureNotUsed
 '@Description("Returns instance reference")
 Public Property Get Self() As Guard
 Attribute Self.VB_Description = "Returns instance reference"
@@ -24,7 +23,6 @@ Attribute Self.VB_Description = "Returns instance reference"
 End Property
 
 
-'@Ignore ProcedureNotUsed
 '@Description("Returns class reference")
 Public Property Get Class() As Guard
 Attribute Class.VB_Description = "Returns class reference"
@@ -189,14 +187,68 @@ End Sub
 
 
 '@Description("Raises a run-time error if the specified expression is false.")
-Public Sub Expression(ByVal AssertionResult As Boolean, ByVal Source As String, ByVal Message As String)
+Public Sub Expression(ByVal AssertIsTrue As Boolean, ByVal Source As String, ByVal Message As String)
 Attribute Expression.VB_Description = "Raises a run-time error if the specified expression is false."
     Dim errorDetails As TError
     With errorDetails
-        .Trapped = Not AssertionResult
+        .Trapped = Not AssertIsTrue
         If .Trapped Then
             .Name = "CustomErr"
             .Number = ErrNo.CustomErr
+            .Source = Source
+            .Message = Message
+            .Description = vbNullString
+            RaiseError errorDetails
+        End If
+    End With
+End Sub
+
+
+'@Description("Raises a run-time InvalidCharcterErr if the specified expression is false.")
+Public Sub InvalidCharacter(ByVal AssertIsTrue As Boolean, ByVal Source As String, ByVal Message As String)
+Attribute InvalidCharacter.VB_Description = "Raises a run-time InvalidCharcterErr if the specified expression is false."
+    Dim errorDetails As TError
+    With errorDetails
+        .Trapped = Not AssertIsTrue
+        If .Trapped Then
+            .Name = "InvalidCharacterErr"
+            .Number = ErrNo.InvalidCharacterErr
+            .Source = Source
+            .Message = Message
+            .Description = vbNullString
+            RaiseError errorDetails
+        End If
+    End With
+End Sub
+
+
+'@Description("Raises a run-time ActionNotSupportedErr if the specified expression is false.")
+Public Sub ActionNotSupported(ByVal AssertIsTrue As Boolean, ByVal Source As String, ByVal Message As String)
+Attribute ActionNotSupported.VB_Description = "Raises a run-time ActionNotSupportedErr if the specified expression is false."
+    Dim errorDetails As TError
+    With errorDetails
+        .Trapped = Not AssertIsTrue
+        If .Trapped Then
+            .Name = "ActionNotSupportedErr"
+            .Number = ErrNo.ActionNotSupportedErr
+            .Source = Source
+            .Message = Message
+            .Description = vbNullString
+            RaiseError errorDetails
+        End If
+    End With
+End Sub
+
+
+'@Description("Raises a run-time TypeMismatchErr if the specified expression is false.")
+Public Sub TypeMismatch(ByVal AssertIsTrue As Boolean, ByVal Source As String, ByVal Message As String)
+Attribute TypeMismatch.VB_Description = "Raises a run-time TypeMismatchErr if the specified expression is false."
+    Dim errorDetails As TError
+    With errorDetails
+        .Trapped = Not AssertIsTrue
+        If .Trapped Then
+            .Name = "TypeMismatchErr"
+            .Number = ErrNo.TypeMismatchErr
             .Source = Source
             .Message = Message
             .Description = vbNullString
@@ -229,7 +281,6 @@ Attribute DefaultInstance.VB_Description = "Raises a run-time error if the speci
 End Sub
 
 
-'@Ignore ProcedureNotUsed
 '@Description("Raises a run-time error if the specified file does not exist.")
 Public Sub FileNotExist(ByVal FilePathName As String)
 Attribute FileNotExist.VB_Description = "Raises a run-time error if the specified file does not exist."
@@ -245,6 +296,26 @@ Attribute FileNotExist.VB_Description = "Raises a run-time error if the specifie
             .Source = FilePathName
             .Message = "File not found " & FilePathName
             .Description = vbNullString
+            RaiseError errorDetails
+        End If
+    End With
+End Sub
+
+
+'@Description("Raises a run-time error if transaction is requested but not supported. (Trapped on True)")
+Public Sub InvalidTransaction(ByVal TransactoinsDisabled As Boolean)
+Attribute InvalidTransaction.VB_Description = "Raises a run-time error if transaction is requested but not supported. (Trapped on True)"
+    Debug.Assert VarType(TransactoinsDisabled) = vbBoolean
+    
+    Dim errorDetails As TError
+    With errorDetails
+        .Trapped = TransactoinsDisabled
+        If .Trapped Then
+            .Name = "NotInTransaction"
+            .Number = ErrNo.AdoInvalidTransactionErr
+            .Source = vbNullString
+            .Message = "Current database does not support transaction"
+            .Description = "Attempted operation not permmited when transactions are not supported."
             RaiseError errorDetails
         End If
     End With
@@ -281,7 +352,7 @@ Attribute NotInTransaction.VB_Description = "Raises a run-time error if the spec
         .Trapped = Not HasActiveTransaction
         If .Trapped Then
             .Name = "NotInTransaction"
-            .Number = ErrNo.AdoNotInTransactionErr
+            .Number = ErrNo.AdoInvalidTransactionErr
             .Source = vbNullString
             .Message = "Current database connection is not in transaction"
             .Description = "Attempted operation not permmited when no  active transaction in progress (e.g. commit or rollback)."
@@ -314,10 +385,10 @@ Public Sub IncompatibleArrays(ByVal ArrayA As Variant, ByVal ArrayB As Variant)
 Attribute IncompatibleArrays.VB_Description = "Raises a run-time error if the specified references are not both arrays having same base and size"
     Dim errorDetails As TError
     With errorDetails
-        .Trapped = ((VarType(ArrayA) And VarType(ArrayB) And vbArray) <> vbArray)
+        .Trapped = Not (IsArray(ArrayA) And IsArray(ArrayB))
         If .Trapped Then
-            .Name = "Invalid parameters"
-            .Number = ErrNo.InvalidParameterErr
+            .Name = "Expected array"
+            .Number = ErrNo.ExpectedArrayErr
             .Source = "Bad arrays"
             .Message = "Expected two arrays"
             .Description = .Message
@@ -344,6 +415,24 @@ Attribute IncompatibleArrays.VB_Description = "Raises a run-time error if the sp
             .Number = ErrNo.IncompatibleArraysErr
             .Source = "Bad arrays"
             .Message = "Provided arrays have different sizes"
+            .Description = .Message
+            RaiseError errorDetails
+        End If
+    End With
+End Sub
+
+
+'@Description("Raises a run-time error if the specified references are not both arrays having same base and size")
+Public Sub NotArray(ByVal ArrayArg As Variant)
+Attribute NotArray.VB_Description = "Raises a run-time error if the specified references are not both arrays having same base and size"
+    Dim errorDetails As TError
+    With errorDetails
+        .Trapped = Not IsArray(ArrayArg)
+        If .Trapped Then
+            .Name = "Expected array"
+            .Number = ErrNo.ExpectedArrayErr
+            .Source = "Scalar or object argument"
+            .Message = "Expected array"
             .Description = .Message
             RaiseError errorDetails
         End If

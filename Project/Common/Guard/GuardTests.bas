@@ -1,6 +1,6 @@
 Attribute VB_Name = "GuardTests"
 Attribute VB_Description = "Tests for the Guard class."
-'@Folder "Common.Guard.Tests"
+'@Folder "Common.Guard"
 ''@TestModule
 '@ModuleDescription("Tests for the Guard class.")
 '@IgnoreModule LineLabelNotUsed, UnhandledOnErrorResumeNext
