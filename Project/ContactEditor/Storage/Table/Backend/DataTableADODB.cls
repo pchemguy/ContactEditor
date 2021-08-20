@@ -100,8 +100,12 @@ End Sub
 
 
 '@Ignore ProcedureNotUsed
+'''' Note, the factory intentionally returns the default interface. The
+'''' interface of the instance's reference is switched to IDataTableStorage
+'''' when the returned value is assigned in the calling code to appropriately
+'''' declared variable.
 '@Description "Returns a new IDataTableStorage object."
-Public Function Create(ByVal Model As DataTableModel, ByVal ConnectionString As String, ByVal TableName As String) As IDataTableStorage
+Public Function Create(ByVal Model As DataTableModel, ByVal ConnectionString As String, ByVal TableName As String) As DataTableADODB
 Attribute Create.VB_Description = "Returns a new IDataTableStorage object."
     Dim Instance As DataTableADODB
     Set Instance = New DataTableADODB
@@ -110,18 +114,7 @@ Attribute Create.VB_Description = "Returns a new IDataTableStorage object."
 End Function
 
 
-'''' Creates a DataTableADODB instance with default interface, on which .Self can be use to access IDataTableStorage
-'@Description "Returns a new DataTableADODB object."
-Friend Function CreateDefault(ByVal Model As DataTableModel, ByVal ConnectionString As String, ByVal TableName As String) As DataTableADODB
-Attribute CreateDefault.VB_Description = "Returns a new DataTableADODB object."
-    Dim Result As DataTableADODB
-    Set Result = New DataTableADODB
-    Result.Init Model, ConnectionString, TableName
-    Set CreateDefault = Result
-End Function
-
-
-Public Sub Init(ByVal Model As DataTableModel, ByVal ConnectionString As String, ByVal TableName As String)
+Friend Sub Init(ByVal Model As DataTableModel, ByVal ConnectionString As String, ByVal TableName As String)
     Guard.NullReference Model
     Guard.EmptyString ConnectionString
     

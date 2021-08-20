@@ -25,10 +25,15 @@ End Type
 Private this As TDataTable
 
 
-' ConnectionString - "<Path to CSV>" or empty to use ThisWorkbook.Path
-' TableName        - "<CSV file name>!sep=<FieldSeparator>" or empty to use <ThisWorkbook.Name>(without ext)".xsv!sep=,"
-'@Description "Returns a new IDataTable object."
-Public Function Create(ByVal Model As DataTableModel, ByVal ConnectionString As String, ByVal TableName As String) As IDataTableStorage
+'''' ConnectionString - "<Path to CSV>" or empty to use ThisWorkbook.Path
+'''' TableName        - "<CSV file name>!sep=<FieldSeparator>" or empty
+'''' to use <ThisWorkbook.Name>(without ext)".xsv!sep=,"
+'''' Note, the factory intentionally returns the default interface. The
+'''' interface of the instance's reference is switched to IDataTableStorage
+'''' when the returned value is assigned in the calling code to appropriately
+'''' declared variable.
+'@Description "Returns a new DataTableCSV object."
+Public Function Create(ByVal Model As DataTableModel, ByVal ConnectionString As String, ByVal TableName As String) As DataTableCSV
 Attribute Create.VB_Description = "Returns a new IDataTable object."
     Dim Instance As DataTableCSV
     Set Instance = New DataTableCSV

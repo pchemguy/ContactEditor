@@ -49,7 +49,7 @@ Private Function zfxGetDataTableADODB() As DataTableADODB
     Dim StorageModel As DataTableModel: Set StorageModel = New DataTableModel
     Dim ConnectionString As String: ConnectionString = ADOlib.GetSQLiteConnectionString()("ADO")
     Dim TableName As String: TableName = TEST_TABLE
-    Set zfxGetDataTableADODB = DataTableADODB.CreateDefault(StorageModel, ConnectionString, TableName)
+    Set zfxGetDataTableADODB = DataTableADODB.Create(StorageModel, ConnectionString, TableName)
 End Function
 
 
@@ -59,7 +59,7 @@ Private Function zfxGetDataTableModel() As DataTableModel
     Dim TableName As String: TableName = TEST_TABLE
     
     Dim SMiDefault As DataTableADODB
-    Set SMiDefault = DataTableADODB.CreateDefault(StorageModel, ConnectionString, TableName)
+    Set SMiDefault = DataTableADODB.Create(StorageModel, ConnectionString, TableName)
     Dim StorageManager As IDataTableStorage
     Set StorageManager = SMiDefault.SelfIDataTableStorage
     StorageManager.LoadDataIntoModel

@@ -26,8 +26,12 @@ End Type
 Private this As TDataTable
 
 
+'''' Note, the factory intentionally returns the default interface. The
+'''' interface of the instance's reference is switched to IDataTableStorage
+'''' when the returned value is assigned in the calling code to appropriately
+'''' declared variable.
 '@Description "Returns a new IDataTable object."
-Public Function Create(ByVal Model As DataTableModel, ByVal ConnectionString As String, ByVal TableName As String) As IDataTableStorage
+Public Function Create(ByVal Model As DataTableModel, ByVal ConnectionString As String, ByVal TableName As String) As DataTableWSheet
 Attribute Create.VB_Description = "Returns a new IDataTable object."
     Dim Instance As DataTableWSheet
     Set Instance = New DataTableWSheet
