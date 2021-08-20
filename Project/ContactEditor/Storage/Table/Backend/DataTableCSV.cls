@@ -34,7 +34,7 @@ Private this As TDataTable
 '''' declared variable.
 '@Description "Returns a new DataTableCSV object."
 Public Function Create(ByVal Model As DataTableModel, ByVal ConnectionString As String, ByVal TableName As String) As DataTableCSV
-Attribute Create.VB_Description = "Returns a new IDataTable object."
+Attribute Create.VB_Description = "Returns a new DataTableCSV object."
     Dim Instance As DataTableCSV
     Set Instance = New DataTableCSV
     Instance.Init Model, ConnectionString, TableName

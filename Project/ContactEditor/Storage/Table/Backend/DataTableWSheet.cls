@@ -30,9 +30,10 @@ Private this As TDataTable
 '''' interface of the instance's reference is switched to IDataTableStorage
 '''' when the returned value is assigned in the calling code to appropriately
 '''' declared variable.
-'@Description "Returns a new IDataTable object."
-Public Function Create(ByVal Model As DataTableModel, ByVal ConnectionString As String, ByVal TableName As String) As DataTableWSheet
-Attribute Create.VB_Description = "Returns a new IDataTable object."
+'@Description "Returns a new DataTableWSheet object."
+Public Function Create(ByVal Model As DataTableModel, _
+                       ByVal ConnectionString As String, _
+                       ByVal TableName As String) As DataTableWSheet
     Dim Instance As DataTableWSheet
     Set Instance = New DataTableWSheet
     Instance.Init Model, ConnectionString, TableName
@@ -40,7 +41,9 @@ Attribute Create.VB_Description = "Returns a new IDataTable object."
 End Function
 
 
-Friend Sub Init(ByVal Model As DataTableModel, ByVal ConnectionString As String, ByVal TableName As String)
+Friend Sub Init(ByVal Model As DataTableModel, _
+                ByVal ConnectionString As String, _
+                ByVal TableName As String)
     Set this.Model = Model
     Dim BookSheet As Variant: BookSheet = Split(ConnectionString, "!")
     Guard.Expression UBound(BookSheet) = 1, "DataRecordWSheet", "Invalid connection string: " & ConnectionString

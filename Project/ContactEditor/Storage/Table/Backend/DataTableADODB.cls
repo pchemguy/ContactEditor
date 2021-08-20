@@ -54,6 +54,42 @@ Private Sub Class_Terminate()
 End Sub
 
 
+'''' Note, the factory intentionally returns the default interface. The
+'''' interface of the instance's reference is switched to IDataTableStorage
+'''' when the returned value is assigned in the calling code to appropriately
+'''' declared variable.
+'@Description "Returns a new DataTableADODB object."
+Public Function Create(ByVal Model As DataTableModel, _
+                       ByVal ConnectionString As String, _
+                       ByVal TableName As String) As DataTableADODB
+    Dim Instance As DataTableADODB
+    Set Instance = New DataTableADODB
+    Instance.Init Model, ConnectionString, TableName
+    Set Create = Instance
+End Function
+
+
+Friend Sub Init(ByVal Model As DataTableModel, _
+                ByVal ConnectionString As String, _
+                ByVal TableName As String)
+    Guard.NullReference Model
+    Guard.EmptyString ConnectionString
+    
+    Set this.Model = Model
+    Set this.SQL = SQLlib.Create(TableName)
+    Set this.ADO = ADOlib.Create
+    If LCase$(Left$(ConnectionString, 7)) = SQLITE_CONNSTR_PREFIX Then
+        this.ConnectionString = this.ADO.GetSQLiteConnectionString(ConnectionString)("ADO")
+    Else
+        this.ConnectionString = ConnectionString
+    End If
+    this.ADO.SetConnectionString this.ConnectionString
+    this.TableName = TableName
+    
+    this.ADO.GetTableMeta this.TableName, this.FieldNames, this.FieldTypes, this.FieldMap
+End Sub
+
+
 '@Ignore ProcedureNotUsed
 Public Property Get SelfIDataTableStorage() As IDataTableStorage
     Set SelfIDataTableStorage = Me
@@ -96,40 +132,6 @@ End Property
 '@Ignore ProcedureNotUsed
 Public Sub SetTypeCast(Optional ByVal TypeCast As FieldFormat = FieldFormat.CastAsIs)
     this.TypeCast = TypeCast
-End Sub
-
-
-'@Ignore ProcedureNotUsed
-'''' Note, the factory intentionally returns the default interface. The
-'''' interface of the instance's reference is switched to IDataTableStorage
-'''' when the returned value is assigned in the calling code to appropriately
-'''' declared variable.
-'@Description "Returns a new IDataTableStorage object."
-Public Function Create(ByVal Model As DataTableModel, ByVal ConnectionString As String, ByVal TableName As String) As DataTableADODB
-Attribute Create.VB_Description = "Returns a new IDataTableStorage object."
-    Dim Instance As DataTableADODB
-    Set Instance = New DataTableADODB
-    Instance.Init Model, ConnectionString, TableName
-    Set Create = Instance
-End Function
-
-
-Friend Sub Init(ByVal Model As DataTableModel, ByVal ConnectionString As String, ByVal TableName As String)
-    Guard.NullReference Model
-    Guard.EmptyString ConnectionString
-    
-    Set this.Model = Model
-    Set this.SQL = SQLlib.Create(TableName)
-    Set this.ADO = ADOlib.Create
-    If LCase$(Left$(ConnectionString, 7)) = SQLITE_CONNSTR_PREFIX Then
-        this.ConnectionString = this.ADO.GetSQLiteConnectionString(ConnectionString)("ADO")
-    Else
-        this.ConnectionString = ConnectionString
-    End If
-    this.ADO.SetConnectionString this.ConnectionString
-    this.TableName = TableName
-    
-    this.ADO.GetTableMeta this.TableName, this.FieldNames, this.FieldTypes, this.FieldMap
 End Sub
 
 
