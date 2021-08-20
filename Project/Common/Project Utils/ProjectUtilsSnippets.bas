@@ -61,3 +61,11 @@ Private Sub ProjectFilesImport()
     ImportFolder = "" '"Storage\Record"
     Project.ProjectFilesImport ImportFolder
 End Sub
+
+Private Sub ProjectNodeSubtreeDelete()
+    Dim Project As ProjectUtils
+    Set Project = New ProjectUtils
+    Dim SubtreePath As String
+    SubtreePath = "" '"Storage\Record"
+    Project.ProjectNodeSubtreeDelete SubtreePath
+End Sub

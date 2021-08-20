@@ -200,6 +200,7 @@ Attribute ProjectStructureParse.VB_Description = "Iterates over VBComponents, ex
     Dim Ext As String
     Dim ComponentType As String
     Dim ComponentDeclareLines As String
+    Dim LineCount As Long
 
     For Each Component In this.Project.VBComponents
         Select Case Component.Type
@@ -217,7 +218,9 @@ Attribute ProjectStructureParse.VB_Description = "Iterates over VBComponents, ex
                 Ext = ".doccls"
         End Select
         
-        ComponentDeclareLines = Component.CodeModule.Lines(1, Component.CodeModule.CountOfDeclarationLines)
+        LineCount = Component.CodeModule.CountOfDeclarationLines
+        LineCount = IIf(LineCount = 0, 1, LineCount)
+        ComponentDeclareLines = Component.CodeModule.Lines(1, LineCount)
         AnnotateStart = InStr(1, ComponentDeclareLines, "'@Folder", vbTextCompare)
         If AnnotateStart > 0 Then
             AnnotateStart = InStr(AnnotateStart, ComponentDeclareLines, """")
@@ -281,6 +284,30 @@ Attribute ProjectFilesExport.VB_Description = "Exports code modules (entire proj
             
         If (Len(PrefixMatch) > 0) And (Left$(Path, Len(PrefixMatch)) = PrefixMatch) Or (Len(Prefix) = 0) Then
             this.Project.VBComponents(File).Export this.ProjectPath & Application.PathSeparator & Path & Application.PathSeparator & File & this.Files(File)(0)
+        End If
+    Next File
+End Sub
+
+
+'Document modules are skipped
+'@Description "Deletes all modules from the project node subtree identified by the prefix"
+Public Sub ProjectNodeSubtreeDelete(ByVal Prefix As String)
+Attribute ProjectNodeSubtreeDelete.VB_Description = "Deletes all modules from the project node subtree identified by the prefix"
+    If Prefix = vbNullString Then
+        Err.Raise 17, "RDVBAProjectUtils", "Empty prefix is not allowed"
+    End If
+    
+    ProjectStructureParse
+    
+    Dim File As Variant
+    Dim Path As String
+    For Each File In this.Files.Keys
+        Path = this.Files(File)(2)
+            
+        If (Left$(Path, Len(Prefix)) = Prefix) Then
+            If this.Project.VBComponents(File).Type <> vbext_ct_Document Then
+                this.Project.VBComponents.Remove this.Project.VBComponents(File)
+            End If
         End If
     Next File
 End Sub
