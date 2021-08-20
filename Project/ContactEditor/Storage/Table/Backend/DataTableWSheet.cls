@@ -17,13 +17,13 @@ Option Explicit
 
 Implements IDataTableStorage
 
-Private Type TDataTable
+Private Type TDataTableWSheet
     Model As DataTableModel
     TableRange As Excel.Range
     TableBodyRange As Excel.Range
     TableIdColumn As Excel.Range
 End Type
-Private this As TDataTable
+Private this As TDataTableWSheet
 
 
 '''' Note, the factory intentionally returns the default interface. The
@@ -154,3 +154,4 @@ Private Function IDataTableStorage_GetColumnValues(ByVal FieldName As String) As
     Set FieldRange = this.TableBodyRange.Offset(0, FieldIndex - 1).Resize(this.TableBodyRange.Rows.Count, 1)
     IDataTableStorage_GetColumnValues = Application.WorksheetFunction.Transpose(FieldRange)
 End Function
+

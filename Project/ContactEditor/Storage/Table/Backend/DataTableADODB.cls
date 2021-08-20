@@ -19,7 +19,7 @@ Private Const SQLITE_CONNSTR_PREFIX As String = "sqlite:"
 
 Implements IDataTableStorage
 
-Private Type TDataTable
+Private Type TDataTableADODB
     Model As DataTableModel
     SQL As SQLlib
     ADO As ADOlib
@@ -33,7 +33,7 @@ Private Type TDataTable
     IDs As Variant
     TypeCast As FieldFormat
 End Type
-Private this As TDataTable
+Private this As TDataTableADODB
 
 
 Private Sub Class_Initialize()
@@ -104,7 +104,6 @@ Attribute Class.VB_Description = "Returns class reference."
 End Property
 
 
-'@Ignore ProcedureNotUsed
 Public Property Get AdoCommand() As ADODB.Command
     If this.AdoCommand Is Nothing Then
         Set AdoCommand = AdoCommandInit(this.SQL.SelectAll)

@@ -17,12 +17,12 @@ Option Explicit
 
 Implements IDataTableStorage
 
-Private Type TDataTable
+Private Type TDataTableCSV
     Model As DataTableModel
     CSVFileName As String
     FieldSeparator As String
 End Type
-Private this As TDataTable
+Private this As TDataTableCSV
 
 
 '''' ConnectionString - "<Path to CSV>" or empty to use ThisWorkbook.Path
