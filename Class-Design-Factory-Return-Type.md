@@ -8,6 +8,8 @@ permalink: /class-design/factory-return-type
 
 ### Factory return type with single foreign interface
 
+#### Concrete factory
+
 Suppose we have a class implementing another class's interface and employing the "factory" pattern, such as the new [UserWSheet.cls][UserWSheetI.cls]. In such a case, it is customarily to define the factory return value as the non-default interface (though it can still return the default one):
 
 ```vb
@@ -24,7 +26,9 @@ End Function
 
 For a class implementing one foreign interface, there is a subtle difference between these two options. Usually, the calling code assigns the value returned by the factory to a local variable. This variable's type, in turn, determines the interface it will present (see *SomeStorage* assignment in [DemoInterfaceSwitching.bas][]). Here, the two declarations would yield identical behavior.
 
-There is one use case, however, for which the two options are not the same. Consider an abstract factory class [UserStorageFactory.cls](#UserStorageFactory.cls) coded against the [IUserStorageFactory.cls](#IUserStorageFactory.cls) interface:
+#### Concrete factory
+
+There is one use case, however, for which the two options affect the code. Consider an abstract factory class [UserStorageFactory.cls](#UserStorageFactory.cls) coded against the [IUserStorageFactory.cls](#IUserStorageFactory.cls) interface:
 
 <a name="IUserStorageFactory.cls"></a>
 <p align="right"><b>IUserStorageFactory.cls</b></p>
