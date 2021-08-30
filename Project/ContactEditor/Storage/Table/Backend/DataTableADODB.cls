@@ -62,6 +62,7 @@ End Sub
 Public Function Create(ByVal Model As DataTableModel, _
                        ByVal ConnectionString As String, _
                        ByVal TableName As String) As DataTableADODB
+Attribute Create.VB_Description = "Returns a new DataTableADODB object."
     Dim Instance As DataTableADODB
     Set Instance = New DataTableADODB
     Instance.Init Model, ConnectionString, TableName
@@ -104,6 +105,7 @@ Attribute Class.VB_Description = "Returns class reference."
 End Property
 
 
+'@Ignore ProcedureNotUsed
 Public Property Get AdoCommand() As ADODB.Command
     If this.AdoCommand Is Nothing Then
         Set AdoCommand = AdoCommandInit(this.SQL.SelectAll)
@@ -178,16 +180,16 @@ End Function
 
 
 Public Function Records(Optional ByVal SQLQuery As String = vbNullString) As Variant
-    Dim Rst As ADODB.Recordset
-    Set Rst = GetAdoRecordset(SQLQuery)
-    Records = ArrayLib.TransposeArray(Rst.GetRows, OutputArrBase:=1)
+    Dim rst As ADODB.Recordset
+    Set rst = GetAdoRecordset(SQLQuery)
+    Records = ArrayLib.TransposeArray(rst.GetRows, OutputArrBase:=1)
 End Function
 
 
 Public Function RecordsAsText() As Variant
-    Dim Rst As ADODB.Recordset
-    Set Rst = GetAdoRecordset(this.SQL.SelectAllAsText(this.FieldNames, this.FieldTypes))
-    RecordsAsText = ArrayLib.TransposeArray(Rst.GetRows, OutputArrBase:=1)
+    Dim rst As ADODB.Recordset
+    Set rst = GetAdoRecordset(this.SQL.SelectAllAsText(this.FieldNames, this.FieldTypes))
+    RecordsAsText = ArrayLib.TransposeArray(rst.GetRows, OutputArrBase:=1)
 End Function
 
 

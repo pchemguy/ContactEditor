@@ -34,13 +34,13 @@ Public Sub SetConnectionString(ByVal ConnectionString As String)
 End Sub
 
 
-Public Function GetSQLiteConnectionString(Optional ByVal DBPath As String = vbNullString, _
+Public Function GetSQLiteConnectionString(Optional ByVal DbPath As String = vbNullString, _
                                           Optional ByVal Features As String = vbNullString) As Scripting.Dictionary
     Dim Driver As String
     Driver = "SQLite3 ODBC Driver"
     
     Dim Database As String
-    Database = Right$(DBPath, Abs(Len(DBPath) - 7))
+    Database = Right$(DbPath, Abs(Len(DbPath) - 7))
     Database = VerifyOrGetDefaultPath(Database, Array("db", "sqlite"))
     
     Dim Options As String

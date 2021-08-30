@@ -19,7 +19,7 @@ Private Function IParameterProvider_FromValue(ByVal Value As Variant, Optional B
     Set IParameterProvider_FromValue = New ADODB.Parameter
 End Function
 
-Private Function IParameterProvider_FromValues(values() As Variant) As Collection
+Private Function IParameterProvider_FromValues(Values() As Variant) As Collection
     Dim Result As VBA.Collection
     Set Result = New VBA.Collection
     Set IParameterProvider_FromValues = Result

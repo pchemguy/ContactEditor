@@ -40,6 +40,7 @@ Friend Sub Init(ByVal Model As DataRecordModel, ByVal ConnectionString As String
     Dim BookSheet As Variant: BookSheet = Split(ConnectionString, "!")
     Guard.Expression UBound(BookSheet) = 1, "DataRecordWSheet", "Invalid connection string: " & ConnectionString
     On Error Resume Next
+    '@Ignore ImplicitActiveWorkbookReference: false positive
     Set this.WSheet = Application.Workbooks(BookSheet(0)).Worksheets(BookSheet(1))
     Select Case Err.Number
         Case ErrNo.PassedNoErr

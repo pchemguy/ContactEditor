@@ -34,6 +34,7 @@ Private this As TDataTableWSheet
 Public Function Create(ByVal Model As DataTableModel, _
                        ByVal ConnectionString As String, _
                        ByVal TableName As String) As DataTableWSheet
+Attribute Create.VB_Description = "Returns a new DataTableWSheet object."
     Dim Instance As DataTableWSheet
     Set Instance = New DataTableWSheet
     Instance.Init Model, ConnectionString, TableName
@@ -49,6 +50,7 @@ Friend Sub Init(ByVal Model As DataTableModel, _
     Guard.Expression UBound(BookSheet) = 1, "DataRecordWSheet", "Invalid connection string: " & ConnectionString
     On Error Resume Next
     Dim WSheet As Excel.Worksheet
+    '@Ignore ImplicitActiveWorkbookReference: false positive
     Set WSheet = Application.Workbooks(BookSheet(0)).Worksheets(BookSheet(1))
     Select Case Err.Number
         Case ErrNo.SubscriptOutOfRange
@@ -154,4 +156,3 @@ Private Function IDataTableStorage_GetColumnValues(ByVal FieldName As String) As
     Set FieldRange = this.TableBodyRange.Offset(0, FieldIndex - 1).Resize(this.TableBodyRange.Rows.Count, 1)
     IDataTableStorage_GetColumnValues = Application.WorksheetFunction.Transpose(FieldRange)
 End Function
-

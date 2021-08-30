@@ -65,13 +65,13 @@ Attribute IParameterProvider_Class.VB_Description = "Returns class reference."
 End Property
 
 
-Private Function IParameterProvider_FromValues(ByRef values() As Variant) As VBA.Collection
+Private Function IParameterProvider_FromValues(ByRef Values() As Variant) As VBA.Collection
     Dim results As VBA.Collection
     Set results = New VBA.Collection
     '@Ignore UseMeaningfulName
     Dim i As Long
-    For i = LBound(values) To UBound(values)
-        results.Add IParameterProvider_FromValue(values(i))
+    For i = LBound(Values) To UBound(Values)
+        results.Add IParameterProvider_FromValue(Values(i))
     Next
     Set IParameterProvider_FromValues = results
 End Function

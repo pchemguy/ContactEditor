@@ -130,9 +130,9 @@ Private Sub FromValues_YieldsAsManyParametersAsSuppliedArgs()
     args(3) = 34567
     args(4) = "some string"
     
-    Dim values As VBA.Collection
-    Set values = sut.FromValues(args)
+    Dim Values As VBA.Collection
+    Set Values = sut.FromValues(args)
     
-    Assert.AreEqual UBound(args), values.Count
+    Assert.AreEqual UBound(args), Values.Count
 End Sub
 

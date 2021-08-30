@@ -20,7 +20,7 @@ Attribute FromValue.VB_Description = "Creates an ADODB.Parameter object from the
 End Function
 
 '@Description("Creates an ADODB.Parameter object for each specified value; returns a VBA.Collection containing all parameters.")
-Public Function FromValues(ByRef values() As Variant) As VBA.Collection
+Public Function FromValues(ByRef Values() As Variant) As VBA.Collection
 Attribute FromValues.VB_Description = "Creates an ADODB.Parameter object for each specified value; returns a VBA.Collection containing all parameters."
 End Function
 
