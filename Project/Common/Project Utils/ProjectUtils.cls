@@ -286,30 +286,6 @@ Attribute ProjectFilesExport.VB_Description = "Exports code modules (entire proj
 End Sub
 
 
-'Document modules are skipped
-'@Description "Deletes all modules from the project node subtree identified by the prefix"
-Public Sub ProjectNodeSubtreeDelete(ByVal Prefix As String)
-Attribute ProjectNodeSubtreeDelete.VB_Description = "Deletes all modules from the project node subtree identified by the prefix"
-    If Prefix = vbNullString Then
-        Err.Raise 17, "RDVBAProjectUtils", "Empty prefix is not allowed"
-    End If
-    
-    ProjectStructureParse
-    
-    Dim File As Variant
-    Dim Path As String
-    For Each File In this.Files.Keys
-        Path = this.Files(File)(2)
-            
-        If (Left$(Path, Len(Prefix)) = Prefix) Then
-            If this.Project.VBComponents(File).Type <> vbext_ct_Document Then
-                this.Project.VBComponents.Remove this.Project.VBComponents(File)
-            End If
-        End If
-    Next File
-End Sub
-
-
 Private Sub WalkTreeCore(ByVal Folder As Folder)
     Dim SubFolder As Folder
     
@@ -396,4 +372,28 @@ Public Sub ProjectFilesImport(Optional ByVal Prefix As String = vbNullString, Op
              & IIf(Prefix <> vbNullString, Application.PathSeparator & Prefix, vbNullString) _
              & Application.PathSeparator & REFERENCES_FILE
     If Dir$(PathName) <> vbNullString Then ReferencesAddFromFile PathName
+End Sub
+
+
+'Document modules are skipped
+'@Description "Deletes all modules from the project node subtree identified by the prefix"
+Public Sub ProjectNodeSubtreeDelete(ByVal Prefix As String)
+Attribute ProjectNodeSubtreeDelete.VB_Description = "Deletes all modules from the project node subtree identified by the prefix"
+    If Prefix = vbNullString Then
+        Err.Raise 17, "RDVBAProjectUtils", "Empty prefix is not allowed"
+    End If
+    
+    ProjectStructureParse
+    
+    Dim File As Variant
+    Dim Path As String
+    For Each File In this.Files.Keys
+        Path = this.Files(File)(2)
+            
+        If (Left$(Path, Len(Prefix)) = Prefix) Then
+            If this.Project.VBComponents(File).Type <> vbext_ct_Document Then
+                this.Project.VBComponents.Remove this.Project.VBComponents(File)
+            End If
+        End If
+    Next File
 End Sub

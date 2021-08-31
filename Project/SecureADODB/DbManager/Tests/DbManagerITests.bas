@@ -67,7 +67,6 @@ End Function
 Private Function zfxGetConnectionString( _
             Optional ByVal DbType As String = "sqlite", _
             Optional ByVal BaseName As String = "SecureADODB") As String
-''''    zfxGetConnectionString = DbConnectionString.CreateFileDb(DbType).ConnectionString
     zfxGetConnectionString = zfxGetDbManager(DbType, BaseName).DbConnStr.ConnectionString
 End Function
 

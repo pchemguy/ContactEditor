@@ -15,14 +15,14 @@ Public Const SW_SHOW As Long = 5
     Public Declare PtrSafe Function FindWindow Lib "user32" Alias "FindWindowA" (ByVal lpClassName As String, ByVal lpWindowName As String) As LongPtr
     Public Declare PtrSafe Function GetWindowLong Lib "user32" Alias "GetWindowLongA" (ByVal hwnd As LongPtr, ByVal nIndex As Long) As Long
     Public Declare PtrSafe Function SetWindowLong Lib "user32" Alias "SetWindowLongA" (ByVal hwnd As LongPtr, ByVal nIndex As Long, ByVal dwNewLong As Long) As Long
-    Public Declare PtrSafe Function ShowWindow Lib "user32" Alias "ShowWindow" (ByVal hwnd As LongPtr, ByVal nCmdShow As Long) As Long
-    Public Declare PtrSafe Function DrawMenuBar Lib "user32" Alias "DrawMenuBar" (ByVal hwnd As LongPtr) As Long
-    Public Declare PtrSafe Function SetFocus Lib "user32" Alias "SetFocus" (ByVal hwnd As LongPtr) As LongPtr
+    Public Declare PtrSafe Function ShowWindow Lib "user32" (ByVal hwnd As LongPtr, ByVal nCmdShow As Long) As Long
+    Public Declare PtrSafe Function DrawMenuBar Lib "user32" (ByVal hwnd As LongPtr) As Long
+    Public Declare PtrSafe Function SetFocus Lib "user32" (ByVal hwnd As LongPtr) As LongPtr
     
     '''' Process functions
-    Public Declare PtrSafe Function OpenProcess Lib "kernel32" Alias "OpenProcess" (ByVal dwDesiredAccess As Long, ByVal bInheritHandle As Long, ByVal dwProcessId As Long) As LongPtr
-    Public Declare PtrSafe Function WaitForSingleObject Lib "kernel32" Alias "WaitForSingleObject" (ByVal hHandle As LongPtr, ByVal dwMilliseconds As Long) As Long
-    Public Declare PtrSafe Function CloseHandle Lib "kernel32" Alias "CloseHandle" (ByVal hObject As LongPtr) As Long
+    Public Declare PtrSafe Function OpenProcess Lib "kernel32" (ByVal dwDesiredAccess As Long, ByVal bInheritHandle As Long, ByVal dwProcessId As Long) As LongPtr
+    Public Declare PtrSafe Function WaitForSingleObject Lib "kernel32" (ByVal hHandle As LongPtr, ByVal dwMilliseconds As Long) As Long
+    Public Declare PtrSafe Function CloseHandle Lib "kernel32" (ByVal hObject As LongPtr) As Long
     
     Public Declare PtrSafe Sub Sleep Lib "kernel32" (ByVal dwMilliseconds As LongPtr)
     Public Declare PtrSafe Function QueryPerformanceCounter Lib "kernel32" (ByRef lpPerformanceCount As Currency) As Long
