@@ -1,4 +1,4 @@
-Attribute VB_Name = "DbMetaDataTests"
+Attribute VB_Name = "DbMetaDataITests"
 '@Folder "SecureADODB.DbManager.DbMetaData"
 '@TestModule
 '@IgnoreModule UnhandledOnErrorResumeNext: Tests for expected errors do not reset error handling
@@ -39,7 +39,22 @@ End Sub
 '===================================================='
 
 
-Public Function zfxGetMeta(Optional ByVal DbFileName As String = "ContactEditorTest.db") As DbMetaData
+Private Function zfxGetLibPrefix(ByVal LibName As String) As String
+    Dim PathNameComponents As Variant
+    PathNameComponents = Array( _
+        ThisWorkbook.Path, _
+        "Library", _
+        LibName _
+    )
+    Dim PathName As String
+    PathName = Join(PathNameComponents, Application.PathSeparator) & Application.PathSeparator
+    zfxGetLibPrefix = PathName
+End Function
+
+
+Public Function zfxGetMeta() As DbMetaData
+    Dim DbFileName As String
+    DbFileName = zfxGetLibPrefix("SecureADODB") & "ContactEditorTest.db"
     Dim DbOK As Variant
     Dim Status As Long
     On Error Resume Next
@@ -96,7 +111,7 @@ Private Sub ztiQueryTableADOXMeta_VerifiesTableMeta()
     
 Arrange:
     Dim dbm As DbMetaData
-    Set dbm = zfxGetMeta("ContactEditorTest.db")
+    Set dbm = zfxGetMeta
     If dbm Is Nothing Then GoTo TestInconclusive
 Act:
     Dim TableName As String
@@ -132,119 +147,3 @@ TestInconclusive:
 TestFail:
     Assert.Fail "Error: " & Err.Number & " - " & Err.Description
 End Sub
-
-'''''@TestMethod("Factory Guard")
-''''Private Sub ztcCreate_ThrowsGivenNullCommandFactory()
-''''    On Error Resume Next
-''''    Dim sut As IDbManager: Set sut = DbManager.Create(New StubDbConnection, Nothing)
-''''    AssertExpectedError Assert, ErrNo.ObjectNotSetErr
-''''End Sub
-''''
-''''
-'''''@TestMethod("Create")
-''''Private Sub ztcCommand_CreatesDbCommandWithFactory()
-''''    Dim stubCommandFactory As StubDbCommandFactory
-''''    Set stubCommandFactory = New StubDbCommandFactory
-''''
-''''    Dim sut As IDbManager
-''''    Set sut = DbManager.Create(New StubDbConnection, stubCommandFactory)
-''''
-''''    Dim Result As IDbCommand
-''''    Set Result = sut.Command
-''''
-''''    Assert.AreEqual 1, stubCommandFactory.CreateCommandInvokes
-''''End Sub
-''''
-''''
-'''''@TestMethod("Transaction")
-''''Private Sub ztcCreate_StartsTransaction()
-''''    Dim stubConnection As StubDbConnection
-''''    Set stubConnection = New StubDbConnection
-''''
-''''    Dim sut As IDbManager
-''''    Set sut = DbManager.Create(stubConnection, New StubDbCommandFactory)
-''''    sut.Begin
-''''
-''''    Assert.IsTrue stubConnection.DidBeginTransaction
-''''End Sub
-''''
-''''
-'''''@TestMethod("Transaction")
-''''Private Sub ztcCommit_CommitsTransaction()
-''''    Dim stubConnection As StubDbConnection
-''''    Set stubConnection = New StubDbConnection
-''''
-''''    Dim sut As IDbManager
-''''    Set sut = DbManager.Create(stubConnection, New StubDbCommandFactory)
-''''
-''''    sut.Begin
-''''    sut.Commit
-''''
-''''    Assert.IsTrue stubConnection.DidCommitTransaction
-''''End Sub
-''''
-''''
-'''''@TestMethod("Transaction")
-''''Private Sub ztcCommit_ThrowsIfAlreadyCommitted()
-''''    On Error Resume Next
-''''
-''''    Dim stubConnection As StubDbConnection
-''''    Set stubConnection = New StubDbConnection
-''''
-''''    Dim sut As IDbManager
-''''    Set sut = DbManager.Create(stubConnection, New StubDbCommandFactory)
-''''
-''''    sut.Commit
-''''    sut.Commit
-''''    AssertExpectedError Assert, ErrNo.AdoInvalidTransactionErr
-''''End Sub
-''''
-''''
-'''''@TestMethod("Transaction")
-''''Private Sub ztcCommit_ThrowsIfAlreadyRolledBack()
-''''    On Error Resume Next
-''''
-''''    Dim stubConnection As StubDbConnection
-''''    Set stubConnection = New StubDbConnection
-''''
-''''    Dim sut As IDbManager
-''''    Set sut = DbManager.Create(stubConnection, New StubDbCommandFactory)
-''''
-''''    sut.Rollback
-''''    sut.Commit
-''''    AssertExpectedError Assert, ErrNo.AdoInvalidTransactionErr
-''''End Sub
-''''
-''''
-'''''@TestMethod("Transaction")
-''''Private Sub ztcRollback_ThrowsIfAlreadyCommitted()
-''''    On Error Resume Next
-''''
-''''    Dim stubConnection As StubDbConnection
-''''    Set stubConnection = New StubDbConnection
-''''
-''''    Dim sut As IDbManager
-''''    Set sut = DbManager.Create(stubConnection, New StubDbCommandFactory)
-''''
-''''    sut.Commit
-''''    sut.Rollback
-''''    AssertExpectedError Assert, ErrNo.AdoInvalidTransactionErr
-''''End Sub
-''''
-''''
-'''''@TestMethod("Transaction")
-''''Private Sub ztcRollback_RollbacksTransaction()
-''''    Dim stubConnection As StubDbConnection
-''''    Set stubConnection = New StubDbConnection
-''''
-''''    Dim sut As IDbManager
-''''    Set sut = DbManager.Create(stubConnection, New StubDbCommandFactory)
-''''
-''''    sut.Begin
-''''    sut.Rollback
-''''
-''''    Assert.IsTrue stubConnection.DidRollBackTransaction
-''''End Sub
-''''
-
-
