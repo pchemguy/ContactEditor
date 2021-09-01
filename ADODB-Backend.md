@@ -31,7 +31,7 @@ The *Records* method uses the *GetRows* method on the Recordset returned by *Ado
 
 Warning: it turned out that "WorksheetFunction.Transpose" is limited and should not be used for anything serious. It has a hardcoded limit on the size of the transposed array, which, at least in Excel 2002, is too small. More importantly, it converts Variant/Integer (from Recordset.GetRows) to Variant/Double. This silent conversion had caused subtle difficult to trace annoying issues with the ID field before the addition of string-casting (see the GUI note in the [Data Model section][DataTableModel]). This function needs to be replaced, for example, with the routine provided by the [Chip Pearson's VBA Array library][VBAArrayLib].
 
-As discussed in the [Data Model section][DataTableModel], string-casting the "ID" column is desirable. The tests module illustrates the use of *SQLlib.SelectIdAsText* for the generation of a "SELECT" query template with the typecasting request. Similarly, *SQLlib.SelectAllAsText* requests string-casting for all fields. Also, note that apart from string-casting, these two routines also spell out each field name and perform aliasing (\<FieldName\> AS \<FieldName\>). Without it, the returned field names follow the verbose template \<TableName\>.\<FieldName\>.
+As discussed in the [Data Model section][DataTableModel], string-casting the "ID" column is desirable. The tests module illustrates the use of *SQLlib.SelectIdAsText* for the generation of a "SELECT" query template with the typecasting request. Similarly, *SQLlib.SelectAllAsText* requests string-casting for all fields.
 
 ### Persisting changes
 
