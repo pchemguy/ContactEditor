@@ -43,7 +43,7 @@ Lets us overlap the structural application schematic from the previous section a
 
 #### DataRecordModel
 
-*Record* field wraps a Dictionary object, storing the current record as a "Field Name" &rightarrow; "Value" map. *ContactEditorPresenter* takes this model's data and populates *ContactEditorForm*. The  "Change" events of the controls in *ContactEditorForm* perform the reverse update. Additionally, a dirty flag is also included to indicated that the user made changes to the data.  
+*Record* field wraps a Dictionary object, storing the current record as a "Field Name" &rightarrow; "Value" map. *ContactEditorPresenter* takes this model's data and populates *ContactEditorForm*. The  "Change" events of the controls in *ContactEditorForm* perform the reverse update. Additionally, a dirty flag is included to indicated that the user made changes to the data.  
 
 #### DataTableModel
 
@@ -53,15 +53,13 @@ The *DataTableModel* class handles tabular data and acts as an intermediary betw
 2. enabling the user access to specific data elements, and
 3. persisting modified data if necessary.
 
-Naturally, *DataTableModel* uses a 2D record-wise Variant array called *Values* for internal storage of a set of table rows. (The field index is the faster changing index, and both indices are 1-based.) Accessing a specific data element is about addressing it. For a 2D array, the address of a data element is its (record/field) indices. Finally, to persist a record, the backend must map record/field indices to the primary key and field name coordinates used by persistent storage. Further, field indices are meaningless to the user, so the GUI layer also needs the field index to field name map.
+*DataTableModel* uses a 2D record-wise Variant array called *Values* for internal storage of a set of table rows. (The field index is the faster changing index, and both indices are 1-based.) Accessing a specific data element is about addressing it. For a 2D array, the address of a data element is its record/field indices, and persistent storage typically uses PK/FieldName addressing. Since *DataTableModel* stores record sets, it can also store metadata necessary for translating the two addressing schemes without introducing additional coupling.
 
-Since *DataTableModel* deals with tabular data only, saving the mapping metadata does not introduce additional coupling. However, since relational databases should be the dominant data source, the following assumptions about the field names and primary keys have simplified this implementation.
+For simplicity, only scalar (single field) PK is supported, and it should be the first field in the table. PK is cast as String so that the same logic could be applied to both integer and string keys, and a string variable called *RecordId* is used to store particular values. The *Values* array provides \<record index\> &rightarrow; \<PK\> mapping, and the *IdIndices* dictionary provides the reverse mapping.
 
-It is safe to assume that field names are strings (textual). Therefore, the model includes two structures to support conversion between the field name and its index. *FieldNames* is a 1D 1-based Variant array containing the names of the fields in the order they appear in the table from left to right and providing the index to name mapping. Table backend populates this field automatically, avoiding the use of hardcoded names. *FieldIndices* is a Dictionary providing the reverse name to index mapping. 
+Typecasting PK also has a subtle GUI-related benefit. In the current implementation, *ContactEditorForm* uses PKs for record selection via a drop-down combo list control. Combo's *List* attribute is populated with PKs from the *Values* array, and another relevant attribute *Value* is initialized from *DataRecordModel*. Without proper care, the two attributes may end up being of different types (e.g., Double and String). Since the *Value* attribute should match one of the elements from the *List* array, such a type mismatch may cause difficult to debug glitches.
 
-The assumption that the first record field (called *RecordId*) is a scalar (single field) primary key (PK) is not always valid, but it simplifies code logic. Further, string casting *RecordId* removes type-related ambiguity and provides two other benefits. *IdIndices* uses the string *RecordId* key in the Dictionary mapping RecordId to record index; the *Values* array provides the reverse mapping.
-
-The other GUI-related benefit is more subtle and, in general, is not the model's concern. *ContactEditorForm* uses PKs for record selection via a drop-down combo list control. The control's 1D Variant array attribute takes PKs from the *Values* array, and its other attribute holds the "current value" of this control, which is always a string. If the populated PK array is numeric, typing in RecordId may not match an existing list element, as the combo control may not do typecasting (String("1") <> Numeric(1) at least for Double).
+*FieldNames* is a 1D 1-based array. It contains the names of the fields in the order matching the structure of the table from left to right and provides \<field index\> &rightarrow; \<field name\> mapping. *FieldIndices* dictionary provides the reverse mapping. Table backend populates this field automatically using introspection, avoiding the use of hardcoded names.
 
 *DirtyRecords* is a Dictionary, collecting (*RecordId*, *RecordIndex*) pairs of modified records. Only these records need to be saved by the backend when the user requests to save the changes.
 
