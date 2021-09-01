@@ -27,7 +27,7 @@ Data Managers comprise the last part of the library. Each such class incorporate
 
 *DataRecordManager* ([Fig. 1](#FigDataRecord)) and *DataTableManager* ([Fig. 2](#FigDataTable)) implement *IDataRecordManager* and *IDataTableManager* interfaces and manage their respective model classes. Additionally, since *DataRecordModel* and *DataTableModel* may work cooperatively (one holding a record from the recordset held in the other), the data may need to be transferred between the two model classes. Thus, a third composite manager is required.
 
-*DataCompositeManager* is used where *DataRecordModel* and *DataTableModel* work together, and it handles data transfers between the model classes. A composite manager can either two backend-managed classes or two model and two backend classes directly. *DataCompositeManager* uses the latter option ([Fig. 3](#FigCompositeManager)).
+*DataCompositeManager* is used where *DataRecordModel* and *DataTableModel* work together, and it handles data transfers between the model classes. A composite manager can encapsulate either two backend-managed classes or two model and two backend classes directly. *DataCompositeManager* uses the latter option ([Fig. 3](#FigCompositeManager)).
 
 <a name="FigCompositeManager"></a>  
 <img src="https://github.com/pchemguy/ContactEditor/blob/develop/Assets/Diagrams/Class Diagram.svg?raw=true" alt="Overview" width="100%" />  
@@ -69,5 +69,11 @@ The other GUI-related benefit is more subtle and, in general, is not the model's
 
 *CopyRecordToDictionary* does the opposite operation based on supplied *RecordId* and *IdIndices* map.
 
+#### DataCompositeManager
+
+While Storage Library classes typically employ the factory/constructor design pattern combined with the *Predeclared* attribute, using this pattern for the *DataCompositeManager* class would result in an overly complicated factory signature. Instead, *DataCompositeManager* is a regular class, and its two methods, *InitRecord* and *InitTable*, replace the factory/constructor pattern. The user should use the *New* operator and then call these methods directly to complete manager initialization.
+
+
+<!-- References -->
 
 [Data manager application figure]: https://pchemguy.github.io/ContactEditor/#FigDataManagerApp
