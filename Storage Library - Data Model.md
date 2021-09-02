@@ -3,7 +3,7 @@ layout: default
 title: Data model
 nav_order: 1
 parent: Storage Library overview
-permalink: /storagelibrary/datamodel
+permalink: /storage-library/data-model
 ---
 
 The [Data Container][Data manager application figure] component consists of three model classes. The high-level *ContactEditorModel* class is a part of the [MVP][Data manager application figure] component. *DataRecordModel* and *DataTableModel* are the two base model classes, which are part of the [Storage Library][Data manager application figure]. *ContactEditorModel* incorporates the two base classes via indirect composition through the *DataCompositeManager* class, as illustrated later in this section.

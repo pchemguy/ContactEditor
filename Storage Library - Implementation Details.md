@@ -3,7 +3,7 @@ layout: default
 title: Implementation details
 nav_order: 2
 parent: Storage Library overview
-permalink: /storagelibrary/implementationdetails
+permalink: /storage-library/implementation-details
 ---
 
 #### DataRecordModel
