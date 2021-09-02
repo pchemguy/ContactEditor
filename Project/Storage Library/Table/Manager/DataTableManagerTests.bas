@@ -47,8 +47,8 @@ End Sub
 
 Private Function zfxGetDataTableManager() As DataTableManager
     Dim ClassName As String: ClassName = "Worksheet"
-    Dim ConnectionString As String: ConnectionString = ThisWorkbook.Name & "!" & TestSheet.Name
-    Dim TableName As String: TableName = "TestContacts"
+    Dim ConnectionString As String: ConnectionString = ThisWorkbook.Name
+    Dim TableName As String: TableName = TestContacts.Name
     
     Dim Storman As IDataTableManager
     Set Storman = DataTableManager.Create(ClassName, ConnectionString, TableName)
@@ -170,8 +170,8 @@ Private Sub ztcSaveDataFromModel_ValidatesBackendDataSaving()
     On Error GoTo TestFail
     
 Arrange:
-    TestSheet.Range("TestContactsBody").Range("B11").Value = "Hannah11"
-    TestSheet.Range("TestContactsBody").Range("G22").Value = "Ukraine22"
+    TestContacts.Range("TestContactsBody").Range("B11").Value = "Hannah11"
+    TestContacts.Range("TestContactsBody").Range("G22").Value = "Ukraine22"
     
     Dim Storman As IDataTableManager
     Set Storman = zfxGetDataTableManager
@@ -202,8 +202,8 @@ Assert:
     Storman.SaveDataFromModel
     Assert.IsFalse StorageModel.IsDirty, "Table should not be dirty"
     Assert.AreEqual 0, StorageModel.DirtyRecords.Count, "Dirty records should be empty"
-    Assert.AreEqual "Hannah", TestSheet.Range("TestContactsBody").Range("B11").Value, "Wrong saved field"
-    Assert.AreEqual "Ukraine", TestSheet.Range("TestContactsBody").Range("G22").Value, "Wrong saved field"
+    Assert.AreEqual "Hannah", TestContacts.Range("TestContactsBody").Range("B11").Value, "Wrong saved field"
+    Assert.AreEqual "Ukraine", TestContacts.Range("TestContactsBody").Range("G22").Value, "Wrong saved field"
         
 CleanExit:
     Exit Sub

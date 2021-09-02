@@ -52,8 +52,8 @@ Private Sub ztcCreateInstance_ValidatesCreationOfDataStorage()
 Arrange:
     Dim StorageModel As DataTableModel: Set StorageModel = New DataTableModel
     Dim ClassName As String: ClassName = "Worksheet"
-    Dim ConnectionString As String: ConnectionString = ThisWorkbook.Name & "!" & ActiveSheet.Name
-    Dim TableName As String: TableName = "TestContacts"
+    Dim ConnectionString As String: ConnectionString = ThisWorkbook.Name
+    Dim TableName As String: TableName = ActiveSheet.Name
 Act:
     Dim StorageManager As IDataTableStorage
     Set StorageManager = DataTableFactory.CreateInstance(ClassName, StorageModel, ConnectionString, TableName)

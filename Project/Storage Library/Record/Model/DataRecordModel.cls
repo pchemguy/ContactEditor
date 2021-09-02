@@ -10,8 +10,8 @@ Attribute VB_Exposed = True
 Attribute VB_Description = "Represents a set of property-value pairs."
 '@Folder "Storage Library.Record.Model"
 '@ModuleDescription "Represents a set of property-value pairs."
-'@IgnoreModule ProcedureNotUsed, IndexedDefaultMemberAccess
 '@Exposed
+'@IgnoreModule IndexedDefaultMemberAccess
 Option Explicit
 
 Private Type TDataRecordModel
@@ -37,12 +37,15 @@ Public Property Get Record() As Scripting.Dictionary
     Set Record = this.Record
 End Property
 
+'''' Note: possibly safe to remove
+'@Ignore ProcedureNotUsed
 Public Property Get RecordIndex() As Long
     RecordIndex = this.RecordIndex
 End Property
 
-Public Property Let RecordIndex(ByVal RecordIndexArg As Long)
-    this.RecordIndex = RecordIndexArg
+'''' Note: possibly safe to remove along with field and setting code
+Public Property Let RecordIndex(ByVal Value As Long)
+    this.RecordIndex = Value
 End Property
 
 Public Property Get IsDirty() As Boolean

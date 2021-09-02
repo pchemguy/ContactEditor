@@ -47,8 +47,8 @@ End Sub
 
 Private Function zfxGetDataRecordModel() As DataRecordModel
     Dim StorageModel As DataRecordModel: Set StorageModel = New DataRecordModel
-    Dim ConnectionString As String: ConnectionString = ThisWorkbook.Name & "!" & TestSheet.Name
-    Dim TableName As String: TableName = vbNullString
+    Dim ConnectionString As String: ConnectionString = ThisWorkbook.Name
+    Dim TableName As String: TableName = TestContacts.Name
     
     Dim StorageManager As IDataRecordStorage
     Set StorageManager = DataRecordWSheet.Create(StorageModel, ConnectionString, TableName)
@@ -68,8 +68,8 @@ Private Sub ztcCreate_ValidatesCreationOfDataStorage()
 
 Arrange:
     Dim StorageModel As DataRecordModel: Set StorageModel = New DataRecordModel
-    Dim ConnectionString As String: ConnectionString = ThisWorkbook.Name & "!" & ActiveSheet.Name
-    Dim TableName As String: TableName = vbNullString
+    Dim ConnectionString As String: ConnectionString = ThisWorkbook.Name
+    Dim TableName As String: TableName = ActiveSheet.Name
 Act:
     Dim StorageManager As IDataRecordStorage
     Set StorageManager = DataRecordWSheet.Create(StorageModel, ConnectionString, TableName)

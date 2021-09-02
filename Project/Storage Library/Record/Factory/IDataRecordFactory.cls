@@ -19,5 +19,3 @@ Public Function CreateInstance(ByVal Model As DataRecordModel, _
                                ByVal ConnectionString As String, _
                                ByVal TableName As String) As IDataRecordStorage
 End Function
-
-

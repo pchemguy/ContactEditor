@@ -46,33 +46,35 @@ Friend Sub Init(ByVal Model As DataTableModel, _
                 ByVal ConnectionString As String, _
                 ByVal TableName As String)
     Set this.Model = Model
-    Dim BookSheet As Variant: BookSheet = Split(ConnectionString, "!")
-    Guard.Expression UBound(BookSheet) = 1, "DataRecordWSheet", "Invalid connection string: " & ConnectionString
+    Dim Status As Long
+    
     On Error Resume Next
     Dim WSheet As Excel.Worksheet
     '@Ignore ImplicitActiveWorkbookReference: false positive
-    Set WSheet = Application.Workbooks(BookSheet(0)).Worksheets(BookSheet(1))
-    Select Case Err.Number
+    Set WSheet = Application.Workbooks(ConnectionString).Worksheets(TableName)
+    Status = Err.Number
+    On Error GoTo 0
+    
+    Select Case Status
         Case ErrNo.SubscriptOutOfRange
-            Err.Clear
             Guard.Expression False, "DataTableWSheet constructor", "Invalid connection string"
-            Exit Sub
         Case Is > 0
             Err.Raise Err.Number, Err.Source, Err.Description, Err.HelpFile, Err.HelpContext
     End Select
+    
+    On Error Resume Next
     With WSheet
         Set this.TableRange = .Range(TableName)
         Set this.TableBodyRange = .Range(TableName & "Body")
         Set this.TableIdColumn = .Range(TableName & "Id")
     End With
-    Select Case Err.Number
-        Case ErrNo.PassedNoErr
-            On Error GoTo 0
+    Status = Err.Number
+    On Error GoTo 0
+    
+    Select Case Status
         Case 1004
-            Err.Clear
             Guard.Expression False, "DataTableWSheet constructor", "Verify named ranges"
-            Exit Sub
-        Case Else
+        Case Is > 0
             Err.Raise Err.Number, Err.Source, Err.Description, Err.HelpFile, Err.HelpContext
     End Select
 End Sub

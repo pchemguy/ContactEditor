@@ -76,7 +76,8 @@ Public Function RecordIndexFromId(ByVal RecordId As String) As Long
 End Function
 
 Public Function RecordValuesFromId(ByVal RecordId As String) As Variant
-    Dim RecordIndex As Long: RecordIndex = this.IdIndices(RecordId)
+    Dim RecordIndex As Long
+    RecordIndex = this.IdIndices(RecordId)
     RecordValuesFromId = Application.WorksheetFunction.Index(Values, RecordIndex)
 End Function
 
@@ -90,9 +91,12 @@ End Sub
 
 Public Sub UpdateRecordFromDictionary(ByVal Record As Scripting.Dictionary)
     Const ID_NAME_INDEX As Long = 1
-    Dim FieldIdName As String: FieldIdName = this.FieldNames(ID_NAME_INDEX)
-    Dim RecordId As String: RecordId = CStr(Record(FieldIdName))
-    Dim RecordIndex As Long: RecordIndex = RecordIndexFromId(RecordId)
+    Dim FieldIdName As String
+    FieldIdName = this.FieldNames(ID_NAME_INDEX)
+    Dim RecordId As String
+    RecordId = CStr(Record(FieldIdName))
+    Dim RecordIndex As Long
+    RecordIndex = RecordIndexFromId(RecordId)
     this.DirtyRecords(RecordId) = RecordIndex
     
     Dim FieldName As Variant
@@ -104,7 +108,8 @@ Public Sub UpdateRecordFromDictionary(ByVal Record As Scripting.Dictionary)
 End Sub
 
 Public Sub CopyRecordToDictionary(ByVal Record As Scripting.Dictionary, ByVal RecordId As String)
-    Dim RecordIndex As Long: RecordIndex = RecordIndexFromId(RecordId)
+    Dim RecordIndex As Long
+    RecordIndex = RecordIndexFromId(RecordId)
     Dim FieldName As Variant
     Dim FieldIndex As Long
     For Each FieldName In this.FieldNames

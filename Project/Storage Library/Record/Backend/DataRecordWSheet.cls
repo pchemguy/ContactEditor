@@ -25,7 +25,9 @@ Private this As TDataRecord
 
 
 '@Description "Returns a new IDataRecord object."
-Public Function Create(ByVal Model As DataRecordModel, ByVal ConnectionString As String, ByVal TableName As String) As IDataRecordStorage
+Public Function Create(ByVal Model As DataRecordModel, _
+                       ByVal ConnectionString As String, _
+                       ByVal TableName As String) As IDataRecordStorage
 Attribute Create.VB_Description = "Returns a new IDataRecord object."
     Dim Instance As DataRecordWSheet
     Set Instance = New DataRecordWSheet
@@ -34,22 +36,20 @@ Attribute Create.VB_Description = "Returns a new IDataRecord object."
 End Function
 
 
-'@Ignore ParameterNotUsed
-Friend Sub Init(ByVal Model As DataRecordModel, ByVal ConnectionString As String, ByVal TableName As String)
+Friend Sub Init(ByVal Model As DataRecordModel, _
+                ByVal ConnectionString As String, _
+                ByVal TableName As String)
     Set this.Model = Model
-    Dim BookSheet As Variant: BookSheet = Split(ConnectionString, "!")
-    Guard.Expression UBound(BookSheet) = 1, "DataRecordWSheet", "Invalid connection string: " & ConnectionString
     On Error Resume Next
     '@Ignore ImplicitActiveWorkbookReference: false positive
-    Set this.WSheet = Application.Workbooks(BookSheet(0)).Worksheets(BookSheet(1))
-    Select Case Err.Number
-        Case ErrNo.PassedNoErr
-            On Error GoTo 0
-            Exit Sub
+    Set this.WSheet = Application.Workbooks(ConnectionString).Worksheets(TableName)
+    Dim Status As Long
+    Status = Err.Number
+    On Error GoTo 0
+    Select Case Status
         Case ErrNo.SubscriptOutOfRange
-            Err.Clear
-            Guard.Expression False, "DataRecordWSheet constructor", "Invalid connection string"
-        Case Else
+            Guard.Expression False, "DataRecordWSheet constructor", "Invalid connection string or table name"
+        Case Is > 0
             Err.Raise Err.Number, Err.Source, Err.Description, Err.HelpFile, Err.HelpContext
     End Select
 End Sub
@@ -74,7 +74,8 @@ Private Sub InitModel()
     Dim CellCount As Long
     Dim WBook As Excel.Workbook: Set WBook = this.WSheet.Parent
     For Each RangeName In WBook.Names
-        ' Check that this range name refers to the desired Worksheet (RefersTo starts with "=<Worksheet Name>!
+        '''' Check that this range name refers to the desired Worksheet
+        '''' (RefersTo starts with "=<Worksheet Name>!
         RefersTo = RangeName.RefersTo
         If Left$(RefersTo, PrefixLength) <> Prefix Then GoTo RANGENAME_CONTINUE
         
@@ -83,12 +84,19 @@ Private Sub InitModel()
         CellCount = TargetRange.Cells.Count
         If CellCount > 1 Then GoTo RANGENAME_CONTINUE
         
-        ' For Worksheet scoped range names, strip Worksheet name and check that it matches the label in adjacent top or left cell
+        '''' For Worksheet scoped range names, strip Worksheet name and check
+        '''' that it matches the label in adjacent top or left cell
         FieldName = RangeName.Name
-        If Left$(FieldName, PrefixLength - 1) = WSheetName & "!" Then FieldName = Right$(FieldName, Len(FieldName) - (PrefixLength - 1))
+        If Left$(FieldName, PrefixLength - 1) = WSheetName & "!" Then
+            FieldName = Right$(FieldName, Len(FieldName) - (PrefixLength - 1))
+        End If
         
-        ' Check that the range name matches the label (the value of an adjacent cell above or to the left of the candidate cell)
-        If (TargetRange.Offset(-1, 0).Value <> FieldName) And (TargetRange.Offset(0, -1).Value <> FieldName) Then GoTo RANGENAME_CONTINUE
+        '''' Check that the range name matches the label (the value of an
+        '''' adjacent cell above or to the left of the candidate cell)
+        If (TargetRange.Offset(-1, 0).Value <> FieldName) And _
+            (TargetRange.Offset(0, -1).Value <> FieldName) Then
+           GoTo RANGENAME_CONTINUE
+        End If
         
         'Add FieldName -> TargetRange.Value to the dictionary
         this.Model.Record(CStr(FieldName)) = TargetRange.Value

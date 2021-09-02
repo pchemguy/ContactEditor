@@ -135,8 +135,8 @@ Attribute InitializeModel.VB_Description = "Instantiates model and binds it to t
             ConnectionString = "sqlite:"
         Case "Worksheet"
             ClassName = "Worksheet"
-            TableName = "Contacts"
-            ConnectionString = ThisWorkbook.Name & "!" & Contacts.Name
+            TableName = Contacts.Name
+            ConnectionString = ThisWorkbook.Name
         Case "CSV"
             ClassName = "CSV"
             TableName = "Contacts.xsv!sep=,"
@@ -146,7 +146,7 @@ Attribute InitializeModel.VB_Description = "Instantiates model and binds it to t
     
     '''' Binds RecordModel to its backend
     ClassName = "Worksheet"
-    TableName = vbNullString
-    ConnectionString = ThisWorkbook.Name & "!" & ContactBrowser.Name
+    ConnectionString = ThisWorkbook.Name
+    TableName = ContactBrowser.Name
     this.Model.RecordTableManager.InitRecord ClassName, ConnectionString, TableName
 End Sub

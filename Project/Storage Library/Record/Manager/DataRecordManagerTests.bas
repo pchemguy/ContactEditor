@@ -50,8 +50,8 @@ Private Sub ztcSaveDataFromModel_ValidatesDirtyStatus()
     On Error GoTo TestFail
 
     Dim ClassName As String: ClassName = "Worksheet"
-    Dim ConnectionString As String: ConnectionString = ThisWorkbook.Name & "!" & TestSheet.Name
-    Dim TableName As String: TableName = vbNullString
+    Dim ConnectionString As String: ConnectionString = ThisWorkbook.Name
+    Dim TableName As String: TableName = TestContacts.Name
     
     Dim Storman As IDataRecordManager
     Set Storman = DataRecordManager.Create(ClassName, ConnectionString, TableName)
@@ -65,10 +65,10 @@ Private Sub ztcSaveDataFromModel_ValidatesDirtyStatus()
     
     Storman.SaveDataFromModel
     Assert.IsFalse StorageModel.IsDirty, "Model should not be dirty"
-    Assert.AreEqual "Edna.Jennings@@neuf.fr", TestSheet.Range("TestEmail"), "Saved data mismatch"
+    Assert.AreEqual "Edna.Jennings@@neuf.fr", TestContacts.Range("TestEmail"), "Saved data mismatch"
     StorageModel.SetField "TestEmail", "Edna.Jennings@neuf.fr"
     Storman.SaveDataFromModel
-    Assert.AreEqual "Edna.Jennings@neuf.fr", TestSheet.Range("TestEmail"), "Saved data mismatch"
+    Assert.AreEqual "Edna.Jennings@neuf.fr", TestContacts.Range("TestEmail"), "Saved data mismatch"
     
 CleanExit:
     Exit Sub

@@ -60,5 +60,3 @@ Private Function IDataRecordFactory_CreateInstance(ByVal Model As DataRecordMode
                                                    ByVal TableName As String) As IDataRecordStorage
     Set IDataRecordFactory_CreateInstance = CreateInstance(this.ClassName, Model, ConnectionString, TableName)
 End Function
-
-

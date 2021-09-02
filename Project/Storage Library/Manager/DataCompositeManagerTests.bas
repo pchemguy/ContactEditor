@@ -55,14 +55,14 @@ Private Function zfxDataCompositeManager() As DataCompositeManager
     
     '''' Binds TableModel to its backend
     ClassName = "Worksheet"
-    ConnectionString = ThisWorkbook.Name & "!" & TestSheet.Name
+    ConnectionString = ThisWorkbook.Name
     TableName = "TestContacts"
     Storman.InitTable ClassName, ConnectionString, TableName
     
     '''' Binds RecordModel to its backend
     ClassName = "Worksheet"
-    TableName = vbNullString
-    ConnectionString = ThisWorkbook.Name & "!" & TestSheet.Name
+    ConnectionString = ThisWorkbook.Name
+    TableName = TestContacts.Name
     Storman.InitRecord ClassName, ConnectionString, TableName
     
     Storman.LoadDataIntoModel
@@ -85,7 +85,7 @@ Arrange:
 Act:
 Assert:
     With Storman
-        Assert.AreEqual TestSheet.Range("TestEmail").Value, .Record("TestEmail"), "RecordModel data mismatch"
+        Assert.AreEqual TestContacts.Range("TestEmail").Value, .Record("TestEmail"), "RecordModel data mismatch"
         Assert.AreEqual "Edna.Jennings@neuf.fr", .Values(4, 6), "TableModel data mismatch"
     End With
     

@@ -46,8 +46,8 @@ End Sub
 
 Private Function zfxGetDataTableModel() As DataTableModel
     Dim StorageModel As DataTableModel: Set StorageModel = New DataTableModel
-    Dim ConnectionString As String: ConnectionString = ThisWorkbook.Name & "!" & TestSheet.Name
-    Dim TableName As String: TableName = "TestContacts"
+    Dim ConnectionString As String: ConnectionString = ThisWorkbook.Name
+    Dim TableName As String: TableName = TestContacts.Name
         
     Dim StorageManager As IDataTableStorage
     Set StorageManager = DataTableWSheet.Create(StorageModel, ConnectionString, TableName)
@@ -67,8 +67,8 @@ Private Sub ztcCreate_ValidatesCreationOfDataStorage()
 
 Arrange:
     Dim StorageModel As DataTableModel: Set StorageModel = New DataTableModel
-    Dim ConnectionString As String: ConnectionString = ThisWorkbook.Name & "!" & ActiveSheet.Name
-    Dim TableName As String: TableName = "TestContacts"
+    Dim ConnectionString As String: ConnectionString = ThisWorkbook.Name
+    Dim TableName As String: TableName = ActiveSheet.Name
 Act:
     Dim StorageManager As IDataTableStorage
     Set StorageManager = DataTableWSheet.Create(StorageModel, ConnectionString, TableName)

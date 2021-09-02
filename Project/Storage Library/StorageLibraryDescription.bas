@@ -1,6 +1,5 @@
 Attribute VB_Name = "StorageLibraryDescription"
 '@Folder "Storage Library"
-'@IgnoreModule EmptyModule: This module acts as package description
 Option Explicit
 
 '''' Storage package provides storage management for two types of models:
@@ -38,3 +37,10 @@ Option Explicit
 '''' the factory/constructor pattern, InitRecord and InitTable, to be called
 '''' directly.
 ''''
+
+
+'@EntryPoint: Used as a Worksheet UDF
+Public Function GetTopLeftCell(ByVal RangeName As String) As Variant
+    '@Ignore ImplicitActiveSheetReference
+    GetTopLeftCell = Range(RangeName).Range("A1").Value
+End Function
