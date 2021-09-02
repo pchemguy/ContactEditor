@@ -27,12 +27,12 @@ Primarily, I use Excel 2002 for development and also run tests on Excel 2016. Co
 
 *ContactEditorRunner.RunContactEditor* is the main entry for the demo.  
 *ContactEditorPresenter.InitializeModel* performs basic backend configuration.  
-The *DataTableBackEnd* variable found in the entry point sub determines the type of the primary storage backend. It can take one of the following values:
+The *DataTableBackEnd* variable found in the entry point sub determines the type of the primary storage [backend][Backends]. It can take one of the following values:
 
-- "Worksheet" for an Excel Worksheet (demo database [file][ContactEditor.xsv]),
-- "CSV" for a text delimited file (demo database [file][Contact Editor]), and
-- "ADODB" for a relational database (demo SQLite database [file][ContactEditor.db]).
-- "SecureADODB" for a relational database with [SecureADOB][] Library [fork][SecureADOB fork] integrated (demo SQLite database [file][ContactEditor.db]).
+- [Worksheet][] for an Excel Worksheet (demo database [file][ContactEditor.xsv]),
+- [CSV][] for a text delimited file (demo database [file][Contact Editor]), and
+- [ADODB][] for a relational database (demo SQLite database [file][ContactEditor.db]).
+- [SecureADODB][] for a relational database with [SecureADODB][SecureADODB Library] Library [fork][SecureADODB fork] integrated (demo SQLite database [file][ContactEditor.db]).
 
 The ultimate focus of this project is accessing SQLite databases via the *ADODB* library. While the "ADODB"/"SecureADODB" backends can connect to both "CSV" and "Worksheet" databases, the dedicated backends should be more efficient and can also be used for verification purposes.
 
@@ -55,5 +55,10 @@ A special thanks goes to Mathieu Guindon, a co-founder of the [Rubber Duck VBA][
 [ContactEditor.xsv]: https://github.com/pchemguy/ContactEditor/blob/master/ContactEditor.xsv
 [SQLite ODBC Orig]: http://www.ch-werner.de/sqliteodbc/
 [SQLite ODBC]: https://pchemguy.github.io/SQLite-ICU-MinGW/
-[SecureADOB]: https://rubberduckvba.wordpress.com/2020/04/22/secure-adodb/
-[SecureADOB fork]: https://pchemguy.github.io/SecureADODB-Fork/
+[SecureADODB Library]: https://rubberduckvba.wordpress.com/2020/04/22/secure-adodb/
+[SecureADODB fork]: https://pchemguy.github.io/SecureADODB-Fork/
+[Backends]: /ContactEditor/backends
+[Worksheet]: /ContactEditor/backends/worksheet
+[CSV]: /ContactEditor/backends/csv
+[ADODB]: /ContactEditor/backends/adodb
+[SecureADODB]: /ContactEditor/backends/secureadodb
