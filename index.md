@@ -34,7 +34,8 @@ The *DataTableBackEnd* variable found in the entry point sub determines the type
 - [ADODB][] for a relational database (demo SQLite database [file][ContactEditor.db]).
 - [SecureADODB][] for a relational database with [SecureADODB][SecureADODB Library] Library [fork][SecureADODB fork] integrated (demo SQLite database [file][ContactEditor.db]).
 
-The ultimate focus of this project is accessing SQLite databases via the *ADODB* library. While the "ADODB"/"SecureADODB" backends can connect to both "CSV" and "Worksheet" databases, the dedicated backends should be more efficient and can also be used for verification purposes.
+While the ADODB/SecureADODB backends can connect to both "CSV" and "Worksheet" databases, the dedicated backends should be more efficient and can also be used for verification purposes. Also, note that since the ultimate focus of this project is accessing SQLite databases via the *ADODB* library, the database type used with ADODB/SecureADODB backends is hardcoded as SQLite in *ContactEditorPresenter.InitializeModel*.
+
 
 ### Acknowledgments
 
