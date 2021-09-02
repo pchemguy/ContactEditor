@@ -112,6 +112,8 @@ Private Sub view_FormConfirmed()
 End Sub
 
 
+'''' Note that in present implementation, the database type used with
+'''' ADODB/SecureADODB backends is hardcoded as SQLite.
 '@Description "Instantiates model and binds it to the desired backends."
 Private Sub InitializeModel(ByVal TableBackEnd As String)
 Attribute InitializeModel.VB_Description = "Instantiates model and binds it to the desired backends."
@@ -125,6 +127,10 @@ Attribute InitializeModel.VB_Description = "Instantiates model and binds it to t
     Select Case TableBackEnd
         Case "ADODB"
             ClassName = "ADODB"
+            TableName = "Contacts"
+            ConnectionString = "sqlite:"
+        Case "SecureADODB"
+            ClassName = "SecureADODB"
             TableName = "Contacts"
             ConnectionString = "sqlite:"
         Case "Worksheet"

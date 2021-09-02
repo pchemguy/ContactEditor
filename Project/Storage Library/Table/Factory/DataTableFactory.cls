@@ -48,24 +48,31 @@ Public Function CreateInstance(ByVal ClassName As String, _
                                ByVal Model As DataTableModel, _
                                ByVal ConnectionString As String, _
                                ByVal TableName As String) As IDataTableStorage
+    Dim DataTableClass As Object
     Select Case ClassName
         Case "ADODB"
-            Set CreateInstance = DataTableADODB.Create(Model, ConnectionString, TableName)
+            Set DataTableClass = DataTableADODB
+        Case "SecureADODB"
+            Set DataTableClass = DataTableSecureADODB
         Case "Worksheet"
-            Set CreateInstance = DataTableWSheet.Create(Model, ConnectionString, TableName)
+            Set DataTableClass = DataTableWSheet
         Case "CSV"
-            Set CreateInstance = DataTableCSV.Create(Model, ConnectionString, TableName)
-        Case Else
-            Dim errorDetails As TError
-            With errorDetails
-                .Number = ErrNo.NotImplementedErr
-                .Name = "NotImplementedErr"
-                .Source = "IDataTableFactory"
-                .Description = "Unsupported backend: " & ClassName
-                .Message = .Description
-            End With
-            RaiseError errorDetails
+            Set DataTableClass = DataTableCSV
     End Select
+    
+    If Not DataTableClass Is Nothing Then
+        Set CreateInstance = DataTableClass.Create(Model, ConnectionString, TableName)
+    Else
+        Dim errorDetails As TError
+        With errorDetails
+            .Number = ErrNo.NotImplementedErr
+            .Name = "NotImplementedErr"
+            .Source = "IDataTableFactory"
+            .Description = "Unsupported backend: " & ClassName
+            .Message = .Description
+        End With
+        RaiseError errorDetails
+    End If
 End Function
 
 

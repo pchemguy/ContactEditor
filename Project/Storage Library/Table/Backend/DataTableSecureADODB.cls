@@ -2,7 +2,7 @@ VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
-Attribute VB_Name = "DataTableADODB"
+Attribute VB_Name = "DataTableSecureADODB"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
@@ -19,7 +19,7 @@ Private Const SQLITE_CONNSTR_PREFIX As String = "sqlite:"
 
 Implements IDataTableStorage
 
-Private Type TDataTableADODB
+Private Type TDataTableSecureADODB
     Model As DataTableModel
     SQL As SQLlib
     ADO As ADOlib
@@ -33,7 +33,7 @@ Private Type TDataTableADODB
     IDs As Variant
     TypeCast As FieldFormat
 End Type
-Private this As TDataTableADODB
+Private this As TDataTableSecureADODB
 
 
 Private Sub Class_Initialize()
@@ -58,13 +58,13 @@ End Sub
 '''' interface of the instance's reference is switched to IDataTableStorage
 '''' when the returned value is assigned in the calling code to appropriately
 '''' declared variable.
-'@Description "Returns a new DataTableADODB object."
+'@Description "Returns a new DataTableSecureADODB object."
 Public Function Create(ByVal Model As DataTableModel, _
                        ByVal ConnectionString As String, _
-                       ByVal TableName As String) As DataTableADODB
-Attribute Create.VB_Description = "Returns a new DataTableADODB object."
-    Dim Instance As DataTableADODB
-    Set Instance = New DataTableADODB
+                       ByVal TableName As String) As DataTableSecureADODB
+Attribute Create.VB_Description = "Returns a new DataTableSecureADODB object."
+    Dim Instance As DataTableSecureADODB
+    Set Instance = New DataTableSecureADODB
     Instance.Init Model, ConnectionString, TableName
     Set Create = Instance
 End Function
@@ -91,21 +91,22 @@ Friend Sub Init(ByVal Model As DataTableModel, _
 End Sub
 
 
-Friend Property Get SelfIDataTableStorage() As IDataTableStorage
+'@Ignore ProcedureNotUsed
+Public Property Get SelfIDataTableStorage() As IDataTableStorage
     Set SelfIDataTableStorage = Me
 End Property
 
 
 '@Ignore ProcedureNotUsed
 '@Description("Returns class reference.")
-Friend Property Get Class() As DataTableADODB
+Public Property Get Class() As DataTableSecureADODB
 Attribute Class.VB_Description = "Returns class reference."
-    Set Class = DataTableADODB
+    Set Class = DataTableSecureADODB
 End Property
 
 
 '@Ignore ProcedureNotUsed
-Friend Property Get AdoCommand() As ADODB.Command
+Public Property Get AdoCommand() As ADODB.Command
     If this.AdoCommand Is Nothing Then
         Set AdoCommand = AdoCommandInit(this.SQL.SelectAll)
     Else
@@ -114,28 +115,28 @@ Friend Property Get AdoCommand() As ADODB.Command
 End Property
 
 
-Friend Property Get FieldNames() As Variant
+Public Property Get FieldNames() As Variant
     FieldNames = this.FieldNames
 End Property
     
     
-Friend Property Get FieldTypes() As Variant
+Public Property Get FieldTypes() As Variant
     FieldTypes = this.FieldTypes
 End Property
     
     
-Friend Property Get FieldMap() As Scripting.Dictionary
+Public Property Get FieldMap() As Scripting.Dictionary
     Set FieldMap = this.FieldMap
 End Property
 
 
 '@Ignore ProcedureNotUsed
-Friend Sub SetTypeCast(Optional ByVal TypeCast As FieldFormat = FieldFormat.CastAsIs)
+Public Sub SetTypeCast(Optional ByVal TypeCast As FieldFormat = FieldFormat.CastAsIs)
     this.TypeCast = TypeCast
 End Sub
 
 
-Friend Function AdoCommandInit(ByVal SQLQuery As String, _
+Public Function AdoCommandInit(ByVal SQLQuery As String, _
                                Optional ByVal CursorLocation As ADODB.CursorLocationEnum = adUseClient) As ADODB.Command
     If Not this.AdoCommand Is Nothing Then
         On Error Resume Next
@@ -158,7 +159,7 @@ Friend Function AdoCommandInit(ByVal SQLQuery As String, _
 End Function
 
 
-Friend Function GetAdoRecordset(Optional ByVal SQLQuery As String = vbNullString) As ADODB.Recordset
+Public Function GetAdoRecordset(Optional ByVal SQLQuery As String = vbNullString) As ADODB.Recordset
     Set this.AdoRst = Nothing
     Set this.AdoRst = New ADODB.Recordset
     With this.AdoRst
@@ -178,14 +179,14 @@ Friend Function GetAdoRecordset(Optional ByVal SQLQuery As String = vbNullString
 End Function
 
 
-Friend Function Records(Optional ByVal SQLQuery As String = vbNullString) As Variant
+Public Function Records(Optional ByVal SQLQuery As String = vbNullString) As Variant
     Dim rst As ADODB.Recordset
     Set rst = GetAdoRecordset(SQLQuery)
     Records = ArrayLib.TransposeArray(rst.GetRows, OutputArrBase:=1)
 End Function
 
 
-Friend Function RecordsAsText() As Variant
+Public Function RecordsAsText() As Variant
     Dim rst As ADODB.Recordset
     Set rst = GetAdoRecordset(this.SQL.SelectAllAsText(this.FieldNames, this.FieldTypes))
     RecordsAsText = ArrayLib.TransposeArray(rst.GetRows, OutputArrBase:=1)

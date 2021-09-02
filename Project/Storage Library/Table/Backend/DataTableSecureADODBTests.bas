@@ -1,4 +1,4 @@
-Attribute VB_Name = "DataTableADODBTests"
+Attribute VB_Name = "DataTableSecureADODBTests"
 '@Folder "Storage Library.Table.Backend"
 '@TestModule
 '@IgnoreModule LineLabelNotUsed, IndexedDefaultMemberAccess, FunctionReturnValueDiscarded
@@ -45,21 +45,27 @@ End Sub
 '===================================================='
 
 
-Private Function zfxGetDataTableADODB() As DataTableADODB
-    Dim StorageModel As DataTableModel: Set StorageModel = New DataTableModel
-    Dim ConnectionString As String: ConnectionString = ADOlib.GetSQLiteConnectionString()("ADO")
-    Dim TableName As String: TableName = TEST_TABLE
-    Set zfxGetDataTableADODB = DataTableADODB.Create(StorageModel, ConnectionString, TableName)
+Private Function zfxGetDataTableSecureADODB() As DataTableSecureADODB
+    Dim StorageModel As DataTableModel
+    Set StorageModel = New DataTableModel
+    Dim ConnectionString As String
+    ConnectionString = ADOlib.GetSQLiteConnectionString()("ADO")
+    Dim TableName As String
+    TableName = TEST_TABLE
+    Set zfxGetDataTableSecureADODB = DataTableSecureADODB.Create(StorageModel, ConnectionString, TableName)
 End Function
 
 
 Private Function zfxGetDataTableModel() As DataTableModel
-    Dim StorageModel As DataTableModel: Set StorageModel = New DataTableModel
-    Dim ConnectionString As String: ConnectionString = ADOlib.GetSQLiteConnectionString()("ADO")
-    Dim TableName As String: TableName = TEST_TABLE
+    Dim StorageModel As DataTableModel
+    Set StorageModel = New DataTableModel
+    Dim ConnectionString As String
+    ConnectionString = ADOlib.GetSQLiteConnectionString()("ADO")
+    Dim TableName As String
+    TableName = TEST_TABLE
     
-    Dim SMiDefault As DataTableADODB
-    Set SMiDefault = DataTableADODB.Create(StorageModel, ConnectionString, TableName)
+    Dim SMiDefault As DataTableSecureADODB
+    Set SMiDefault = DataTableSecureADODB.Create(StorageModel, ConnectionString, TableName)
     Dim StorageManager As IDataTableStorage
     Set StorageManager = SMiDefault.SelfIDataTableStorage
     StorageManager.LoadDataIntoModel
@@ -77,8 +83,10 @@ Private Sub ztcGetAdoCommand_ValidatesAdoCommandTable()
     On Error GoTo TestFail
 
 Arrange:
-    Dim SMiDefault As DataTableADODB: Set SMiDefault = zfxGetDataTableADODB
-    Dim SQLQuery As String: SQLQuery = SQLlib.Create(TEST_TABLE).SelectAll
+    Dim SMiDefault As DataTableSecureADODB
+    Set SMiDefault = zfxGetDataTableSecureADODB
+    Dim SQLQuery As String
+    SQLQuery = SQLlib.Create(TEST_TABLE).SelectAll
 Act:
     Dim AdoCommand As ADODB.Command: Set AdoCommand = SMiDefault.AdoCommandInit(SQLQuery)
 Assert:
@@ -101,8 +109,10 @@ Private Sub ztcGetAdoCommand_ValidatesAdoCommandQuery()
     On Error GoTo TestFail
 
 Arrange:
-    Dim SMiDefault As DataTableADODB: Set SMiDefault = zfxGetDataTableADODB
-    Dim SQLQuery As String: SQLQuery = SQLlib.Create(TEST_TABLE).SelectAll("COUNT(*)")
+    Dim SMiDefault As DataTableSecureADODB
+    Set SMiDefault = zfxGetDataTableSecureADODB
+    Dim SQLQuery As String
+    SQLQuery = SQLlib.Create(TEST_TABLE).SelectAll("COUNT(*)")
 Act:
     Dim AdoCommand As ADODB.Command
     Set AdoCommand = SMiDefault.AdoCommandInit(SQLQuery, ADODB.CursorLocationEnum.adUseServer)
@@ -127,7 +137,8 @@ Private Sub ztcCollectTableMetadata_ValidatesTableMetadata()
     On Error GoTo TestFail
 
 Arrange:
-    Dim SMiDefault As DataTableADODB: Set SMiDefault = zfxGetDataTableADODB
+    Dim SMiDefault As DataTableSecureADODB
+    Set SMiDefault = zfxGetDataTableSecureADODB
 Act:
     SMiDefault.AdoCommandInit SQLlib.Create(TEST_TABLE).SelectAll
 Assert:
@@ -154,7 +165,8 @@ Private Sub ztcAdoRecordset_ValidatesAdoRecordset()
     On Error GoTo TestFail
 
 Arrange:
-    Dim SMiDefault As DataTableADODB: Set SMiDefault = zfxGetDataTableADODB
+    Dim SMiDefault As DataTableSecureADODB
+    Set SMiDefault = zfxGetDataTableSecureADODB
 Act:
     SMiDefault.AdoCommandInit SQLlib.Create(TEST_TABLE).SelectAll
     Dim AdoRecordset As ADODB.Recordset
@@ -179,7 +191,8 @@ Private Sub ztcRecords_ValidatesRecordsAsIs()
     On Error GoTo TestFail
 
 Arrange:
-    Dim SMiDefault As DataTableADODB: Set SMiDefault = zfxGetDataTableADODB
+    Dim SMiDefault As DataTableSecureADODB
+    Set SMiDefault = zfxGetDataTableSecureADODB
 Act:
     Dim Records As Variant: Records = SMiDefault.Records
 Assert:
@@ -205,7 +218,8 @@ Private Sub ztcRecords_ValidatesRecordsIdAsText()
     On Error GoTo TestFail
 
 Arrange:
-    Dim SMiDefault As DataTableADODB: Set SMiDefault = zfxGetDataTableADODB
+    Dim SMiDefault As DataTableSecureADODB
+    Set SMiDefault = zfxGetDataTableSecureADODB
 Act:
     Dim Records As Variant
     Records = SMiDefault.Records(SQLlib.Create(TEST_TABLE).SelectIdAsText(SMiDefault.FieldNames))
@@ -232,7 +246,8 @@ Private Sub ztcRecords_ValidatesRecordsAllAsText()
     On Error GoTo TestFail
 
 Arrange:
-    Dim SMiDefault As DataTableADODB: Set SMiDefault = zfxGetDataTableADODB
+    Dim SMiDefault As DataTableSecureADODB
+    Set SMiDefault = zfxGetDataTableSecureADODB
 Act:
     Dim Records As Variant
     Records = SMiDefault.Records( _
@@ -261,7 +276,8 @@ Private Sub ztcModel_ValidatesLoadedData()
 
 Arrange:
 Act:
-    Dim StorageModel As DataTableModel: Set StorageModel = zfxGetDataTableModel
+    Dim StorageModel As DataTableModel
+    Set StorageModel = zfxGetDataTableModel
 Assert:
     With StorageModel
         Assert.IsNotNothing .DirtyRecords, "Dirty records dictionary is not set"

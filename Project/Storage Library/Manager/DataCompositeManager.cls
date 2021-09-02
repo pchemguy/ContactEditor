@@ -5,14 +5,19 @@ END
 Attribute VB_Name = "DataCompositeManager"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
-Attribute VB_PredeclaredId = True
+Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Attribute VB_Description = "Composite class incorporating one Table and one Record model with backends. Record submodel is used to represent a row from the Table."
 '@Folder "Storage Library.Manager"
 '@ModuleDescription "Composite class incorporating one Table and one Record model with backends. Record submodel is used to represent a row from the Table."
-'@PredeclaredId
-'@IgnoreModule ProcedureNotUsed
 '@Exposed
+'@IgnoreModule ProcedureNotUsed
+''''
+'''' To avoid a factory with overly complicated signature, this class does not
+'''' employ the factory pattern. It should be newed as a regular class, and then
+'''' the user should call InitRecord and InitTable methods directly to complete
+'''' initialization. These methods replace the factory/constructor pattern.
+''''
 Option Explicit
 
 Private Type TDataCompositeManager
@@ -32,6 +37,18 @@ End Sub
 Private Sub Class_Terminate()
     Set this.RecordModel = Nothing
     Set this.TableModel = Nothing
+End Sub
+
+'@Description "Initializes Record subpackage components"
+Public Sub InitRecord(ByVal ClassName As String, ByVal ConnectionString As String, ByVal TableName As String)
+Attribute InitRecord.VB_Description = "Initializes Record subpackage components"
+    Set this.RecordStorage = DataRecordFactory.CreateInstance(ClassName, this.RecordModel, ConnectionString, TableName)
+End Sub
+
+'@Description "Initializes Table subpackage components"
+Public Sub InitTable(ByVal ClassName As String, ByVal ConnectionString As String, ByVal TableName As String)
+Attribute InitTable.VB_Description = "Initializes Table subpackage components"
+    Set this.TableStorage = DataTableFactory.CreateInstance(ClassName, this.TableModel, ConnectionString, TableName)
 End Sub
 
 Public Property Get Record() As Scripting.Dictionary
@@ -57,14 +74,6 @@ End Property
 Public Property Get IDs() As Variant
     IDs = this.TableStorage.GetIds
 End Property
-
-Public Sub InitRecord(ByVal ClassName As String, ByVal ConnectionString As String, ByVal TableName As String)
-    Set this.RecordStorage = DataRecordFactory.CreateInstance(ClassName, this.RecordModel, ConnectionString, TableName)
-End Sub
-
-Public Sub InitTable(ByVal ClassName As String, ByVal ConnectionString As String, ByVal TableName As String)
-    Set this.TableStorage = DataTableFactory.CreateInstance(ClassName, this.TableModel, ConnectionString, TableName)
-End Sub
 
 Public Sub LoadDataIntoModel()
     this.TableStorage.LoadDataIntoModel
