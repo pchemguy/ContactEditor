@@ -1,8 +1,8 @@
 ---
 layout: default
-title: Main form and persistence
-nav_order: 4
-permalink: /main-form
+title: Model-view-presenter - GUI
+nav_order: 2
+permalink: /mvp
 ---
 
 The *ContactEditorForm* acts as a table browser, displaying one record at a time. The name of each form control matches the associated field name. *ContactEditorPresenter* populates the form from *DataRecordModel* by matching control and field names, minimizing the need for hardcoding the field names. Individual form controls raise "Change" events updating the *DataRecordModel*. The section with "Change" event handlers is the only place requiring hardcoded control/field names. When the user presses the "Apply" or "Ok" buttons, the *DataRecordModel* backend saves changes made by the user.

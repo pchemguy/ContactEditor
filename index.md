@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Home
+title: Data manager design
 nav_order: 1
 permalink: /
 ---
@@ -10,13 +10,13 @@ permalink: /
 "Contact Editor" demos the Model-View-Presenter (MVP) pattern backed by persistent storage (MVP-DB) in VBA. I developed this mock data manager as a VBA OOP course project and an MVP-DB template/prototype for my VBA experiments.
 
 <a name="FigDataManagementWorkflows"></a>  
-<img src="https://github.com/pchemguy/ContactEditor/blob/develop/Assets/Diagrams/Overview.svg?raw=true" alt="Overview" width="100%" />  
+<img src="https://github.com/pchemguy/ContactEditor/blob/master/Assets/Diagrams/Overview.svg?raw=true" alt="Overview" width="100%" />  
 <p align="center"><b>Figure 1. Data management workflows.</b></p>  
 
 The typical data management constituents are shown in [Fig. 1](#FigDataManagementWorkflows). Usually, the user sends a query to the database, receives a response table, browses record data via a user form, and, possibly, updates the database. From the user perspective, the data management process involves three key players: the user, persistent storage, and GUI acting as an intermediary between the first two. Functionally, the actual intermediary is the data manager application responsible for presenting the GUI, maintaining a local data container, and transferring the data (user&nbsp;&#x21D4;&nbsp;GUI&nbsp;&#x21D4;&nbsp;data&nbsp;container&nbsp;&#x21D4;&nbsp;persistent&nbsp;storage), as shown in [Fig. 2](#FigDataManagerApp). The left part of the figure marked with green arrows ("user&nbsp;&#x21D4;&nbsp;GUI" and "GUI&nbsp;&#x21D4;&nbsp;data container" interactions) can be implemented via the MVP pattern, and the remaining "data&nbsp;container&nbsp;&#x21D4;&nbsp;persistent&nbsp;storage" interaction can be handled via a "storage" library.
 
 <a name="FigDataManagerApp"></a>  
-<img src="https://github.com/pchemguy/ContactEditor/blob/develop/Assets/Diagrams/Data Management Overview.svg?raw=true" alt="Data Management Overview" width="100%" />  
+<img src="https://github.com/pchemguy/ContactEditor/blob/master/Assets/Diagrams/Data Management Overview.svg?raw=true" alt="Data Management Overview" width="100%" />  
 <p align="center"><b>Figure 2. Data manager application.</b></p>  
 
 ### Development environment and repo structure
@@ -49,7 +49,7 @@ A special thanks goes to Mathieu Guindon, a co-founder of the [Rubber Duck VBA][
 [RDVBA UserForm1.Show]: https://rubberduckvba.wordpress.com/2017/10/25/userform1-show
 [RDVBA Modeless Form]: https://stackoverflow.com/questions/47357708/vba-destroy-a-modeless-userform-instance-properly#answer-47358692
 [RDVBA Project Utils]: https://github.com/pchemguy/RDVBA-Project-Utils
-[Overview]: https://github.com/pchemguy/ContactEditor/blob/develop/Assets/Diagrams/Overview.jpg?raw=true
+[Overview]: https://github.com/pchemguy/ContactEditor/blob/master/Assets/Diagrams/Overview.jpg?raw=true
 [Project]: https://github.com/pchemguy/ContactEditor/tree/master/Project
 [Contact Editor]: https://github.com/pchemguy/ContactEditor/blob/master/ContactEditor.xls
 [ContactEditor.db]: https://github.com/pchemguy/ContactEditor/blob/master/ContactEditor.db
