@@ -2,7 +2,7 @@
 layout: default
 title: Code extensibility
 nav_order: 7
-parent: Class design patterns
+parent: Design patterns
 permalink: /class-design/code-extensibility
 ---
 

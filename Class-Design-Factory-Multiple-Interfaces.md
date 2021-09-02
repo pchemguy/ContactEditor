@@ -2,7 +2,7 @@
 layout: default
 title: Factory and multiple interfaces
 nav_order: 6
-parent: Class design patterns
+parent: Design patterns
 permalink: /class-design/factory-multiple-interfaces
 ---
 
