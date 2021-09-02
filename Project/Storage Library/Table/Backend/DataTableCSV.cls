@@ -27,7 +27,7 @@ Private this As TDataTableCSV
 
 '''' ConnectionString - "<Path to CSV>" or empty to use ThisWorkbook.Path
 '''' TableName        - "<CSV file name>!sep=<FieldSeparator>" or empty
-'''' to use <ThisWorkbook.Name>(without ext)".xsv!sep=,"
+'''' to use <ThisWorkbook.VBProject.Name>".xsv!sep=,"
 '''' Note, the factory intentionally returns the default interface. The
 '''' interface of the instance's reference is switched to IDataTableStorage
 '''' when the returned value is assigned in the calling code to appropriately
@@ -47,7 +47,7 @@ Friend Sub Init(ByVal Model As DataTableModel, ByVal ConnectionString As String,
     If Len(TableName) > 0 Then
         CSVName = TableName
     Else
-        CSVName = Left$(ThisWorkbook.Name, Len(ThisWorkbook.Name) - 5 + InStr(Right$(ThisWorkbook.Name, 5), ".")) & "xsv!sep=,"
+        CSVName = ThisWorkbook.VBProject.Name & ".xsv!sep=,"
     End If
     
     Set this.Model = Model

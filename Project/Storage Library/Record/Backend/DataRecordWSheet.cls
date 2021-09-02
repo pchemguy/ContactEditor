@@ -24,7 +24,7 @@ End Type
 Private this As TDataRecord
 
 
-'@Description "Returns a new IDataRecord object."
+'@Description "Returns a new IDataRecordStorage object."
 Public Function Create(ByVal Model As DataRecordModel, _
                        ByVal ConnectionString As String, _
                        ByVal TableName As String) As IDataRecordStorage
@@ -36,6 +36,19 @@ Attribute Create.VB_Description = "Returns a new IDataRecord object."
 End Function
 
 
+'''' Initializes an instance of IDataRecordStorage
+''''
+'''' Args:
+''''   Model (DataRecordModel):
+''''     DataRecordModel instance
+''''
+''''   ConnectionString (string):
+''''     Name of an open Workbook (as returned via ThisWorkbook.Name).
+''''
+''''   TableName (string):
+''''     Worksheet name.
+''''
+'@Description "Creates an instance of IDataRecordStorage"
 Friend Sub Init(ByVal Model As DataRecordModel, _
                 ByVal ConnectionString As String, _
                 ByVal TableName As String)
@@ -60,19 +73,24 @@ Private Sub Class_Terminate()
 End Sub
 
 
-'''' Collect all named ranges, keep only those referring to a single cell on a proper worksheet
-'''' and the adjacent label above or to the left matches the range name.
+'''' Collect all named ranges, keep only those referring to a single cell on
+'''' a proper worksheet and the adjacent label above or to the left matches
+'''' the range name.
 Private Sub InitModel()
-    Dim WSheetName As String: WSheetName = this.WSheet.Name
-    Dim Prefix As String: Prefix = "=" & WSheetName & "!"
-    Dim PrefixLength As Long: PrefixLength = Len(Prefix)
+    Dim WSheetName As String
+    WSheetName = this.WSheet.Name
+    Dim Prefix As String
+    Prefix = "=" & WSheetName & "!"
+    Dim PrefixLength As Long
+    PrefixLength = Len(Prefix)
     
     Dim RangeName As Excel.Name
     Dim TargetRange As Excel.Range
     Dim FieldName As String
     Dim RefersTo As String
     Dim CellCount As Long
-    Dim WBook As Excel.Workbook: Set WBook = this.WSheet.Parent
+    Dim WBook As Excel.Workbook
+    Set WBook = this.WSheet.Parent
     For Each RangeName In WBook.Names
         '''' Check that this range name refers to the desired Worksheet
         '''' (RefersTo starts with "=<Worksheet Name>!

@@ -43,10 +43,14 @@ Option Explicit
 
 
 Private Sub TestSheetTable()
-    Dim StorageTableModel As DataTableModel: Set StorageTableModel = New DataTableModel
-    Dim ClassName As String: ClassName = "Worksheet"
-    Dim ConnectionString As String: ConnectionString = ThisWorkbook.Name & "!" & Contacts.Name
-    Dim TableName As String: TableName = "Contacts1"
+    Dim StorageTableModel As DataTableModel
+    Set StorageTableModel = New DataTableModel
+    Dim ClassName As String
+    ClassName = "Worksheet"
+    Dim ConnectionString As String
+    ConnectionString = ThisWorkbook.Name
+    Dim TableName As String
+    TableName = "Contacts1"
     
     Dim StorageManager As IDataTableStorage
     Set StorageManager = DataTableFactory.CreateInstance(ClassName, StorageTableModel, ConnectionString, TableName)
@@ -56,32 +60,44 @@ End Sub
 
 
 Private Sub TestSheetRecord()
-    Dim StorageRecordModel As DataRecordModel: Set StorageRecordModel = New DataRecordModel
-    Dim ClassName As String: ClassName = "Worksheet"
-    Dim ConnectionString As String: ConnectionString = ThisWorkbook.Name & "!" & ContactBrowser.Name
+    Dim StorageRecordModel As DataRecordModel
+    Set StorageRecordModel = New DataRecordModel
+    Dim ClassName As String
+    ClassName = "Worksheet"
+    Dim ConnectionString As String
+    ConnectionString = ThisWorkbook.Name
+    Dim TableName As String
+    TableName = ContactBrowser.Name
     
     Dim StorageManager As IDataRecordStorage
-    Set StorageManager = DataRecordFactory.CreateInstance(ClassName, StorageRecordModel, ConnectionString, vbNullString)
+    Set StorageManager = DataRecordFactory.CreateInstance(ClassName, StorageRecordModel, ConnectionString, TableName)
     
     StorageManager.LoadDataIntoModel
 End Sub
 
 
 Private Sub TestDataRecordManager()
-    Dim ClassName As String: ClassName = "Worksheet"
-    Dim ConnectionString As String: ConnectionString = ThisWorkbook.Name & "!" & ContactBrowser.Name
+    Dim ClassName As String
+    ClassName = "Worksheet"
+    Dim ConnectionString As String
+    ConnectionString = ThisWorkbook.Name
+    Dim TableName As String
+    TableName = ContactBrowser.Name
     
     Dim Storman As IDataRecordManager
-    Set Storman = DataRecordManager.Create(ClassName, ConnectionString, vbNullString)
+    Set Storman = DataRecordManager.Create(ClassName, ConnectionString, TableName)
     
     Storman.LoadDataIntoModel
 End Sub
 
 
 Private Sub TestDataTableManager()
-    Dim ClassName As String: ClassName = "Worksheet"
-    Dim TableName As String: TableName = "Contacts"
-    Dim ConnectionString As String: ConnectionString = ThisWorkbook.Name & "!" & Contacts.Name
+    Dim ClassName As String
+    ClassName = "Worksheet"
+    Dim TableName As String
+    TableName = Contacts.Name
+    Dim ConnectionString As String
+    ConnectionString = ThisWorkbook.Name
     
     Dim Storman As IDataTableManager
     Set Storman = DataTableManager.Create(ClassName, ConnectionString, TableName)
@@ -101,18 +117,20 @@ Private Sub TestDataCompositeManager()
     Dim Storman As DataCompositeManager
     Set Storman = New DataCompositeManager
 
-    Dim ClassName As String: ClassName = "Worksheet"
-    Dim TableName As String: TableName = "Contacts"
-    Dim ConnectionString As String: ConnectionString = ThisWorkbook.Name & "!" & Contacts.Name
+    Dim ClassName As String
+    ClassName = "Worksheet"
+    Dim TableName As String
+    TableName = Contacts.Name
+    Dim ConnectionString As String
+    ConnectionString = ThisWorkbook.Name
     Storman.InitTable ClassName, ConnectionString, TableName
     
-    
-    ConnectionString = ThisWorkbook.Name & "!" & ContactBrowser.Name
-    Storman.InitRecord ClassName, ConnectionString, vbNullString
+    TableName = ContactBrowser.Name
+    ConnectionString = ThisWorkbook.Name
+    Storman.InitRecord ClassName, ConnectionString, TableName
     
     Storman.LoadDataIntoModel
     'Storman.LoadRecordFromTable "10"
-    
     
     Storman.UpdateRecordToTable
     

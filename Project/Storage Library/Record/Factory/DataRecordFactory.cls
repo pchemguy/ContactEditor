@@ -34,10 +34,31 @@ Friend Sub Init(ByVal ClassName As String)
 End Sub
 
 
+'''' Creates an instance of IDataRecordStorage
+''''
+'''' Args:
+''''   ClassName (string):
+''''     Name of a DataRecordStorage class. Supported backends:
+''''       - "Worksheet"
+''''
+''''   Model (DataRecordModel):
+''''     DataRecordModel instance
+''''
+''''   ConnectionString (string):
+''''     Information passed to the backend necessary to connect to peristent storage.
+''''     Currently, only file-based storages have been implemented, and this argument
+''''     is a file name (possibly with path) that can be resolved to an absolute path
+''''     pointing to the database file. See backend constructors for resolution code.
+''''
+''''   TableName (string):
+''''     Typically the name of the table. It may also include additional information.
+''''
+'@Description "Creates an instance of IDataRecordStorage"
 Public Function CreateInstance(ByVal ClassName As String, _
                                ByVal Model As DataRecordModel, _
                                ByVal ConnectionString As String, _
                                ByVal TableName As String) As IDataRecordStorage
+Attribute CreateInstance.VB_Description = "Creates an instance of IDataRecordStorage"
     Select Case ClassName
         Case "Worksheet"
             Set CreateInstance = DataRecordWSheet.Create(Model, ConnectionString, TableName)

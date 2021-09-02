@@ -52,10 +52,14 @@ Private Sub ztcCreateInstance_ValidatesCreationOfDataStorage()
     On Error GoTo TestFail
 
 Arrange:
-    Dim StorageModel As DataRecordModel: Set StorageModel = New DataRecordModel
-    Dim ClassName As String: ClassName = "Worksheet"
-    Dim ConnectionString As String: ConnectionString = ThisWorkbook.Name
-    Dim TableName As String: TableName = ActiveSheet.Name
+    Dim StorageModel As DataRecordModel
+    Set StorageModel = New DataRecordModel
+    Dim ClassName As String
+    ClassName = "Worksheet"
+    Dim ConnectionString As String
+    ConnectionString = ThisWorkbook.Name
+    Dim TableName As String
+    TableName = ActiveSheet.Name
 Act:
     Dim StorageManager As IDataRecordStorage
     Set StorageManager = DataRecordFactory.CreateInstance(ClassName, StorageModel, ConnectionString, TableName)
@@ -74,10 +78,14 @@ Private Sub ztcCreateInstance_ThrowsOnUnsupportedDataStorage()
     On Error Resume Next
 
 Arrange:
-    Dim StorageModel As DataRecordModel: Set StorageModel = New DataRecordModel
-    Dim ClassName As String: ClassName = "BadBackend"
-    Dim ConnectionString As String: ConnectionString = ThisWorkbook.Name & "!" & ActiveSheet.Name
-    Dim TableName As String: TableName = vbNullString
+    Dim StorageModel As DataRecordModel
+    Set StorageModel = New DataRecordModel
+    Dim ClassName As String
+    ClassName = "BadBackend"
+    Dim ConnectionString As String
+    ConnectionString = ThisWorkbook.Name
+    Dim TableName As String
+    TableName = ActiveSheet.Name
 Act:
     Dim StorageManager As IDataRecordStorage
     Set StorageManager = DataRecordFactory.CreateInstance(ClassName, StorageModel, ConnectionString, TableName)

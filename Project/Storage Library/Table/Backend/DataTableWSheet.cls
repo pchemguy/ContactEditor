@@ -42,6 +42,20 @@ Attribute Create.VB_Description = "Returns a new DataTableWSheet object."
 End Function
 
 
+'''' Initializes an instance of IDataTableStorage
+''''
+'''' Args:
+''''   Model (DataTableModel):
+''''     DataTableModel instance
+''''
+''''   ConnectionString (string):
+''''     Name of an open Workbook (as returned via ThisWorkbook.Name).
+''''
+''''   TableName (string):
+''''     Name of the target Worksheet. Also, name of a global named range
+''''     pointing to the table range.
+''''
+'@Description "Creates an instance of IDataRecordStorage"
 Friend Sub Init(ByVal Model As DataTableModel, _
                 ByVal ConnectionString As String, _
                 ByVal TableName As String)

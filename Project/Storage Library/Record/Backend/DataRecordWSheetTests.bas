@@ -46,9 +46,12 @@ End Sub
 
 
 Private Function zfxGetDataRecordModel() As DataRecordModel
-    Dim StorageModel As DataRecordModel: Set StorageModel = New DataRecordModel
-    Dim ConnectionString As String: ConnectionString = ThisWorkbook.Name
-    Dim TableName As String: TableName = TestContacts.Name
+    Dim StorageModel As DataRecordModel
+    Set StorageModel = New DataRecordModel
+    Dim ConnectionString As String
+    ConnectionString = ThisWorkbook.Name
+    Dim TableName As String
+    TableName = TestContacts.Name
     
     Dim StorageManager As IDataRecordStorage
     Set StorageManager = DataRecordWSheet.Create(StorageModel, ConnectionString, TableName)
@@ -67,9 +70,12 @@ Private Sub ztcCreate_ValidatesCreationOfDataStorage()
     On Error GoTo TestFail
 
 Arrange:
-    Dim StorageModel As DataRecordModel: Set StorageModel = New DataRecordModel
-    Dim ConnectionString As String: ConnectionString = ThisWorkbook.Name
-    Dim TableName As String: TableName = ActiveSheet.Name
+    Dim StorageModel As DataRecordModel
+    Set StorageModel = New DataRecordModel
+    Dim ConnectionString As String
+    ConnectionString = ThisWorkbook.Name
+    Dim TableName As String
+    TableName = ActiveSheet.Name
 Act:
     Dim StorageManager As IDataRecordStorage
     Set StorageManager = DataRecordWSheet.Create(StorageModel, ConnectionString, TableName)
@@ -88,9 +94,12 @@ Private Sub ztcCreate_ThrowsOnInavlidConnectionString()
     On Error Resume Next
 
 Arrange:
-    Dim StorageModel As DataRecordModel: Set StorageModel = New DataRecordModel
-    Dim ConnectionString As String: ConnectionString = "InvalidConnectionString"
-    Dim TableName As String: TableName = vbNullString
+    Dim StorageModel As DataRecordModel
+    Set StorageModel = New DataRecordModel
+    Dim ConnectionString As String
+    ConnectionString = "InvalidConnectionString"
+    Dim TableName As String
+    TableName = vbNullString
 Act:
     Dim StorageManager As IDataRecordStorage
     Set StorageManager = DataRecordWSheet.Create(StorageModel, ConnectionString, TableName)
@@ -109,9 +118,12 @@ Private Sub ztcCreate_ThrowsOnInavlidExcelObjectNames()
     On Error Resume Next
 
 Arrange:
-    Dim StorageModel As DataRecordModel: Set StorageModel = New DataRecordModel
-    Dim ConnectionString As String: ConnectionString = ThisWorkbook.Name & "?!?" & ActiveSheet.Name
-    Dim TableName As String: TableName = vbNullString
+    Dim StorageModel As DataRecordModel
+    Set StorageModel = New DataRecordModel
+    Dim ConnectionString As String
+    ConnectionString = ThisWorkbook.Name & "?!?"
+    Dim TableName As String
+    TableName = ActiveSheet.Name
 Act:
     Dim StorageManager As IDataRecordStorage
     Set StorageManager = DataRecordWSheet.Create(StorageModel, ConnectionString, TableName)
@@ -131,7 +143,8 @@ Private Sub ztcModel_ValidatesLoadedData()
 
 Arrange:
 Act:
-    Dim StorageModel As DataRecordModel: Set StorageModel = zfxGetDataRecordModel
+    Dim StorageModel As DataRecordModel
+    Set StorageModel = zfxGetDataRecordModel
 Assert:
     Assert.AreEqual 8, StorageModel.Record.Count, "Field count mismatch"
     Assert.IsTrue StorageModel.Record.Exists("Testid"), "Expected field not present"
@@ -159,4 +172,3 @@ CleanExit:
 TestFail:
     Assert.Fail "Error: " & Err.Number & " - " & Err.Description
 End Sub
-

@@ -70,6 +70,21 @@ Attribute Create.VB_Description = "Returns a new DataTableADODB object."
 End Function
 
 
+'''' Initializes an instance of IDataTableStorage
+''''
+'''' Args:
+''''   Model (DataTableModel):
+''''     DataTableModel instance
+''''
+''''   ConnectionString (string):
+''''     ADODB connection string or database type prefix followed by database
+''''     file name (possibly absolute) that can be resolved to an absolute path
+''''     pointing to the database file. In the latter case, and ADOlib helper
+''''     routine is used for connection string construction.
+''''
+''''   TableName (string):
+''''     Name of the database table
+''''
 Friend Sub Init(ByVal Model As DataTableModel, _
                 ByVal ConnectionString As String, _
                 ByVal TableName As String)

@@ -45,9 +45,12 @@ End Sub
 
 
 Private Function zfxGetDataTableModel() As DataTableModel
-    Dim StorageModel As DataTableModel: Set StorageModel = New DataTableModel
-    Dim ConnectionString As String: ConnectionString = ThisWorkbook.Name
-    Dim TableName As String: TableName = TestContacts.Name
+    Dim StorageModel As DataTableModel
+    Set StorageModel = New DataTableModel
+    Dim ConnectionString As String
+    ConnectionString = ThisWorkbook.Name
+    Dim TableName As String
+    TableName = TestContacts.Name
         
     Dim StorageManager As IDataTableStorage
     Set StorageManager = DataTableWSheet.Create(StorageModel, ConnectionString, TableName)
@@ -66,9 +69,12 @@ Private Sub ztcCreate_ValidatesCreationOfDataStorage()
     On Error GoTo TestFail
 
 Arrange:
-    Dim StorageModel As DataTableModel: Set StorageModel = New DataTableModel
-    Dim ConnectionString As String: ConnectionString = ThisWorkbook.Name
-    Dim TableName As String: TableName = ActiveSheet.Name
+    Dim StorageModel As DataTableModel
+    Set StorageModel = New DataTableModel
+    Dim ConnectionString As String
+    ConnectionString = ThisWorkbook.Name
+    Dim TableName As String
+    TableName = ActiveSheet.Name
 Act:
     Dim StorageManager As IDataTableStorage
     Set StorageManager = DataTableWSheet.Create(StorageModel, ConnectionString, TableName)
@@ -87,9 +93,12 @@ Private Sub ztcCreate_ThrowsOnInavlidConnectionString()
     On Error Resume Next
 
 Arrange:
-    Dim StorageModel As DataTableModel: Set StorageModel = New DataTableModel
-    Dim ConnectionString As String: ConnectionString = "InvalidConnectionString"
-    Dim TableName As String: TableName = "TestContacts"
+    Dim StorageModel As DataTableModel
+    Set StorageModel = New DataTableModel
+    Dim ConnectionString As String
+    ConnectionString = "InvalidConnectionString"
+    Dim TableName As String
+    TableName = "TestContacts"
 Act:
     Dim StorageManager As IDataTableStorage
     Set StorageManager = DataTableWSheet.Create(StorageModel, ConnectionString, TableName)
@@ -108,9 +117,12 @@ Private Sub ztcCreate_ThrowsOnInavlidExcelObjectNames()
     On Error Resume Next
 
 Arrange:
-    Dim StorageModel As DataTableModel: Set StorageModel = New DataTableModel
-    Dim ConnectionString As String: ConnectionString = ThisWorkbook.Name & "?!?" & ActiveSheet.Name
-    Dim TableName As String: TableName = "TestContacts"
+    Dim StorageModel As DataTableModel
+    Set StorageModel = New DataTableModel
+    Dim ConnectionString As String
+    ConnectionString = ThisWorkbook.Name & "?!?"
+    Dim TableName As String
+    TableName = ActiveSheet.Name
 Act:
     Dim StorageManager As IDataTableStorage
     Set StorageManager = DataTableWSheet.Create(StorageModel, ConnectionString, TableName)
@@ -129,9 +141,12 @@ Private Sub ztcCreate_ThrowsOnInavlidRangeNames()
     On Error Resume Next
 
 Arrange:
-    Dim StorageModel As DataTableModel: Set StorageModel = New DataTableModel
-    Dim ConnectionString As String: ConnectionString = ThisWorkbook.Name & "!" & ActiveSheet.Name
-    Dim TableName As String: TableName = "InvalidTableName"
+    Dim StorageModel As DataTableModel
+    Set StorageModel = New DataTableModel
+    Dim ConnectionString As String
+    ConnectionString = ThisWorkbook.Name
+    Dim TableName As String
+    TableName = "InvalidTableName"
 Act:
     Dim StorageManager As IDataTableStorage
     Set StorageManager = DataTableWSheet.Create(StorageModel, ConnectionString, TableName)
@@ -151,7 +166,8 @@ Private Sub ztcModel_ValidatesLoadedData()
 
 Arrange:
 Act:
-    Dim StorageModel As DataTableModel: Set StorageModel = zfxGetDataTableModel
+    Dim StorageModel As DataTableModel
+    Set StorageModel = zfxGetDataTableModel
 Assert:
     With StorageModel
         Assert.IsNotNothing .DirtyRecords, "Dirty records dictionary is not set"

@@ -44,6 +44,29 @@ Friend Sub Init(ByVal ClassName As String)
 End Sub
 
 
+'''' Creates an instance of IDataTableStorage
+''''
+'''' Args:
+''''   ClassName (string):
+''''     Name of a DataTableStorage class. Supported backends:
+''''       - "ADODB"
+''''       - "SecureADODB"
+''''       - "Worksheet"
+''''       - "CSV"
+''''
+''''   Model (DataTableModel):
+''''     DataTableModel instance
+''''
+''''   ConnectionString (string):
+''''     Information passed to the backend necessary to connect to peristent storage.
+''''     Currently, only file-based storages have been implemented, and this argument
+''''     is a file name (possibly with path) that can be resolved to an absolute path
+''''     pointing to the database file (for ADODB type backends, see the backend).
+''''     See backend constructors for resolution code.
+''''
+''''   TableName (string):
+''''     Typically the name of the table. It may also include additional information.
+''''
 Public Function CreateInstance(ByVal ClassName As String, _
                                ByVal Model As DataTableModel, _
                                ByVal ConnectionString As String, _
