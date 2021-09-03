@@ -74,7 +74,7 @@ Arrange:
     Dim ConnectionString As String
     ConnectionString = ThisWorkbook.Name
     Dim TableName As String
-    TableName = ActiveSheet.Name
+    TableName = Contacts.Name
 Act:
     Dim StorageManager As IDataTableStorage
     Set StorageManager = DataTableWSheet.Create(StorageModel, ConnectionString, TableName)

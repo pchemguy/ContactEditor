@@ -67,7 +67,8 @@ Private Sub LoadFormFromModel()
         
     Dim FieldName As Variant
     Dim FieldIndex As Long
-    Dim FieldNames As Variant: FieldNames = this.Model.RecordTableManager.FieldNames
+    Dim FieldNames As Variant
+    FieldNames = this.Model.RecordTableManager.FieldNames
     For FieldIndex = LBound(FieldNames) To UBound(FieldNames)
         FieldName = FieldNames(FieldIndex)
         view.Controls(FieldName).Value = CStr(this.Model.RecordTableManager.RecordModel.GetField(FieldName))
