@@ -29,7 +29,7 @@ Primarily, I use Excel 2002 for development and also run tests on Excel 2016. Co
 *ContactEditorPresenter.InitializeModel* performs basic backend configuration.  
 The *DataTableBackEnd* variable found in the entry point sub determines the type of the primary storage [backend][Backends]. It can take one of the following values:
 
-- [Worksheet][] for an Excel Worksheet (demo database [file][ContactEditor]),
+- [Worksheet][] for an Excel Worksheet (demo database [file][ContactEditor], worksheets "Contacts" and  "ContactBrowser"),
 - [CSV][] for a text delimited file (demo database [file][ContactEditor.xsv]), and
 - [ADODB][] for a relational database (demo SQLite database [file][ContactEditor.db]).
 - [SecureADODB][] for a relational database with [SecureADODB][SecureADODB Library] Library [fork][SecureADODB fork] integrated (demo SQLite database [file][ContactEditor.db]).
