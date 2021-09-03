@@ -17,16 +17,15 @@
     <node id="n0">
       <data key="d6">
         <y:ShapeNode>
-          <y:Geometry height="99.77777777777783" width="377.15603742438964" x="957.2915759356154" y="1402.7546482578684"/>
+          <y:Geometry height="99.77777777777783" width="380.15603742438964" x="957.2915759356154" y="1402.7546482578684"/>
           <y:Fill color="#FFFFFF" transparent="false"/>
           <y:BorderStyle color="#0000FF" raised="false" type="dashed" width="3.0"/>
-          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="16" fontStyle="bolditalic" hasBackgroundColor="false" hasLineColor="false" height="23.6015625" horizontalTextPosition="center" iconTextGap="4" modelName="eight_pos" modelPosition="n" textColor="#0000FF" verticalTextPosition="bottom" visible="true" width="122.2578125" x="127.44911246219476" y="-27.6015625">Storage Library</y:NodeLabel>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="16" fontStyle="bolditalic" hasBackgroundColor="false" hasLineColor="false" height="23.6015625" horizontalTextPosition="center" iconTextGap="4" modelName="eight_pos" modelPosition="n" textColor="#0000FF" verticalTextPosition="bottom" visible="true" width="122.2578125" x="128.94911246219476" y="-27.6015625">Storage Library</y:NodeLabel>
           <y:Shape type="roundrectangle"/>
         </y:ShapeNode>
       </data>
     </node>
     <node id="n1">
-      <data key="d5"/>
       <data key="d6">
         <y:GenericNode configuration="com.yworks.flowchart.dataBase">
           <y:Geometry height="60.0" width="90.0" x="1371.2915759356154" y="1421.5324260356463"/>
@@ -43,24 +42,6 @@
       </data>
     </node>
     <node id="n2">
-      <data key="d5"/>
-      <data key="d6">
-        <y:GenericNode configuration="com.yworks.flowchart.storedData">
-          <y:Geometry height="60.0" width="120.0" x="807.2915759356154" y="1323.5324260356463"/>
-          <y:Fill color="#E8EEF7" color2="#B7C9E3" transparent="false"/>
-          <y:BorderStyle color="#000000" type="line" width="1.0"/>
-          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="14" fontStyle="bold" hasBackgroundColor="false" hasLineColor="false" height="21.1513671875" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="28.1171875" x="45.94140625" y="19.42431640625">File<y:LabelModel>
-              <y:SmartNodeLabelModel distance="4.0"/>
-            </y:LabelModel>
-            <y:ModelParameter>
-              <y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/>
-            </y:ModelParameter>
-          </y:NodeLabel>
-        </y:GenericNode>
-      </data>
-    </node>
-    <node id="n3">
-      <data key="d5"/>
       <data key="d6">
         <y:GenericNode configuration="com.yworks.flowchart.internalStorage">
           <y:Geometry height="60.0" width="120.0" x="1183.2915759356154" y="1421.5324260356463"/>
@@ -77,8 +58,7 @@ family<y:LabelModel>
         </y:GenericNode>
       </data>
     </node>
-    <node id="n4">
-      <data key="d5"/>
+    <node id="n3">
       <data key="d6">
         <y:GenericNode configuration="com.yworks.flowchart.manualInput">
           <y:Geometry height="60.0" width="120.0" x="807.2915759356154" y="1519.5324260356463"/>
@@ -94,8 +74,7 @@ family<y:LabelModel>
         </y:GenericNode>
       </data>
     </node>
-    <node id="n5">
-      <data key="d5"/>
+    <node id="n4">
       <data key="d6">
         <y:GenericNode configuration="com.yworks.flowchart.internalStorage">
           <y:Geometry height="60.0" width="120.0" x="995.2915759356154" y="1421.5324260356463"/>
@@ -112,11 +91,28 @@ family<y:LabelModel>
         </y:GenericNode>
       </data>
     </node>
+    <node id="n5">
+      <data key="d5"/>
+      <data key="d6">
+        <y:GenericNode configuration="com.yworks.flowchart.directData">
+          <y:Geometry height="60.0" width="120.0" x="807.2915759356154" y="1323.5324260356463"/>
+          <y:Fill color="#E8EEF7" color2="#B7C9E3" transparent="false"/>
+          <y:BorderStyle color="#000000" type="line" width="1.0"/>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="14" fontStyle="bold" hasBackgroundColor="false" hasLineColor="false" height="21.1513671875" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="28.1171875" x="45.94140625" y="19.42431640625">File<y:LabelModel>
+              <y:SmartNodeLabelModel distance="4.0"/>
+            </y:LabelModel>
+            <y:ModelParameter>
+              <y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/>
+            </y:ModelParameter>
+          </y:NodeLabel>
+        </y:GenericNode>
+      </data>
+    </node>
     <edge id="e0" source="n0" target="n0">
       <data key="d10">
         <y:ArcEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0">
-            <y:Point x="1145.86962890625" y="1452.6435546875"/>
+            <y:Point x="1147.36962890625" y="1452.6435546875"/>
           </y:Path>
           <y:LineStyle color="#000000" type="line" width="1.0"/>
           <y:Arrows source="none" target="standard"/>
@@ -128,7 +124,7 @@ family<y:LabelModel>
       <data key="d10">
         <y:ArcEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0">
-            <y:Point x="1145.86962890625" y="1452.6435546875"/>
+            <y:Point x="1147.36962890625" y="1452.6435546875"/>
           </y:Path>
           <y:LineStyle color="#000000" type="line" width="1.0"/>
           <y:Arrows source="none" target="standard"/>
@@ -136,8 +132,7 @@ family<y:LabelModel>
         </y:ArcEdge>
       </data>
     </edge>
-    <edge id="e2" source="n4" target="n5">
-      <data key="d9"/>
+    <edge id="e2" source="n3" target="n4">
       <data key="d10">
         <y:SplineEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -146,8 +141,7 @@ family<y:LabelModel>
         </y:SplineEdge>
       </data>
     </edge>
-    <edge id="e3" source="n1" target="n3">
-      <data key="d9"/>
+    <edge id="e3" source="n1" target="n2">
       <data key="d10">
         <y:SplineEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -156,8 +150,7 @@ family<y:LabelModel>
         </y:SplineEdge>
       </data>
     </edge>
-    <edge id="e4" source="n2" target="n5">
-      <data key="d9"/>
+    <edge id="e4" source="n5" target="n4">
       <data key="d10">
         <y:SplineEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -166,23 +159,12 @@ family<y:LabelModel>
         </y:SplineEdge>
       </data>
     </edge>
-    <edge id="e5" source="n5" target="n3">
-      <data key="d9"/>
+    <edge id="e5" source="n4" target="n2">
       <data key="d10">
         <y:SplineEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
           <y:LineStyle color="#000000" type="line" width="3.0"/>
           <y:Arrows source="standard" target="standard"/>
-        </y:SplineEdge>
-      </data>
-    </edge>
-    <edge id="e6" source="n2" target="n2">
-      <data key="d9"/>
-      <data key="d10">
-        <y:SplineEdge>
-          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
-          <y:LineStyle color="#000000" type="line" width="1.0"/>
-          <y:Arrows source="none" target="none"/>
         </y:SplineEdge>
       </data>
     </edge>
