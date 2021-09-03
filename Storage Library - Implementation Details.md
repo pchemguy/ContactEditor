@@ -2,7 +2,7 @@
 layout: default
 title: Implementation details
 nav_order: 2
-parent: Storage Library overview
+parent: Storage Library
 permalink: /storage-library/implementation-details
 ---
 

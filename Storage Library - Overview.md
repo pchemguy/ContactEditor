@@ -1,8 +1,8 @@
 ---
 layout: default
-title: Data model
+title: Overview
 nav_order: 1
-parent: Storage Library overview
+parent: Storage Library
 permalink: /storage-library/data-model
 ---
 
