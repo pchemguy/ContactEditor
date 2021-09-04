@@ -110,7 +110,8 @@ Attribute MakeAdoParamsForRecordUpdate.VB_Description = "Prepares ADODB.Paramete
     AdjustedTypes(FieldIndex) = IIf(TypeCast = CastAsIs, FieldTypes(FieldIndex), adVarWChar)
     
     ' Discard any existing parameters
-    Dim AdoParams As ADODB.Parameters: Set AdoParams = AdoCommand.Parameters
+    Dim AdoParams As ADODB.Parameters
+    Set AdoParams = AdoCommand.Parameters
     Dim ParamIndex As Long
     For ParamIndex = AdoParams.Count - 1 To 0 Step -1
         AdoParams.Delete ParamIndex

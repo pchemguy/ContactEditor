@@ -25,11 +25,12 @@ Private Function IParameterProvider_FromValues(Values() As Variant) As Collectio
     Set IParameterProvider_FromValues = Result
 End Function
 
+Private Sub IParameterProvider_UpdateFromValues(ByVal AdoCommand As ADODB.Command, ByRef Values() As Variant)
+End Sub
 
 Private Property Get IParameterProvider_Self() As IParameterProvider
     Set IParameterProvider_Self = Me
 End Property
-
 
 '@Description("Returns class reference.")
 Private Property Get IParameterProvider_Class() As Object

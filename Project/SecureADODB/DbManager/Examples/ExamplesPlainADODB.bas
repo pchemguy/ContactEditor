@@ -272,7 +272,7 @@ Public Sub SQLiteRecordSetOpenCommandSourceTwoParameterTest()
     Set adoParameter = provider.FromValue(45)
     'adoParameter.name = "@category_id"
     AdoCommand.Parameters.Append adoParameter
-    Set adoParameter = provider.FromValue("machinery")
+    Set adoParameter = provider.FromValue("Simon")
     'adoParameter.name = "@section"
     AdoCommand.Parameters.Append adoParameter
     
@@ -281,6 +281,75 @@ Public Sub SQLiteRecordSetOpenCommandSourceTwoParameterTest()
         .CommandText = sSQL
         .Prepared = True
         '.NamedParameters = True
+        .ActiveConnection = adoConnStr
+        .ActiveConnection.CursorLocation = adUseClient
+    End With
+        
+    With AdoRecordset
+        Set .Source = AdoCommand
+        .CursorLocation = adUseClient
+        .CursorType = adOpenKeyset
+        .LockType = adLockReadOnly
+        .Open Options:=adAsyncFetch
+        Set .ActiveConnection = Nothing
+    End With
+    AdoCommand.ActiveConnection.Close
+    Debug.Print "RecordCount: " & CStr(AdoRecordset.RecordCount)
+End Sub
+
+
+Public Sub SQLiteRecordSetOpenCmdSrc2ParamsTest()
+    Dim sDriver As String
+    Dim sOptions As String
+    Dim sDatabase As String
+
+    Dim adoConnStr As String
+    Dim qtConnStr As String
+    Dim sSQL As String
+    Dim sQTName As String
+    
+    sDatabase = ThisWorkbook.Path & PATH_SEP & REL_PREFIX & LIB_NAME & ".db"
+    sDriver = "SQLite3 ODBC Driver"
+    sOptions = "SyncPragma=NORMAL;FKSupport=True;"
+    adoConnStr = "Driver=" + sDriver + ";" + _
+                 "Database=" + sDatabase + ";" + _
+                 sOptions
+
+    qtConnStr = "OLEDB;" + adoConnStr
+    
+    sSQL = "SELECT * FROM people WHERE id <= ? AND last_name <> ?"
+    
+    Dim AdoRecordset As ADODB.Recordset
+    Set AdoRecordset = New ADODB.Recordset
+    Dim AdoCommand As ADODB.Command
+    Set AdoCommand = New ADODB.Command
+    
+    Dim mappings As ITypeMap
+    Set mappings = AdoTypeMappings.Default
+    Dim provider As IParameterProvider
+    Set provider = AdoParameterProvider.Create(mappings)
+    
+    Dim adoParameter As ADODB.Parameter
+    Set adoParameter = provider.FromValue(10)
+    AdoCommand.Parameters.Append adoParameter
+    Set adoParameter = provider.FromValue("AAAAAA")
+    AdoCommand.Parameters.Append adoParameter
+    
+    Dim Values() As Variant
+    Values = Array(40, "Simon")
+    provider.UpdateFromValues AdoCommand, Values
+    
+'    Dim adoParameter As ADODB.Parameter
+'    Set adoParameter = provider.FromValue(40)
+'    AdoCommand.Parameters.Append adoParameter
+'    Set adoParameter = provider.FromValue("Simon")
+'    AdoCommand.Parameters.Append adoParameter
+    
+        
+    With AdoCommand
+        .CommandType = adCmdText
+        .CommandText = sSQL
+        .Prepared = True
         .ActiveConnection = adoConnStr
         .ActiveConnection.CursorLocation = adUseClient
     End With

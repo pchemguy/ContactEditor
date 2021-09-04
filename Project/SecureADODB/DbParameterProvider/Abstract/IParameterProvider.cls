@@ -24,6 +24,10 @@ Public Function FromValues(ByRef Values() As Variant) As VBA.Collection
 Attribute FromValues.VB_Description = "Creates an ADODB.Parameter object for each specified value; returns a VBA.Collection containing all parameters."
 End Function
 
+'@Description("Update ADODB.Parameters values.")
+Public Sub UpdateFromValues(ByVal AdoCommand As ADODB.Command, ByRef Values() As Variant)
+End Sub
+
 Public Property Get Self() As IParameterProvider
 End Property
 
