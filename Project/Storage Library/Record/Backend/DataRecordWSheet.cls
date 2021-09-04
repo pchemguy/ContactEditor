@@ -28,7 +28,7 @@ Private this As TDataRecord
 Public Function Create(ByVal Model As DataRecordModel, _
                        ByVal ConnectionString As String, _
                        ByVal TableName As String) As IDataRecordStorage
-Attribute Create.VB_Description = "Returns a new IDataRecord object."
+Attribute Create.VB_Description = "Returns a new IDataRecordStorage object."
     Dim Instance As DataRecordWSheet
     Set Instance = New DataRecordWSheet
     Instance.Init Model, ConnectionString, TableName
@@ -52,6 +52,7 @@ End Function
 Friend Sub Init(ByVal Model As DataRecordModel, _
                 ByVal ConnectionString As String, _
                 ByVal TableName As String)
+Attribute Init.VB_Description = "Creates an instance of IDataRecordStorage"
     Set this.Model = Model
     On Error Resume Next
     '@Ignore ImplicitActiveWorkbookReference: false positive

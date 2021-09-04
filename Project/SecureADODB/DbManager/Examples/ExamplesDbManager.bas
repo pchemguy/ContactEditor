@@ -6,9 +6,14 @@ Attribute VB_Name = "ExamplesDbManager"
 Option Explicit
 
 
+Private Const LIB_NAME As String = "SecureADODB"
+Private Const PATH_SEP As String = "\"
+Private Const REL_PREFIX As String = "Library" & PATH_SEP & LIB_NAME & PATH_SEP
+
+
 Private Sub CSVSingleParameterQueryTableTest()
     Dim FileName As String
-    FileName = ThisWorkbook.VBProject.Name & ".csv"
+    FileName = LIB_NAME & ".csv"
 
     Dim TableName As String
     TableName = FileName
@@ -16,7 +21,7 @@ Private Sub CSVSingleParameterQueryTableTest()
     SQLQuery = "SELECT * FROM " & TableName & " WHERE age >= ? AND country = 'South Korea'"
     
     Dim dbm As IDbManager
-    Set dbm = DbManager.CreateFileDb("csv", FileName, vbNullString, False, LoggerTypeEnum.logPrivate)
+    Set dbm = DbManager.CreateFileDb("csv", REL_PREFIX & FileName, vbNullString, False, LoggerTypeEnum.logPrivate)
 
     Debug.Print dbm.Connection.AdoConnection.Properties("Transaction DDL").Value
     
@@ -33,7 +38,7 @@ End Sub
 '''' Throws "Unsupported backend" Error
 Private Sub InvalidTypeTest()
     Dim FileName As String
-    FileName = ThisWorkbook.VBProject.Name & ".csv"
+    FileName = LIB_NAME & ".csv"
 
     Dim TableName As String
     TableName = FileName
@@ -42,13 +47,13 @@ Private Sub InvalidTypeTest()
     
     Dim dbm As IDbManager
     '''' Throws "Unsupported backend" Error
-    Set dbm = DbManager.CreateFileDb("Driver=", FileName, vbNullString, True, LoggerTypeEnum.logPrivate)
+    Set dbm = DbManager.CreateFileDb("Driver=", REL_PREFIX & FileName, vbNullString, True, LoggerTypeEnum.logPrivate)
 End Sub
 
 
 Private Sub CSVSingleParameterQueryScalarTest()
     Dim FileName As String
-    FileName = ThisWorkbook.VBProject.Name & ".csv"
+    FileName = LIB_NAME & ".csv"
 
     Dim TableName As String
     TableName = FileName
@@ -56,7 +61,7 @@ Private Sub CSVSingleParameterQueryScalarTest()
     SQLQuery = "SELECT * FROM " & TableName & " WHERE age >= ? AND country = 'South Korea' ORDER BY id DESC"
     
     Dim dbm As IDbManager
-    Set dbm = DbManager.CreateFileDb("csv", FileName, vbNullString, True, LoggerTypeEnum.logPrivate)
+    Set dbm = DbManager.CreateFileDb("csv", REL_PREFIX & FileName, vbNullString, True, LoggerTypeEnum.logPrivate)
 
     Dim rst As IDbRecordset
     Set rst = dbm.Recordset(Scalar:=True, Disconnected:=True, CacheSize:=10)
@@ -72,7 +77,7 @@ End Sub
 
 Private Sub SQLiteSingleParameterQueryTableTest()
     Dim FileName As String
-    FileName = ThisWorkbook.VBProject.Name & ".db"
+    FileName = REL_PREFIX & LIB_NAME & ".db"
 
     Dim TableName As String
     TableName = "people"
@@ -96,7 +101,7 @@ End Sub
 
 Private Sub SQLiteMetaTest()
     Dim FileName As String
-    FileName = ThisWorkbook.VBProject.Name & ".db"
+    FileName = REL_PREFIX & LIB_NAME & ".db"
 
     Dim TableName As String
     TableName = "people"
@@ -148,13 +153,13 @@ End Sub
 
 Private Sub CSVMetaTest()
     Dim FileName As String
-    FileName = ThisWorkbook.VBProject.Name & ".csv"
+    FileName = LIB_NAME & ".csv"
 
     Dim TableName As String
     TableName = FileName
     
     Dim dbm As IDbManager
-    Set dbm = DbManager.CreateFileDb("csv", FileName, vbNullString, True, LoggerTypeEnum.logPrivate)
+    Set dbm = DbManager.CreateFileDb("csv", REL_PREFIX & FileName, vbNullString, True, LoggerTypeEnum.logPrivate)
         
     Dim FieldNames() As String
     Dim FieldTypes() As ADODB.DataTypeEnum
@@ -200,7 +205,7 @@ End Sub
 
 Private Sub SQLiteInsertTest()
     Dim FileName As String
-    FileName = ThisWorkbook.VBProject.Name & ".db"
+    FileName = REL_PREFIX & LIB_NAME & ".db"
 
     Dim TableName As String
     TableName = "people_insert"
@@ -226,7 +231,7 @@ End Sub
 
 Private Sub SQLiteTwoParameterQueryTableTest()
     Dim FileName As String
-    FileName = ThisWorkbook.VBProject.Name & ".db"
+    FileName = REL_PREFIX & LIB_NAME & ".db"
 
     Dim TableName As String
     TableName = "people"
@@ -252,7 +257,7 @@ Private Sub SQLiteTwoParameterQueryTableTest()
     Dim rst As IDbRecordset
     Set rst = dbm.Recordset(Scalar:=False, Disconnected:=True, CacheSize:=10)
     Dim rstAdo As ADODB.Recordset
-    Set rstAdo = rst.AdoRecordset(SQLQuery, 45, "South Korea")
+    Set rstAdo = rst.InitRecordset(SQLQuery, 45, "South Korea")
     
     Dim Result As ADODB.Recordset
     Set Result = rst.OpenRecordset(SQLQuery, 45, "South Korea")
@@ -266,9 +271,9 @@ End Sub
 '''' correspondence. However, the CSV backend and driver do not support
 '''' ADODB(adVarWChar). Instead, VBA(String)=>ADODB(adVarChar) should be used
 '''' (remove 'W' from 'adVarWChar').
-Private Sub CSVTwoParameterQueryTableTest()
+Private Sub InvalidTypeCSVTwoParameterQueryTableTest()
     Dim FileName As String
-    FileName = ThisWorkbook.VBProject.Name & ".csv"
+    FileName = LIB_NAME & ".csv"
 
     Dim TableName As String
     TableName = FileName
@@ -276,7 +281,7 @@ Private Sub CSVTwoParameterQueryTableTest()
     SQLQuery = "SELECT * FROM " & TableName & " WHERE age >= ? AND country = ?"
     
     Dim dbm As IDbManager
-    Set dbm = DbManager.CreateFileDb("csv", FileName, vbNullString, True, LoggerTypeEnum.logPrivate)
+    Set dbm = DbManager.CreateFileDb("csv", REL_PREFIX & FileName, vbNullString, True, LoggerTypeEnum.logPrivate)
 
     Dim Log As ILogger
     Set Log = dbm.LogController
@@ -294,9 +299,11 @@ Private Sub CSVTwoParameterQueryTableTest()
     Dim rst As IDbRecordset
     Set rst = dbm.Recordset(Scalar:=False, Disconnected:=True, CacheSize:=10)
     Dim rstAdo As ADODB.Recordset
-    Set rstAdo = rst.AdoRecordset(SQLQuery, 45, "South Korea")
+    Set rstAdo = rst.InitRecordset(SQLQuery, 45, "South Korea")
     
     Dim Result As ADODB.Recordset
     '''' Should fail with 'Type is invalid' error
     Set Result = rst.OpenRecordset(SQLQuery, 45, "South Korea")
 End Sub
+
+

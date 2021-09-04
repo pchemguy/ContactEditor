@@ -18,12 +18,12 @@ Option Explicit
 Implements IDbCommandBase
 
 Private Type TCommand
+    AdoCommand As ADODB.Command
     ParameterProvider As IParameterProvider
 End Type
 Private this As TCommand
 
 
-'''' @Inject: just an idea.. see #https://github.com/rubberduck-vba/Rubberduck/issues/5463
 Public Function Create(ByVal provider As IParameterProvider) As IDbCommandBase
     Dim Instance As DbCommandBase
     Set Instance = New DbCommandBase
@@ -37,37 +37,13 @@ Friend Sub Init(ByVal provider As IParameterProvider)
 Attribute Init.VB_Description = "Default constructor"
     Guard.NullReference provider
     Set this.ParameterProvider = provider
+    Set this.AdoCommand = New ADODB.Command
 End Sub
 
 
-Private Function CreateCommand(ByVal db As IDbConnection, _
-                               ByVal CommandType As ADODB.CommandTypeEnum, _
-                               ByVal SQL As String, _
-                               ByRef args() As Variant) As ADODB.Command
-    Guard.NullReference db
-    Guard.Expression db.State = adStateOpen, Source:="DbCommandBase", Message:="Connection is not open."
-    Guard.EmptyString SQL
-    Guard.Expression ValidateOrdinalArguments(SQL, args), _
-                     Source:="DbCommandBase", _
-                     Message:="Arguments supplied are inconsistent with the provided command string parameters."
-    
-    Dim cmd As ADODB.Command
-    Set cmd = New ADODB.Command
-    Set cmd.ActiveConnection = db.AdoConnection
-    cmd.CommandType = CommandType
-    cmd.CommandText = SQL
-    cmd.Prepared = True
-    
-    Dim arg As ADODB.Parameter
-    For Each arg In this.ParameterProvider.FromValues(args)
-        cmd.Parameters.Append arg
-    Next
-    
-    Set CreateCommand = cmd
-End Function
-
-
-Public Function ValidateOrdinalArguments(ByVal SQL As String, ByRef args() As Variant) As Boolean
+'@Description "Verifies that the number of placeholders matches the number of provided values"
+Private Function ValidateOrdinalArguments(ByVal SQL As String, ByRef args() As Variant) As Boolean
+Attribute ValidateOrdinalArguments.VB_Description = "Verifies that the number of placeholders matches the number of provided values"
     Dim Expected As Long
     Expected = Len(SQL) - Len(Replace(SQL, "?", vbNullString))
     
@@ -108,5 +84,26 @@ Private Function IDbCommandBase_CreateCommand(ByVal db As IDbConnection, _
                                               ByVal CommandType As ADODB.CommandTypeEnum, _
                                               ByVal SQL As String, _
                                               ByRef args() As Variant) As ADODB.Command
-    Set IDbCommandBase_CreateCommand = CreateCommand(db, CommandType, SQL, args)
+    Guard.NullReference db
+    Guard.Expression db.State = adStateOpen, Source:="DbCommandBase", Message:="Connection is not open."
+    Guard.EmptyString SQL
+    Guard.Expression ValidateOrdinalArguments(SQL, args), _
+                     Source:="DbCommandBase", _
+                     Message:="Arguments supplied are inconsistent with the provided command string parameters."
+    
+    Dim cmd As ADODB.Command
+    Set cmd = New ADODB.Command
+    
+    With cmd
+        Set .ActiveConnection = db.AdoConnection
+        .CommandType = CommandType
+        .CommandText = SQL
+        .Prepared = True
+        
+        Dim arg As ADODB.Parameter
+        For Each arg In this.ParameterProvider.FromValues(args)
+            .Parameters.Append arg
+        Next
+    End With
+    Set IDbCommandBase_CreateCommand = cmd
 End Function

@@ -20,7 +20,6 @@ Implements IParameterProvider
 Private mappings As ITypeMap
 
 
-'''' @Inject: just an idea.. see #https://github.com/rubberduck-vba/Rubberduck/issues/5463
 '@Description("Creates a new parameter provider using the specified type mappings.")
 Public Function Create(ByVal typeMap As ITypeMap) As IParameterProvider
 Attribute Create.VB_Description = "Creates a new parameter provider using the specified type mappings."

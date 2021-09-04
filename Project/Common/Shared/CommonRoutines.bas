@@ -128,6 +128,7 @@ End Function
 ''''          & ThisWorkbook.VBProject.Name & Application.PathSeparator
 ''''    construct an array of possible file names:
 ''''      - FilePathName
+''''          skip if len=0, or prefix is not relative
 ''''      - ThisWorkbook.VBProject.Name & Ext (Ext comes from the second argument
 '''' 3) loop through all possible path/filename combinations until a valid
 ''''    pathname is found or all options are exhausted
@@ -154,8 +155,10 @@ End Function
 '@Description "Resolves file pathname"
 Public Function VerifyOrGetDefaultPath(ByVal FilePathName As String, ByVal DefaultExts As Variant) As String
 Attribute VerifyOrGetDefaultPath.VB_Description = "Resolves file pathname"
-    Dim PATHuSEP As String: PATHuSEP = Application.PathSeparator
-    Dim PROJuNAME As String: PROJuNAME = ThisWorkbook.VBProject.Name
+    Dim PATHuSEP As String
+    PATHuSEP = Application.PathSeparator
+    Dim PROJuNAME As String
+    PROJuNAME = ThisWorkbook.VBProject.Name
     
     Dim FileExist As Variant
     Dim PathNameCandidate As String
@@ -184,7 +187,12 @@ Attribute VerifyOrGetDefaultPath.VB_Description = "Resolves file pathname"
     '''' === (2b) === Array of filenames
     Dim NameCount As Long
     NameCount = 0
-    If Len(FilePathName) > 1 And InStr(FilePathName, PATHuSEP) = 0 Then
+    
+    Dim UseFilePathName As Boolean
+    UseFilePathName = Len(FilePathName) > 1 And _
+                      Mid$(FilePathName, 1, 1) <> "\" And _
+                      Mid$(FilePathName, 2, 1) <> ":"
+    If UseFilePathName Then
         NameCount = NameCount + 1
     End If
     If VarType(DefaultExts) = vbString Then
@@ -205,7 +213,7 @@ Attribute VerifyOrGetDefaultPath.VB_Description = "Resolves file pathname"
     Dim ExtIndex As Long
     Dim FileNameIndex As Long
     FileNameIndex = 0
-    If Len(FilePathName) > 1 And InStr(FilePathName, PATHuSEP) = 0 Then
+    If UseFilePathName Then
         FileNames(FileNameIndex) = FilePathName
         FileNameIndex = FileNameIndex + 1
     End If

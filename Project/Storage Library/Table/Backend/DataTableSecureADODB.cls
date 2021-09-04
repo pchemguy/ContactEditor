@@ -7,9 +7,9 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = True
-Attribute VB_Description = "Abstracts ADODB backend."
+Attribute VB_Description = "Abstracts ADODB backend via the SecureADODB library."
 '@Folder "Storage Library.Table.Backend"
-'@ModuleDescription "Abstracts ADODB backend."
+'@ModuleDescription "Abstracts ADODB backend via the SecureADODB library."
 '@PredeclaredId
 '@Exposed
 '@IgnoreModule FunctionReturnValueDiscarded, IndexedDefaultMemberAccess

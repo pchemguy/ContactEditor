@@ -3,9 +3,12 @@ Attribute VB_Name = "ExamplesPlainADODB"
 '@IgnoreModule
 Option Explicit
 
+Private Const LIB_NAME As String = "SecureADODB"
+Private Const PATH_SEP As String = "\"
+Private Const REL_PREFIX As String = "Library" & PATH_SEP & LIB_NAME & PATH_SEP
+
 
 Public Sub SQLiteRecordSetOpenBasicTest()
-    Dim fso As New Scripting.FileSystemObject
     Dim sDriver As String
     Dim sDatabase As String
     Dim sDatabaseExt As String
@@ -16,7 +19,7 @@ Public Sub SQLiteRecordSetOpenBasicTest()
     sDriver = "SQLite3 ODBC Driver"
     sDatabaseExt = ".db"
     sTable = "people"
-    sDatabase = ThisWorkbook.Path & Application.PathSeparator & fso.GetBaseName(ThisWorkbook.Name) & sDatabaseExt
+    sDatabase = ThisWorkbook.Path & PATH_SEP & REL_PREFIX & LIB_NAME & sDatabaseExt
     adoConnStr = "Driver=" & sDriver & ";" & _
                  "Database=" & sDatabase & ";"
     
@@ -36,7 +39,6 @@ End Sub
 
 
 Public Sub CSVRecordSetOpenBasicTest()
-    Dim fso As New Scripting.FileSystemObject
     Dim sDriver As String
     Dim sDatabase As String
     Dim sDatabaseExt As String
@@ -50,8 +52,8 @@ Public Sub CSVRecordSetOpenBasicTest()
         sDriver = "{Microsoft Text Driver (*.txt; *.csv)}"
     #End If
     sDatabaseExt = ".csv"
-    sDatabase = ThisWorkbook.Path
-    sTable = fso.GetBaseName(ThisWorkbook.Name) & sDatabaseExt
+    sDatabase = ThisWorkbook.Path & PATH_SEP & REL_PREFIX
+    sTable = LIB_NAME & sDatabaseExt
     adoConnStr = "Driver=" & sDriver & ";" & _
                  "DefaultDir=" & sDatabase & ";"
     
@@ -72,7 +74,6 @@ End Sub
 
 
 Public Sub CSVRecordSetOpenBasicTest2()
-    Dim fso As New Scripting.FileSystemObject
     Dim sDriver As String
     Dim sDatabase As String
     Dim sDatabaseExt As String
@@ -86,8 +87,8 @@ Public Sub CSVRecordSetOpenBasicTest2()
         sDriver = "{Microsoft Text Driver (*.txt; *.csv)}"
     #End If
     sDatabaseExt = ".csv"
-    sDatabase = ThisWorkbook.Path
-    sTable = fso.GetBaseName(ThisWorkbook.Name) & sDatabaseExt
+    sDatabase = ThisWorkbook.Path & PATH_SEP & REL_PREFIX
+    sTable = LIB_NAME & sDatabaseExt
     adoConnStr = "Driver=" & sDriver & ";" & _
                  "DefaultDir=" & sDatabase & ";"
     
@@ -119,7 +120,6 @@ End Sub
 
 
 Public Sub SQLiteRecordSetOpenBasicTest2()
-    Dim fso As New Scripting.FileSystemObject
     Dim sDriver As String
     Dim sDatabase As String
     Dim sDatabaseExt As String
@@ -130,7 +130,7 @@ Public Sub SQLiteRecordSetOpenBasicTest2()
     sDriver = "SQLite3 ODBC Driver"
     sDatabaseExt = ".db"
     sTable = "people"
-    sDatabase = ThisWorkbook.Path & Application.PathSeparator & fso.GetBaseName(ThisWorkbook.Name) & sDatabaseExt
+    sDatabase = ThisWorkbook.Path & PATH_SEP & REL_PREFIX & LIB_NAME & sDatabaseExt
     adoConnStr = "Driver=" & sDriver & ";" & _
                  "Database=" & sDatabase & ";"
     
@@ -161,7 +161,7 @@ Public Sub SQLiteRecordSetOpenTest()
     Dim sSQL As String
     Dim sQTName As String
     
-    sDatabase = ThisWorkbook.Path + "\" + "SecureADODB.db"
+    sDatabase = ThisWorkbook.Path & PATH_SEP & REL_PREFIX & LIB_NAME & ".db"
     sDriver = "SQLite3 ODBC Driver"
     sOptions = "SyncPragma=NORMAL;FKSupport=True;"
     adoConnStr = "Driver=" + sDriver + ";" + _
@@ -201,7 +201,7 @@ Public Sub SQLiteRecordSetOpenCommandSourceTest()
     Dim sSQL As String
     Dim sQTName As String
     
-    sDatabase = ThisWorkbook.Path + "\" + "SecureADODB.db"
+    sDatabase = ThisWorkbook.Path & PATH_SEP & REL_PREFIX & LIB_NAME & ".db"
     sDriver = "SQLite3 ODBC Driver"
     sOptions = "SyncPragma=NORMAL;FKSupport=True;"
     adoConnStr = "Driver=" + sDriver + ";" + _
@@ -247,7 +247,7 @@ Public Sub SQLiteRecordSetOpenCommandSourceTwoParameterTest()
     Dim sSQL As String
     Dim sQTName As String
     
-    sDatabase = ThisWorkbook.Path + "\" + "SecureADODB.db"
+    sDatabase = ThisWorkbook.Path & PATH_SEP & REL_PREFIX & LIB_NAME & ".db"
     sDriver = "SQLite3 ODBC Driver"
     sOptions = "SyncPragma=NORMAL;FKSupport=True;"
     adoConnStr = "Driver=" + sDriver + ";" + _

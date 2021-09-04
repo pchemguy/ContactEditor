@@ -10,7 +10,6 @@ Attribute VB_Exposed = False
 Attribute VB_Description = "A stub acting as a IDbCommandBase implementation."
 '@Folder "SecureADODB.DbCommand.Tests"
 '@ModuleDescription("A stub acting as a IDbCommandBase implementation.")
-'@IgnoreModule ProcedureNotUsed
 Option Explicit
 
 Implements IDbCommandBase
@@ -22,10 +21,12 @@ End Type
 Private this As TInvokeState
 
 
+'@Ignore ProcedureNotUsed
 Public Property Get CreateCommandInvokes() As Long
     CreateCommandInvokes = this.CreateCommandInvokes
 End Property
 
+'@Ignore ProcedureNotUsed
 Public Property Get ValidateOrdinalArgumentsInvokes() As Long
     ValidateOrdinalArgumentsInvokes = this.ValidateOrdinalArgumentsInvokes
 End Property
@@ -40,7 +41,11 @@ Attribute IDbCommandBase_Class.VB_Description = "Returns class reference."
     Set IDbCommandBase_Class = DbCommandBase
 End Property
 
-Private Function IDbCommandBase_CreateCommand(ByVal db As IDbConnection, ByVal CommandType As ADODB.CommandTypeEnum, ByVal SQL As String, args() As Variant) As ADODB.Command
+Private Function IDbCommandBase_CreateCommand( _
+            ByVal db As IDbConnection, _
+            ByVal CommandType As ADODB.CommandTypeEnum, _
+            ByVal SQL As String, _
+            args() As Variant) As ADODB.Command
     this.CreateCommandInvokes = this.CreateCommandInvokes + 1
     Dim Result As ADODB.Command
     Set Result = New ADODB.Command

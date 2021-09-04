@@ -90,5 +90,5 @@ Private Sub IDbCommand_ExecuteNonQuery(ByVal SQL As String, ParamArray args() As
     
     Set this.cmd = this.Base.CreateCommand(this.Connection, adCmdText, SQL, localArgs)
     '@Ignore FunctionReturnValueDiscarded
-    this.cmd.Execute , ADODB.ExecuteOptionEnum.adExecuteNoRecords
+    this.cmd.Execute Options:=ADODB.ExecuteOptionEnum.adExecuteNoRecords
 End Sub

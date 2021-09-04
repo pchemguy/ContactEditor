@@ -156,7 +156,7 @@ Arrange:
     Set Recordset = DbRecordset.Create(zfxGetStubDbCommand)
 Act:
     Dim AdoRecordset As ADODB.Recordset
-    Set AdoRecordset = Recordset.AdoRecordset(vbNullString)
+    Set AdoRecordset = Recordset.InitRecordset(vbNullString)
 Assert:
     AssertExpectedError Assert, ErrNo.PassedNoErr
     Assert.AreNotEqual 1, AdoRecordset.MaxRecords, "Regular recordset should have MaxRecords=0 or >1"
@@ -180,7 +180,7 @@ Arrange:
     Set Recordset = DbRecordset.Create(zfxGetStubDbCommand, True)
 Act:
     Dim AdoRecordset As ADODB.Recordset
-    Set AdoRecordset = Recordset.AdoRecordset(vbNullString)
+    Set AdoRecordset = Recordset.InitRecordset(vbNullString)
 Assert:
     AssertExpectedError Assert, ErrNo.PassedNoErr
     Assert.AreEqual 1, AdoRecordset.MaxRecords, "Scalar recordset should have MaxRecords=1"
@@ -204,7 +204,7 @@ Arrange:
     Set Recordset = DbRecordset.Create(zfxGetStubDbCommand, , False)
 Act:
     Dim AdoRecordset As ADODB.Recordset
-    Set AdoRecordset = Recordset.AdoRecordset(vbNullString)
+    Set AdoRecordset = Recordset.InitRecordset(vbNullString)
 Assert:
     AssertExpectedError Assert, ErrNo.PassedNoErr
     Assert.AreNotEqual 1, AdoRecordset.MaxRecords, "Regular recordset should have MaxRecords=0 or >1"
