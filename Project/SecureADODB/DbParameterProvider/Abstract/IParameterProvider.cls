@@ -15,7 +15,7 @@ Attribute VB_Description = "Represents an object responsible for converting a va
 Option Explicit
 
 '@Description("Creates an ADODB.Parameter object from the specified value.")
-Public Function FromValue(ByVal Value As Variant, Optional ByVal Name As String, Optional ByVal dataTypeName As String) As ADODB.Parameter
+Public Function FromValue(ByVal Value As Variant, Optional ByVal Name As String, Optional ByVal DataTypeName As String) As ADODB.Parameter
 Attribute FromValue.VB_Description = "Creates an ADODB.Parameter object from the specified value."
 End Function
 
@@ -26,12 +26,5 @@ End Function
 
 '@Description("Update ADODB.Parameters values.")
 Public Sub UpdateFromValues(ByVal AdoCommand As ADODB.Command, ByRef Values() As Variant)
+Attribute UpdateFromValues.VB_Description = "Update ADODB.Parameters values."
 End Sub
-
-Public Property Get Self() As IParameterProvider
-End Property
-
-'@Description("Returns class reference.")
-Public Property Get Class() As Object
-Attribute Class.VB_Description = "Returns class reference."
-End Property

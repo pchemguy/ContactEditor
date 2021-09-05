@@ -15,25 +15,18 @@ Option Explicit
 Implements IParameterProvider
 
 
-Private Function IParameterProvider_FromValue(ByVal Value As Variant, Optional ByVal Name As String, Optional ByVal dataTypeName As String) As ADODB.Parameter
+Private Function IParameterProvider_FromValue(ByVal Value As Variant, _
+                                     Optional ByVal Name As String, _
+                                     Optional ByVal DataTypeName As String) As ADODB.Parameter
     Set IParameterProvider_FromValue = New ADODB.Parameter
 End Function
 
-Private Function IParameterProvider_FromValues(Values() As Variant) As Collection
+Private Function IParameterProvider_FromValues(ByRef Values() As Variant) As Collection
     Dim Result As VBA.Collection
     Set Result = New VBA.Collection
     Set IParameterProvider_FromValues = Result
 End Function
 
 Private Sub IParameterProvider_UpdateFromValues(ByVal AdoCommand As ADODB.Command, ByRef Values() As Variant)
+    Debug.Print "Stub IParameterProvider_UpdateFromValues in StubParameterProvider"
 End Sub
-
-Private Property Get IParameterProvider_Self() As IParameterProvider
-    Set IParameterProvider_Self = Me
-End Property
-
-'@Description("Returns class reference.")
-Private Property Get IParameterProvider_Class() As Object
-Attribute IParameterProvider_Class.VB_Description = "Returns class reference."
-    Set IParameterProvider_Class = AdoParameterProvider
-End Property
