@@ -263,10 +263,10 @@ Public Sub SQLiteRecordSetOpenCommandSourceTwoParameterTest()
     Dim AdoCommand As ADODB.Command
     Set AdoCommand = New ADODB.Command
     
-    Dim mappings As ITypeMap
-    Set mappings = AdoTypeMappings.Default
+    Dim Mappings As ITypeMap
+    Set Mappings = AdoTypeMappings.Default
     Dim provider As IParameterProvider
-    Set provider = AdoParameterProvider.Create(mappings)
+    Set provider = AdoParameterProvider.Create(Mappings)
     
     Dim adoParameter As ADODB.Parameter
     Set adoParameter = provider.FromValue(45)
@@ -324,10 +324,10 @@ Public Sub SQLiteRecordSetOpenCmdSrc2ParamsTest()
     Dim AdoCommand As ADODB.Command
     Set AdoCommand = New ADODB.Command
     
-    Dim mappings As ITypeMap
-    Set mappings = AdoTypeMappings.Default
+    Dim Mappings As ITypeMap
+    Set Mappings = AdoTypeMappings.Default
     Dim provider As IParameterProvider
-    Set provider = AdoParameterProvider.Create(mappings)
+    Set provider = AdoParameterProvider.Create(Mappings)
     
     Dim adoParameter As ADODB.Parameter
     Set adoParameter = provider.FromValue(10)
@@ -339,13 +339,6 @@ Public Sub SQLiteRecordSetOpenCmdSrc2ParamsTest()
     Values = Array(40, "Simon")
     provider.UpdateFromValues AdoCommand, Values
     
-'    Dim adoParameter As ADODB.Parameter
-'    Set adoParameter = provider.FromValue(40)
-'    AdoCommand.Parameters.Append adoParameter
-'    Set adoParameter = provider.FromValue("Simon")
-'    AdoCommand.Parameters.Append adoParameter
-    
-        
     With AdoCommand
         .CommandType = adCmdText
         .CommandText = sSQL

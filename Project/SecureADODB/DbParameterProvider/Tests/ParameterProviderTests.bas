@@ -40,24 +40,8 @@ Private Function GetDefaultMappings() As ITypeMap
 End Function
 
 
-'@TestMethod("Factory Guard")
-Private Sub Create_ThrowsGivenNullMappings()
-    
-    On Error GoTo CleanFail
-    Dim sut As IParameterProvider
-    Set sut = AdoParameterProvider.Create(Nothing)
-    On Error GoTo 0
-
-CleanFail:
-    If Err.Number = ErrNo.ObjectNotSetErr Then Exit Sub
-TestFail:
-    Assert.Fail "Expected error was not raised."
-End Sub
-
-
 '@TestMethod("Guard Clauses")
 Private Sub TypeMappings_ThrowsGivenNullMappings()
-    
     On Error GoTo CleanFail
     Dim sut As AdoParameterProvider
     Set sut = AdoParameterProvider.Create(Nothing)
@@ -80,7 +64,7 @@ Private Sub FromValue_MapsParameterSizeToStringLength()
     Dim p As ADODB.Parameter
     Set p = sut.FromValue(Value)
     
-    Assert.AreEqual Len(Value), p.Size
+    Assert.AreEqual Len(Value) + 1, p.Size, "Wrong size of a string parameter"
 End Sub
 
 
@@ -89,13 +73,13 @@ Private Sub FromValue_MapsParameterTypeAsPerMapping()
     Const Expected = DataTypeEnum.adNumeric
     Const Value = 42
 
-    Dim typeMap As ITypeMap
-    Set typeMap = AdoTypeMappings.Default()
-    If typeMap.Mapping(TypeName(Value)) = Expected Then Assert.Inconclusive "'expected' data type should not be the default mapping for the specified 'value'."
-    typeMap.Mapping(TypeName(Value)) = Expected
+    Dim TypeMap As ITypeMap
+    Set TypeMap = AdoTypeMappings.Default()
+    If TypeMap.Mapping(TypeName(Value)) = Expected Then Assert.Inconclusive "'expected' data type should not be the default mapping for the specified 'value'."
+    TypeMap.Mapping(TypeName(Value)) = Expected
 
     Dim sut As IParameterProvider
-    Set sut = AdoParameterProvider.Create(typeMap)
+    Set sut = AdoParameterProvider.Create(TypeMap)
     
     Dim p As ADODB.Parameter
     Set p = sut.FromValue(Value)
@@ -135,4 +119,3 @@ Private Sub FromValues_YieldsAsManyParametersAsSuppliedArgs()
     
     Assert.AreEqual UBound(args), Values.Count
 End Sub
-

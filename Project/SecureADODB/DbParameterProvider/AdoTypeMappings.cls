@@ -16,7 +16,7 @@ Option Explicit
 
 Implements ITypeMap
 
-Private mappings As Scripting.Dictionary
+Private Mappings As Scripting.Dictionary
 
 
 '@Description("Creates a default mapping for intrinsic data types.")
@@ -33,7 +33,7 @@ Attribute Mapping.VB_Description = "Gets/sets the ADODB.DataTypeEnum mapping for
     Guard.Expression IsMapped(Name), _
                      Source:="AdoTypeMappings", _
                      Message:="Argument 'name' must be the name of an intrinsic data type; data type '" & Name & "' is not supported."
-    Mapping = mappings.Item(Name)
+    Mapping = Mappings.Item(Name)
 End Property
 
 '@Ignore ProcedureNotUsed: false positive for indexed property accessors?
@@ -43,13 +43,13 @@ Attribute Mapping.VB_Description = "Gets/sets the ADODB.DataTypeEnum mapping for
     Guard.Expression IsMapped(Name), _
                      Source:="AdoTypeMappings", _
                      Message:="Argument 'name' must be the name of an intrinsic data type; data type '" & Name & "' is not supported."
-    mappings.Item(Name) = Value
+    Mappings.Item(Name) = Value
 End Property
 
 '@Description("True if the specified data type name is mapped to an ADODB.DataTypeEnum value.")
 Public Property Get IsMapped(ByVal Name As String) As Boolean
 Attribute IsMapped.VB_Description = "True if the specified data type name is mapped to an ADODB.DataTypeEnum value."
-    IsMapped = mappings.Exists(Name)
+    IsMapped = Mappings.Exists(Name)
 End Property
 
 '@Description("Gets the ADODB.DataTypeEnum value to map NULL values.")
@@ -59,8 +59,8 @@ Attribute DefaultNullMapping.VB_Description = "Gets the ADODB.DataTypeEnum value
 End Property
 
 Private Sub Class_Initialize()
-    Set mappings = New Scripting.Dictionary
-    With mappings
+    Set Mappings = New Scripting.Dictionary
+    With Mappings
         .Add "Boolean", adBoolean
         .Add "Byte", adInteger
         .Add "Currency", adCurrency

@@ -17,24 +17,24 @@ Option Explicit
 
 Implements IParameterProvider
 
-Private mappings As ITypeMap
+Private Mappings As ITypeMap
 
 
 '@Description("Creates a new parameter provider using the specified type mappings.")
-Public Function Create(ByVal typeMap As ITypeMap) As IParameterProvider
+Public Function Create(ByVal TypeMap As ITypeMap) As IParameterProvider
 Attribute Create.VB_Description = "Creates a new parameter provider using the specified type mappings."
     Dim Instance As AdoParameterProvider
     Set Instance = New AdoParameterProvider
-    Instance.Init typeMap
+    Instance.Init TypeMap
     Set Create = Instance
 End Function
 
 
 '@Description("Default constructor")
-Friend Sub Init(ByVal typeMap As ITypeMap)
+Friend Sub Init(ByVal TypeMap As ITypeMap)
 Attribute Init.VB_Description = "Default constructor"
-    Guard.NullReference typeMap
-    Set mappings = typeMap
+    Guard.NullReference TypeMap
+    Set Mappings = TypeMap
 End Sub
 
 
@@ -71,11 +71,11 @@ Private Sub SetParam(ByVal AdoParam As ADODB.Parameter, _
     Dim localDataTypeName As String
     localDataTypeName = dataTypeName
     If localDataTypeName = vbNullString Then localDataTypeName = TypeName(Value)
-    Guard.Expression mappings.IsMapped(localDataTypeName), _
+    Guard.Expression Mappings.IsMapped(localDataTypeName), _
                      Source:="AdoParameterProvider", _
                      Message:="The data type '" & localDataTypeName & "' has no ADODB.DataTypeEnum mapping."
     
-    AdoParam.Type = mappings.Mapping(localDataTypeName)
+    AdoParam.Type = Mappings.Mapping(localDataTypeName)
     AdoParam.Direction = ADODB.ParameterDirectionEnum.adParamInput
     
     If AdoParam.Type = AdoTypeMappings.DefaultNullMapping Then
@@ -138,10 +138,10 @@ Private Sub IParameterProvider_UpdateFromValues(ByVal AdoCommand As ADODB.Comman
         Set AdoParam = AdoCommand.Parameters(ParamIndex)
         Value = Values(ValueIndex)
         dataTypeName = TypeName(Value)
-        Guard.Expression mappings.IsMapped(dataTypeName), _
+        Guard.Expression Mappings.IsMapped(dataTypeName), _
                          "AdoParameterProvider", _
                          "The data type '" & dataTypeName & "' has no ADODB.DataTypeEnum mapping."
-        Guard.Expression AdoParam.Type = mappings.Mapping(dataTypeName), _
+        Guard.Expression AdoParam.Type = Mappings.Mapping(dataTypeName), _
                          "AdoParameterProvider", _
                          "Parameter/Value type mismatch for parameter: " & CStr(ParamIndex)
 
