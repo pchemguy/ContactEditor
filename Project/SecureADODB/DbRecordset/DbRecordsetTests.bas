@@ -1,8 +1,8 @@
 Attribute VB_Name = "DbRecordsetTests"
 Attribute VB_Description = "Tests for the DbRecordset class."
 '@Folder "SecureADODB.DbRecordset"
+'@ModuleDescription "Tests for the DbRecordset class."
 '@TestModule
-'@ModuleDescription("Tests for the DbRecordset class.")
 '@IgnoreModule LineLabelNotUsed, UnhandledOnErrorResumeNext
 Option Explicit
 Option Private Module
@@ -217,4 +217,3 @@ CleanExit:
 TestFail:
     Assert.Fail "Error: " & Err.Number & " - " & Err.Description
 End Sub
-

@@ -9,7 +9,7 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = True
 Attribute VB_Description = "A thin wrapper around an ADODB recordset."
 '@Folder "SecureADODB.DbRecordset"
-'@ModuleDescription("A thin wrapper around an ADODB recordset.")
+'@ModuleDescription "A thin wrapper around an ADODB recordset."
 '@PredeclaredId
 '@Exposed
 Option Explicit

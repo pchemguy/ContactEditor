@@ -11,8 +11,8 @@ Attribute VB_Description = "Abstracts Excel worksheet"
 '@Folder "Storage Library.Table.Backend"
 '@ModuleDescription "Abstracts Excel worksheet"
 '@PredeclaredId
-'@IgnoreModule IndexedDefaultMemberAccess
 '@Exposed
+'@IgnoreModule IndexedDefaultMemberAccess
 Option Explicit
 
 Implements IDataTableStorage

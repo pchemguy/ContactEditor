@@ -11,8 +11,7 @@ Attribute VB_Description = "Provides ADO related helpers"
 '@Folder "Storage Library.Table.ADOlib"
 '@ModuleDescription "Provides ADO related helpers"
 '@PredeclaredId
-'@IgnoreModule IndexedDefaultMemberAccess
-'@IgnoreModule ProcedureNotUsed
+'@IgnoreModule IndexedDefaultMemberAccess, ProcedureNotUsed
 Option Explicit
 
 Private Type TADOlib

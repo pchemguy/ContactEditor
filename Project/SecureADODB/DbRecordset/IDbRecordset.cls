@@ -8,11 +8,11 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Attribute VB_Description = "Represents an object that wraps an ADODB recordset."
-'@IgnoreModule FunctionReturnValueDiscarded
 '@Folder "SecureADODB.DbRecordset"
-'@ModuleDescription("Represents an object that wraps an ADODB recordset.")
+'@ModuleDescription "Represents an object that wraps an ADODB recordset."
 '@Interface
 '@Exposed
+'@IgnoreModule FunctionReturnValueDiscarded
 Option Explicit
 
 

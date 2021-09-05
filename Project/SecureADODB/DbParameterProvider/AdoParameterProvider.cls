@@ -50,7 +50,7 @@ End Sub
 Private Function CreateParam(ByVal Value As Variant, _
                     Optional ByVal Name As String, _
                     Optional ByVal DataTypeName As String) As ADODB.Parameter
-Attribute CreateParam.VB_Description = "ADODB.Parameter factory [AdoParameterProvider - abstract factory for ADODB.Parameter]"
+Attribute CreateParam.VB_Description = "ADODB.Parameter abstract factory"
     Dim AdoParam As ADODB.Parameter
     Set AdoParam = New ADODB.Parameter
     InitParam AdoParam, Value, Name, DataTypeName
@@ -63,6 +63,7 @@ Private Sub InitParam(ByVal AdoParam As ADODB.Parameter, _
                       ByVal Value As Variant, _
              Optional ByVal Name As String, _
              Optional ByVal DataTypeName As String)
+Attribute InitParam.VB_Description = "ADODB.Parameter external constructor for public fields"
     Dim localDataTypeName As String
     localDataTypeName = DataTypeName
     If localDataTypeName = vbNullString Then localDataTypeName = TypeName(Value)
