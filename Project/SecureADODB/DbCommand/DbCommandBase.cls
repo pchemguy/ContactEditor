@@ -16,10 +16,10 @@ Option Explicit
 
 Implements IDbCommandBase
 
-Private Type TCommand
+Private Type TDbCommandBase
     ParameterProvider As IDbParameters
 End Type
-Private this As TCommand
+Private this As TDbCommandBase
 
 
 Public Function Create(ByVal provider As IDbParameters) As IDbCommandBase
@@ -38,12 +38,15 @@ Attribute Init.VB_Description = "Default constructor"
 End Sub
 
 
-Private Function IDbCommandBase_CreateCommand(ByVal db As IDbConnection, _
-                                              ByVal CommandType As ADODB.CommandTypeEnum, _
-                                              ByVal SQL As String, _
-                                              ByRef ADODBParamsValues() As Variant) As ADODB.Command
+Private Function IDbCommandBase_CreateCommand( _
+            ByVal db As IDbConnection, _
+            ByVal CommandType As ADODB.CommandTypeEnum, _
+            ByVal SQL As String, _
+            ByRef ADODBParamsValues() As Variant) As ADODB.Command
     Guard.NullReference db
-    Guard.Expression db.State = adStateOpen, Source:="DbCommandBase", Message:="Connection is not open."
+    Guard.Expression db.State = adStateOpen, _
+                     Source:="DbCommandBase", _
+                     Message:="Connection is not open."
     Guard.EmptyString SQL
     
     Dim cmd As ADODB.Command
@@ -57,4 +60,15 @@ Private Function IDbCommandBase_CreateCommand(ByVal db As IDbConnection, _
     this.ParameterProvider.FromValues cmd, ADODBParamsValues
     
     Set IDbCommandBase_CreateCommand = cmd
+End Function
+
+
+Private Function IDbCommandBase_UpdateCommand( _
+            ByVal cmd As ADODB.Command, _
+            ByVal SQL As String, _
+            ByRef ADODBParamsValues() As Variant) As ADODB.Command
+    Guard.NullReference cmd
+    If Len(SQL) > 0 Then cmd.CommandText = SQL
+    this.ParameterProvider.FromValues cmd, ADODBParamsValues
+    Set IDbCommandBase_UpdateCommand = cmd
 End Function

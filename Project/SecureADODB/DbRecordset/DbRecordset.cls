@@ -37,7 +37,6 @@ End Sub
 
 
 Public Function Create(ByVal cmd As IDbCommand, _
-              Optional ByVal Scalar As Boolean = False, _
               Optional ByVal Disconnected As Boolean = True, _
               Optional ByVal CacheSize As Long = 10, _
               Optional ByVal CursorType As ADODB.CursorTypeEnum = -1, _
@@ -45,14 +44,13 @@ Public Function Create(ByVal cmd As IDbCommand, _
               Optional ByVal AsyncOption As ADODB.ExecuteOptionEnum = 0) As IDbRecordset
     Dim Instance As DbRecordset
     Set Instance = New DbRecordset
-    Instance.Init cmd, Scalar, Disconnected, CacheSize, CursorType, AsyncMode, AsyncOption
+    Instance.Init cmd, Disconnected, CacheSize, CursorType, AsyncMode, AsyncOption
     Set Create = Instance
 End Function
 
 
 '@Description("Default constructor")
 Friend Sub Init(ByVal cmd As IDbCommand, _
-       Optional ByVal Scalar As Boolean = False, _
        Optional ByVal Disconnected As Boolean = True, _
        Optional ByVal CacheSize As Long = 10, _
        Optional ByVal CursorType As ADODB.CursorTypeEnum = -1, _
@@ -61,7 +59,6 @@ Friend Sub Init(ByVal cmd As IDbCommand, _
 Attribute Init.VB_Description = "Default constructor"
     
     Set this.cmd = cmd
-    If Scalar Then AdoRecordset.MaxRecords = 1
     
     If Disconnected Then
         AdoRecordset.CursorLocation = adUseClient
@@ -146,47 +143,53 @@ Private Property Get IDbRecordset_AdoRecordset() As ADODB.Recordset
 End Property
 
 
-Private Function IDbRecordset_InitRecordset(ByVal SQL As String, ParamArray ADODBParamsValues() As Variant) As ADODB.Recordset
-    If SQL <> vbNullString And AdoRecordset.ActiveCommand Is Nothing Then
-        Dim localArgs() As Variant
-        localArgs = UnfoldParamArray(ADODBParamsValues)
-        
-        Set AdoRecordset.Source = this.cmd.AdoCommand(SQL, localArgs)
-    End If
-    Set IDbRecordset_InitRecordset = AdoRecordset
-End Function
+Private Sub SetSource( _
+            ByVal SQL As String, _
+            ParamArray ADODBParamsValues() As Variant)
+    Dim localArgs() As Variant
+    localArgs = UnfoldParamArray(ADODBParamsValues)
+    If AdoRecordset.State <> adStateClosed Then AdoRecordset.Close
+    Set AdoRecordset.Source = this.cmd.AdoCommand(SQL, localArgs)
+End Sub
 
 
 ' Execute and ExecuteScalar can be combined into one method returning Variant, where distinction
 ' is made based on the AdoRecordset.MaxRecords value (1 - Scalar, regular otherwise)
-Private Function IDbRecordset_OpenRecordset(ByVal SQL As String, ParamArray ADODBParamsValues() As Variant) As ADODB.Recordset
-    '@Ignore FunctionReturnValueDiscarded
-    IDbRecordset_InitRecordset SQL, ADODBParamsValues
+Private Function IDbRecordset_OpenRecordset( _
+            ByVal SQL As String, _
+            ParamArray ADODBParamsValues() As Variant) As ADODB.Recordset
+    SetSource SQL, ADODBParamsValues
     
     On Error GoTo RecordsetOpenError
-    AdoRecordset.Open Options:=this.OpenOptions
+    With AdoRecordset
+        .MaxRecords = 0
+        .Open Options:=this.OpenOptions
+        If .CursorLocation = adUseClient Then Set .ActiveConnection = Nothing
+    End With
     On Error GoTo 0
-    If AdoRecordset.CursorLocation = adUseClient Then Set AdoRecordset.ActiveConnection = Nothing
     Set IDbRecordset_OpenRecordset = AdoRecordset
     Exit Function
     
 RecordsetOpenError:
     Err.Raise Err.Number, _
               Err.Source, _
-              "DbRecordset->IDbRecordset_OpenRecordset->AdoRecordset.Open: " & Err.Description, _
+              "IDbRecordset->OpenRecordset->AdoRecordset.Open: " & Err.Description, _
               Err.HelpFile, _
               Err.HelpContext
 End Function
 
 
-Private Function IDbRecordset_OpenScalar(ByVal SQL As String, ParamArray args() As Variant) As Variant
-    '@Ignore FunctionReturnValueDiscarded
-    IDbRecordset_InitRecordset SQL, args
-    
+Private Function IDbRecordset_OpenScalar(ByVal SQL As String, ParamArray ADODBParamsValues() As Variant) As Variant
+    SetSource SQL, ADODBParamsValues
+        
     On Error GoTo RecordsetOpenError
-    AdoRecordset.Open Options:=this.OpenOptions
+    With AdoRecordset
+        .MaxRecords = 1
+        .Open Options:=this.OpenOptions
+        If .CursorLocation = adUseClient Then Set .ActiveConnection = Nothing
+    End With
     On Error GoTo 0
-    If AdoRecordset.CursorLocation = adUseClient Then Set AdoRecordset.ActiveConnection = Nothing
+    
     IDbRecordset_OpenScalar = AdoRecordset.Fields.Item(0).Value
     Exit Function
 
@@ -197,6 +200,11 @@ RecordsetOpenError:
               Err.HelpFile, _
               Err.HelpContext
 End Function
+
+
+'================================================================================'
+'========================= AdoRecordset EVENT HANDLERS =========================='
+'================================================================================'
 
 
 ' https://docs.microsoft.com/en-us/sql/ado/guide/data/ado-event-instantiation-visual-basic

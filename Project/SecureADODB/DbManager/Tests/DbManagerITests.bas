@@ -171,10 +171,10 @@ Arrange:
     SQLSelect2P = zfxGetSQLSelect2P(zfxGetSQLiteTableName)
 Act:
     Dim rstAdo As ADODB.Recordset
-    Set rstAdo = dbm.Recordset.InitRecordset(SQLSelect2P, zfxGetParameterOne, zfxGetParameterTwo)
+    Set rstAdo = dbm.Recordset.OpenRecordset(SQLSelect2P, zfxGetParameterOne, zfxGetParameterTwo)
 Assert:
-    Assert.IsNotNothing rstAdo.ActiveConnection, "ActiveConnection of the Recordset object is not set."
-    Assert.IsNotNothing rstAdo.ActiveCommand, "ActiveCommand of the Recordset object is not set."
+    Assert.IsNothing rstAdo.ActiveConnection, "ActiveConnection of the Recordset object should be nothing."
+    Assert.IsNothing rstAdo.ActiveCommand, "ActiveCommand of the Recordset object should not be set."
     Assert.IsFalse IsFalsy(rstAdo.Source), "The Source property of the Recordset object is not set."
     Assert.AreEqual ADODB.CursorTypeEnum.adOpenStatic, rstAdo.CursorType, "The CursorType of the Recordset object should be adOpenStatic."
     Assert.AreEqual ADODB.CursorLocationEnum.adUseClient, rstAdo.CursorLocation, "The CursorLocation of the Recordset object should be adUseClient."
@@ -188,7 +188,7 @@ End Sub
 
 
 '@TestMethod("DbManager.Recordset")
-Private Sub ztiDbManagerRecordset_VerifiesAdoRecordsetDisconnectedScalar()
+Private Sub ztiDbManagerRecordset_VerifiesAdoRecordsetScalar()
     On Error GoTo TestFail
     
 Arrange:
@@ -198,10 +198,13 @@ Arrange:
     SQLSelect2P = zfxGetSQLSelect2P(zfxGetSQLiteTableName)
 Act:
     Dim rst As IDbRecordset
-    Set rst = dbm.Recordset(Scalar:=True, CacheSize:=15)
+    Set rst = dbm.Recordset(CacheSize:=15)
+    Dim Result As Variant
+    Result = rst.OpenScalar(SQLSelect2P, zfxGetParameterOne, zfxGetParameterTwo)
     Dim rstAdo As ADODB.Recordset
-    Set rstAdo = rst.InitRecordset(SQLSelect2P, zfxGetParameterOne, zfxGetParameterTwo)
+    Set rstAdo = rst.AdoRecordset
 Assert:
+    Assert.AreEqual 1, rstAdo.RecordCount, "The RecordCount of the Recordset object should be 1 for a scalar query."
     Assert.AreEqual 1, rstAdo.MaxRecords, "The MaxRecords of the Recordset object should be set to 1 for a scalar query."
     Assert.AreEqual 15, rstAdo.CacheSize, "The CacheSize of the Recordset object should be set to 15."
 
@@ -223,7 +226,7 @@ Arrange:
     SQLSelect2P = zfxGetSQLSelect2P(zfxGetSQLiteTableName)
 Act:
     Dim rstAdo As ADODB.Recordset
-    Set rstAdo = dbm.Recordset(Disconnected:=False).InitRecordset(SQLSelect2P, zfxGetParameterOne, zfxGetParameterTwo)
+    Set rstAdo = dbm.Recordset(Disconnected:=False).OpenRecordset(SQLSelect2P, zfxGetParameterOne, zfxGetParameterTwo)
 Assert:
     Assert.AreEqual ADODB.CursorTypeEnum.adOpenForwardOnly, rstAdo.CursorType, "The CursorType of the Recordset object should be adOpenForwardOnly."
     Assert.AreEqual ADODB.CursorLocationEnum.adUseServer, rstAdo.CursorLocation, "The CursorLocation of the Recordset object should be adUseServer."

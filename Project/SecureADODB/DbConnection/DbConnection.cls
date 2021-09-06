@@ -197,6 +197,7 @@ End Sub
 '========================= AdoConnection EVENT HANDLERS ========================='
 '================================================================================'
 
+
 Private Sub AdoConnection_BeginTransComplete(ByVal TransactionLevel As Long, ByVal pError As ADODB.Error, adStatus As ADODB.EventStatusEnum, ByVal pConnection As ADODB.Connection)
     Debug.Print "Begin transaction completed. "
     If Not pError Is Nothing Then Debug.Print "Error: " & pError.Number, pError.Description

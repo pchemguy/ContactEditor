@@ -229,11 +229,8 @@ Private Sub SQLiteTwoParameterQueryTableTest()
     Dim rst As IDbRecordset
     Set rst = dbm.Recordset(Scalar:=False, Disconnected:=True, CacheSize:=10)
     Dim rstAdo As ADODB.Recordset
-    Set rstAdo = rst.InitRecordset(SQLQuery, 45, "South Korea")
+    Set rstAdo = rst.OpenRecordset(SQLQuery, 45, "South Korea")
     
-    Dim Result As ADODB.Recordset
-    Set Result = rst.OpenRecordset(SQLQuery, 45, "South Korea")
-
     rst.RecordsetToQT Buffer.Range("A1")
 End Sub
 
@@ -271,9 +268,6 @@ Private Sub InvalidTypeCSVTwoParameterQueryTableTest()
     Dim rst As IDbRecordset
     Set rst = dbm.Recordset(Scalar:=False, Disconnected:=True, CacheSize:=10)
     Dim rstAdo As ADODB.Recordset
-    Set rstAdo = rst.InitRecordset(SQLQuery, 45, "South Korea")
-    
-    Dim Result As ADODB.Recordset
     '''' Should fail with 'Type is invalid' error
-    Set Result = rst.OpenRecordset(SQLQuery, 45, "South Korea")
+    Set rstAdo = rst.OpenRecordset(SQLQuery, 45, "South Korea")
 End Sub

@@ -195,7 +195,7 @@ Private Function IDbManager_Recordset( _
     Dim cmd As IDbCommand
     Set cmd = this.CommandFactory.CreateInstance(this.Connection)
     Set IDbManager_Recordset = DbRecordset.Create( _
-        cmd, Scalar, Disconnected, CacheSize, CursorType, AsyncMode, AsyncOption)
+        cmd, Disconnected, CacheSize, CursorType, AsyncMode, AsyncOption)
 End Function
 
 

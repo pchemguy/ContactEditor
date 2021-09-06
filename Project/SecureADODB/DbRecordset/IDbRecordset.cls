@@ -19,11 +19,6 @@ Option Explicit
 Public Property Get AdoRecordset() As ADODB.Recordset
 End Property
 
-'@Description("Sets the source of the wrapped ADODB recordset.")
-Public Function InitRecordset(ByVal SQL As String, ParamArray ADODBParamsValues() As Variant) As ADODB.Recordset
-Attribute InitRecordset.VB_Description = "Sets the source of the wrapped ADODB recordset."
-End Function
-
 Public Function OpenRecordset(ByVal SQL As String, ParamArray ADODBParamsValues() As Variant) As ADODB.Recordset
 End Function
 

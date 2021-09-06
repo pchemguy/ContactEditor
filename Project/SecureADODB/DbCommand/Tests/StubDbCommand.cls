@@ -33,13 +33,3 @@ End Function
 Private Sub IDbCommand_ExecuteNonQuery(ByVal SQL As String, ParamArray ADODBParamsValues() As Variant)
     this.ExecuteNonQueryInvokes = this.ExecuteNonQueryInvokes + 1
 End Sub
-
-Private Property Get IDbCommand_Self() As IDbCommand
-    Set IDbCommand_Self = Me
-End Property
-
-'@Description("Returns class reference.")
-Private Property Get IDbCommand_Class() As Object
-Attribute IDbCommand_Class.VB_Description = "Returns class reference."
-    Set IDbCommand_Class = DbCommand
-End Property

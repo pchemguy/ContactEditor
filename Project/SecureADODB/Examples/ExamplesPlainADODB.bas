@@ -233,6 +233,7 @@ Public Sub SQLiteRecordSetOpenCommandSourceTest()
         Set .ActiveConnection = Nothing
     End With
     AdoCommand.ActiveConnection.Close
+    
 End Sub
 
 

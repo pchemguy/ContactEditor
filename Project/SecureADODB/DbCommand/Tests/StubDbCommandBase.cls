@@ -10,6 +10,7 @@ Attribute VB_Exposed = False
 Attribute VB_Description = "A stub acting as a IDbCommandBase implementation."
 '@Folder "SecureADODB.DbCommand.Tests"
 '@ModuleDescription("A stub acting as a IDbCommandBase implementation.")
+'@IgnoreModule ProcedureNotUsed
 Option Explicit
 
 Implements IDbCommandBase
@@ -21,12 +22,10 @@ End Type
 Private this As TInvokeState
 
 
-'@Ignore ProcedureNotUsed
 Public Property Get CreateCommandInvokes() As Long
     CreateCommandInvokes = this.CreateCommandInvokes
 End Property
 
-'@Ignore ProcedureNotUsed
 Public Property Get ValidateOrdinalArgumentsInvokes() As Long
     ValidateOrdinalArgumentsInvokes = this.ValidateOrdinalArgumentsInvokes
 End Property
@@ -42,4 +41,10 @@ Private Function IDbCommandBase_CreateCommand( _
     Result.CommandType = CommandType
     Result.CommandText = SQL
     Set IDbCommandBase_CreateCommand = Result
+End Function
+
+Private Function IDbCommandBase_UpdateCommand(ByVal cmd As ADODB.Command, _
+                                              ByVal SQL As String, _
+                                              ByRef ADODBParamsValues() As Variant) As ADODB.Command
+    Err.Raise 5                                  'TODO implement interface member
 End Function
