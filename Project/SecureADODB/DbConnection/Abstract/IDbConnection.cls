@@ -34,16 +34,6 @@ Public Property Get RecordsAffected() As Long
 Attribute RecordsAffected.VB_Description = "Gets the number of affected records."
 End Property
 
-'@Description("Returns class reference.")
-Public Property Get Class() As DbConnection
-Attribute Class.VB_Description = "Returns class reference."
-End Property
-
-'@Description("Returns the object itself. Useful to retrieve the With object variable in a With block.")
-Public Property Get Self() As IDbConnection
-Attribute Self.VB_Description = "Returns the object itself. Useful to retrieve the With object variable in a With block."
-End Property
-
 Public Sub BeginTransaction()
 End Sub
 

@@ -116,20 +116,6 @@ Private Sub SQLiteMetaTest()
     FieldMap.CompareMode = TextCompare
     dbm.DbMeta.QueryTableADOXMeta TableName, FieldNames, FieldTypes, FieldMap
     
-    Dim ADODBTypeMapping As Scripting.Dictionary
-    Set ADODBTypeMapping = New Scripting.Dictionary
-    ADODBTypeMapping.CompareMode = TextCompare
-    With ADODBTypeMapping
-        .Add CStr(adBoolean), "Boolean   /  adBoolean"
-        .Add CStr(adCurrency), "Currency  /  adCurrency"
-        .Add CStr(adDate), "Date      /  adDate"
-        .Add CStr(adDouble), "Double    /  adDouble"
-        .Add CStr(adInteger), "Long      /  adInteger"
-        .Add CStr(adSingle), "Single    /  adSingle"
-        .Add CStr(adVarWChar), "String    /  adVarWChar"
-        .Add CStr(adVarChar), "String    /  adVarChar"
-    End With
-    
     Dim FieldCount As Long
     FieldCount = FieldMap.Count
     Dim FieldIndex As Long
@@ -139,11 +125,11 @@ Private Sub SQLiteMetaTest()
     ReDim FieldData(1 To FieldCount)
     For FieldIndex = 1 To FieldCount
         FieldName = FieldNames(FieldIndex)
-        FieldType = ADODBTypeMapping(CStr(FieldTypes(FieldIndex)))
-        FieldType = FieldType & String(25 - Len(FieldType), " ")
+        FieldType = AdoTypeMappings.DataTypeEnumAsText(CStr(FieldTypes(FieldIndex)))
+        FieldType = FieldType & String(12 - Len(FieldType), " ")
         FieldData(FieldIndex) = CStr(FieldIndex) & ". " & _
                                 FieldName & String(12 - Len(FieldName), " ") & vbTab & "|" & vbTab & _
-                                FieldType & vbTab & "|" & vbTab & _
+                                FieldType & "|" & vbTab & _
                                 CStr(FieldMap(FieldName)) & " <= '" & FieldName & "'"
     Next FieldIndex
     
@@ -168,20 +154,6 @@ Private Sub CSVMetaTest()
     FieldMap.CompareMode = TextCompare
     dbm.DbMeta.QueryTableADOXMeta TableName, FieldNames, FieldTypes, FieldMap
     
-    Dim ADODBTypeMapping As Scripting.Dictionary
-    Set ADODBTypeMapping = New Scripting.Dictionary
-    ADODBTypeMapping.CompareMode = TextCompare
-    With ADODBTypeMapping
-        .Add CStr(adBoolean), "Boolean   /  adBoolean"
-        .Add CStr(adCurrency), "Currency  /  adCurrency"
-        .Add CStr(adDate), "Date      /  adDate"
-        .Add CStr(adDouble), "Double    /  adDouble"
-        .Add CStr(adInteger), "Long      /  adInteger"
-        .Add CStr(adSingle), "Single    /  adSingle"
-        .Add CStr(adVarWChar), "String    /  adVarWChar"
-        .Add CStr(adVarChar), "String    /  adVarChar"
-    End With
-    
     Dim FieldCount As Long
     FieldCount = FieldMap.Count
     Dim FieldIndex As Long
@@ -191,8 +163,8 @@ Private Sub CSVMetaTest()
     ReDim FieldData(1 To FieldCount)
     For FieldIndex = 1 To FieldCount
         FieldName = FieldNames(FieldIndex)
-        FieldType = ADODBTypeMapping(CStr(FieldTypes(FieldIndex)))
-        FieldType = FieldType & String(25 - Len(FieldType), " ")
+        FieldType = AdoTypeMappings.DataTypeEnumAsText(CStr(FieldTypes(FieldIndex)))
+        FieldType = FieldType & String(12 - Len(FieldType), " ")
         FieldData(FieldIndex) = CStr(FieldIndex) & ". " & _
                                 FieldName & String(12 - Len(FieldName), " ") & vbTab & "|" & vbTab & _
                                 FieldType & vbTab & "|" & vbTab & _

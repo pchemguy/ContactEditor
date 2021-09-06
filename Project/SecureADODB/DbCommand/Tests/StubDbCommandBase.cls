@@ -31,16 +31,6 @@ Public Property Get ValidateOrdinalArgumentsInvokes() As Long
     ValidateOrdinalArgumentsInvokes = this.ValidateOrdinalArgumentsInvokes
 End Property
 
-Private Property Get IDbCommandBase_Self() As IDbCommandBase
-    Set IDbCommandBase_Self = Me
-End Property
-
-'@Description("Returns class reference.")
-Private Property Get IDbCommandBase_Class() As Object
-Attribute IDbCommandBase_Class.VB_Description = "Returns class reference."
-    Set IDbCommandBase_Class = DbCommandBase
-End Property
-
 Private Function IDbCommandBase_CreateCommand( _
             ByVal db As IDbConnection, _
             ByVal CommandType As ADODB.CommandTypeEnum, _

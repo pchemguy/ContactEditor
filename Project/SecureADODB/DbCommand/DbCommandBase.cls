@@ -38,32 +38,6 @@ Attribute Init.VB_Description = "Default constructor"
 End Sub
 
 
-'@Ignore ProcedureNotUsed
-Public Property Get Self() As IDbCommandBase
-    Set Self = Me
-End Property
-
-
-'@Description("Returns class reference.")
-'@Ignore ProcedureNotUsed
-Public Property Get Class() As DbCommandBase
-Attribute Class.VB_Description = "Returns class reference."
-    Set Class = DbCommandBase
-End Property
-
-
-Private Property Get IDbCommandBase_Self() As IDbCommandBase
-    Set IDbCommandBase_Self = Me
-End Property
-
-
-'@Description("Returns class reference.")
-Private Property Get IDbCommandBase_Class() As Object
-Attribute IDbCommandBase_Class.VB_Description = "Returns class reference."
-    Set IDbCommandBase_Class = DbCommandBase
-End Property
-
-
 Private Function IDbCommandBase_CreateCommand(ByVal db As IDbConnection, _
                                               ByVal CommandType As ADODB.CommandTypeEnum, _
                                               ByVal SQL As String, _

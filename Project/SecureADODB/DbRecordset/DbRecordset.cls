@@ -26,12 +26,14 @@ End Type
 Private this As TRecordset
 
 
-'@Ignore ProcedureNotUsed
-'@Description("Returns class reference")
-Public Property Get Class() As DbRecordset
-Attribute Class.VB_Description = "Returns class reference"
-    Set Class = DbRecordset
-End Property
+Private Sub Class_Initialize()
+    Set AdoRecordset = New ADODB.Recordset
+End Sub
+
+
+Private Sub Class_Terminate()
+    Set AdoRecordset = Nothing
+End Sub
 
 
 Public Function Create(ByVal cmd As IDbCommand, _
@@ -74,16 +76,6 @@ Attribute Init.VB_Description = "Default constructor"
         AdoRecordset.CursorType = CursorType
     End If
     this.OpenOptions = AsyncOption Or (adAsyncFetch And AsyncMode)
-End Sub
-
-
-Private Sub Class_Initialize()
-    Set AdoRecordset = New ADODB.Recordset
-End Sub
-
-
-Private Sub Class_Terminate()
-    Set AdoRecordset = Nothing
 End Sub
 
 
@@ -147,18 +139,6 @@ End Sub
 Private Sub IDbRecordset_RecordsetToQT(ByVal OutputRange As Excel.Range)
     RecordsetToQT OutputRange
 End Sub
-
-
-Private Property Get IDbRecordset_Self() As IDbRecordset
-    Set IDbRecordset_Self = Me
-End Property
-
-
-'@Description("Returns class reference")
-Private Property Get IDbRecordset_Class() As DbRecordset
-Attribute IDbRecordset_Class.VB_Description = "Returns class reference"
-    Set IDbRecordset_Class = DbRecordset
-End Property
 
 
 Private Property Get IDbRecordset_AdoRecordset() As ADODB.Recordset

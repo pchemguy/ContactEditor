@@ -18,11 +18,9 @@ Implements IDbManager
 
 Private Type TDbManager
     DbMeta As DbMetaData
-    ParameterProvider As DbParameters
     DbConnStr As DbConnectionString
     Connection As IDbConnection
     CommandFactory As IDbCommandFactory
-    UseTransactions As Boolean
     LogController As ILogger
 End Type
 Private this As TDbManager
@@ -39,12 +37,11 @@ End Property
 '@Description("Default factory")
 Public Function Create(ByVal db As IDbConnection, _
                        ByVal Factory As IDbCommandFactory, _
-              Optional ByVal UseTransactions As Boolean = True, _
               Optional ByVal LogController As ILogger = Nothing) As IDbManager
 Attribute Create.VB_Description = "Default factory"
     Dim Instance As DbManager
     Set Instance = New DbManager
-    Instance.Init db, Factory, UseTransactions, LogController
+    Instance.Init db, Factory, LogController
     Set Create = Instance
 End Function
 
@@ -52,7 +49,6 @@ End Function
 '@Description("Default constructor")
 Friend Sub Init(ByVal db As IDbConnection, _
                 ByVal Factory As IDbCommandFactory, _
-       Optional ByVal UseTransactions As Boolean = True, _
        Optional ByVal LogController As ILogger = Nothing)
 Attribute Init.VB_Description = "Default constructor"
               
@@ -63,7 +59,15 @@ Attribute Init.VB_Description = "Default constructor"
     Set this.LogController = LogController
     Set this.Connection = db
     Set this.CommandFactory = Factory
-    this.UseTransactions = UseTransactions
+End Sub
+
+
+'@Description("Initialize additional attributes")
+Friend Sub InitExtra(Optional ByVal DbConnStr As DbConnectionString = Nothing)
+    With this
+        If Not DbConnStr Is Nothing Then Set .DbConnStr = DbConnStr
+        If Not .DbConnStr Is Nothing Then Set .DbMeta = DbMetaData.Create(.DbConnStr)
+    End With
 End Sub
 
 
@@ -120,9 +124,9 @@ Attribute CreateFileDb.VB_Description = "Factory for file-based databases"
     Set db = DbConnection.Create(DbConnStr.ConnectionString, LogController)
     
     Dim Instance As DbManager
-    Set Instance = DbManager.Create(db, Factory, UseTransactions, LogController)
-    Set Instance.DbConnStr = DbConnStr
-    Set Instance.DbMeta = DbMetaData.Create(DbConnStr)
+    Set Instance = DbManager.Create(db, Factory, LogController)
+    Instance.InitExtra DbConnStr
+    
     Set CreateFileDb = Instance
 End Function
 
@@ -196,18 +200,15 @@ End Function
 
 
 Private Sub IDbManager_Begin()
-    Guard.Expression this.UseTransactions, Source:="DbManager", Message:="Transactions are disabled by the caller."
     this.Connection.BeginTransaction
 End Sub
 
 
 Private Sub IDbManager_Commit()
-    Guard.Expression this.UseTransactions, Source:="DbManager", Message:="Transactions are disabled by the caller."
     this.Connection.CommitTransaction
 End Sub
 
 
 Private Sub IDbManager_Rollback()
-    Guard.Expression this.UseTransactions, Source:="DbManager", Message:="Transactions are disabled by the caller."
     this.Connection.RollbackTransaction
 End Sub
