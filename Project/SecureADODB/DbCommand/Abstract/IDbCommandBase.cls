@@ -19,7 +19,7 @@ Option Explicit
 Public Function CreateCommand(ByVal db As IDbConnection, _
                               ByVal CommandType As ADODB.CommandTypeEnum, _
                               ByVal SQL As String, _
-                              ByRef args() As Variant) As ADODB.Command
+                              ByRef ADODBParamsValues() As Variant) As ADODB.Command
 Attribute CreateCommand.VB_Description = "Creates and returns an ADODB.Command, without executing it."
 End Function
 

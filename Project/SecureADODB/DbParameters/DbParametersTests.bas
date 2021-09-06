@@ -50,19 +50,17 @@ End Sub
 
 
 Private Function zfxGetSUT() As IDbParameters
-    Dim AdoCommand As ADODB.Command
-    Set AdoCommand = New ADODB.Command
-    Set zfxGetSUT = DbParameters.Create(AdoCommand, zfxGetDefaultMappings)
+    Set zfxGetSUT = DbParameters.Create(zfxGetDefaultMappings)
 End Function
 
 
-Private Function zfxGetSUTWith2PlaceHolders() As IDbParameters
+Private Function zfxGetAdoCommandWith2PlaceHolders() As ADODB.Command
     Dim AdoCommand As ADODB.Command
     Set AdoCommand = New ADODB.Command
     Dim SQLQuery As String
     SQLQuery = "SELECT * FROM people WHERE id <= ? AND last_name <> ?"
     AdoCommand.CommandText = SQLQuery
-    Set zfxGetSUTWith2PlaceHolders = DbParameters.Create(AdoCommand, zfxGetDefaultMappings)
+    Set zfxGetAdoCommandWith2PlaceHolders = AdoCommand
 End Function
 
 
@@ -78,15 +76,6 @@ End Function
 '===================================================='
 '==================== TEST CASES ===================='
 '===================================================='
-
-
-'@TestMethod("Guard Clauses")
-Private Sub ztcTypeMappings_ThrowsGivenNullMappings()
-    On Error Resume Next
-    Dim sut As DbParameters
-    Set sut = DbParameters.Create(Nothing)
-    AssertExpectedError Assert, ErrNo.ObjectNotSetErr
-End Sub
 
 
 '@TestMethod("Process Values")
@@ -315,8 +304,10 @@ Private Sub ztcValidateParameterValues_ThrowsGivenNoArgs()
     On Error Resume Next
     Dim sut As DbParameters
     Set sut = zfxGetSUT
+    Dim cmd As ADODB.Command
+    Set cmd = zfxGetAdoCommandWith2PlaceHolders()
     Dim ValidateStatus As Boolean
-    ValidateStatus = sut.ValidateParameterValues()
+    ValidateStatus = sut.ValidateParameterValues(cmd)
     AssertExpectedError Assert, ErrNo.CustomErr
 End Sub
 
@@ -325,9 +316,11 @@ End Sub
 Private Sub ztcValidateParameterValues_ThrowsGivenValueSQLMismatch()
     On Error Resume Next
     Dim sut As DbParameters
-    Set sut = zfxGetSUTWith2PlaceHolders
+    Set sut = zfxGetSUT
+    Dim cmd As ADODB.Command
+    Set cmd = zfxGetAdoCommandWith2PlaceHolders()
     Dim ValidateStatus As Boolean
-    ValidateStatus = sut.ValidateParameterValues(1)
+    ValidateStatus = sut.ValidateParameterValues(cmd, 1)
     AssertExpectedError Assert, ErrNo.CustomErr
 End Sub
 
@@ -337,17 +330,14 @@ Private Sub ztcFromValues_VerifiesCreateTwoParams()
     On Error GoTo TestFail
 
 Arrange:
-    Dim AdoCommand As ADODB.Command
-    Set AdoCommand = New ADODB.Command
-    Dim SQLQuery As String
-    SQLQuery = "SELECT * FROM people WHERE id <= ? AND last_name <> ?"
-    AdoCommand.CommandText = SQLQuery
     Dim sut As IDbParameters
-    Set sut = DbParameters.Create(AdoCommand)
+    Set sut = zfxGetSUT
+    Dim cmd As ADODB.Command
+    Set cmd = zfxGetAdoCommandWith2PlaceHolders()
 Act:
-    sut.FromValues 19, "Age"
+    sut.FromValues cmd, 19, "Age"
     Dim AdoParams As ADODB.Parameters
-    Set AdoParams = AdoCommand.Parameters
+    Set AdoParams = cmd.Parameters
 Assert:
     Assert.AreEqual 2, AdoParams.Count, "Parameter count mismatch"
     Assert.AreEqual 19, AdoParams(0).Value, "Parameter #1 value mismatch"
@@ -369,18 +359,15 @@ Private Sub ztcFromValues_VerifiesUpdateTwoParams()
     On Error GoTo TestFail
 
 Arrange:
-    Dim AdoCommand As ADODB.Command
-    Set AdoCommand = New ADODB.Command
-    Dim SQLQuery As String
-    SQLQuery = "SELECT * FROM people WHERE id <= ? AND last_name <> ?"
-    AdoCommand.CommandText = SQLQuery
     Dim sut As IDbParameters
-    Set sut = DbParameters.Create(AdoCommand)
+    Set sut = zfxGetSUT
+    Dim cmd As ADODB.Command
+    Set cmd = zfxGetAdoCommandWith2PlaceHolders()
 Act:
-    sut.FromValues 19, Null
-    sut.FromValues Null, vbNullString
+    sut.FromValues cmd, 19, Null
+    sut.FromValues cmd, Null, vbNullString
     Dim AdoParams As ADODB.Parameters
-    Set AdoParams = AdoCommand.Parameters
+    Set AdoParams = cmd.Parameters
 Assert:
     Assert.AreEqual AdoParams(0).Type, AdoTypeMappings.DefaultNullMapping, "Parameter #1 type mismatch"
     Assert.IsTrue IsNull(AdoParams(0).Value), "Parameter #1 value mismatch"

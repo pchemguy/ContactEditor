@@ -45,7 +45,7 @@ Private Function IDbCommandBase_CreateCommand( _
             ByVal db As IDbConnection, _
             ByVal CommandType As ADODB.CommandTypeEnum, _
             ByVal SQL As String, _
-            args() As Variant) As ADODB.Command
+            ADODBParamsValues() As Variant) As ADODB.Command
     this.CreateCommandInvokes = this.CreateCommandInvokes + 1
     Dim Result As ADODB.Command
     Set Result = New ADODB.Command

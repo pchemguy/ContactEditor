@@ -83,11 +83,11 @@ End Property
 Private Function IDbCommandBase_CreateCommand(ByVal db As IDbConnection, _
                                               ByVal CommandType As ADODB.CommandTypeEnum, _
                                               ByVal SQL As String, _
-                                              ByRef args() As Variant) As ADODB.Command
+                                              ByRef ADODBParamsValues() As Variant) As ADODB.Command
     Guard.NullReference db
     Guard.Expression db.State = adStateOpen, Source:="DbCommandBase", Message:="Connection is not open."
     Guard.EmptyString SQL
-    Guard.Expression ValidateOrdinalArguments(SQL, args), _
+    Guard.Expression ValidateOrdinalArguments(SQL, ADODBParamsValues), _
                      Source:="DbCommandBase", _
                      Message:="Arguments supplied are inconsistent with the provided command string parameters."
     
@@ -101,7 +101,7 @@ Private Function IDbCommandBase_CreateCommand(ByVal db As IDbConnection, _
         .Prepared = True
         
         Dim arg As ADODB.Parameter
-        For Each arg In this.ParameterProvider.FromValues(args)
+        For Each arg In this.ParameterProvider.FromValues(ADODBParamsValues)
             .Parameters.Append arg
         Next
     End With

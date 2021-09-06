@@ -37,31 +37,31 @@ End Property
 
 '@Description("Default factory")
 Public Function Create(ByVal db As IDbConnection, _
-                       ByVal factory As IDbCommandFactory, _
+                       ByVal Factory As IDbCommandFactory, _
               Optional ByVal UseTransactions As Boolean = True, _
               Optional ByVal LogController As ILogger = Nothing) As IDbManager
 Attribute Create.VB_Description = "Default factory"
     Dim Instance As DbManager
     Set Instance = New DbManager
-    Instance.Init db, factory, UseTransactions, LogController
+    Instance.Init db, Factory, UseTransactions, LogController
     Set Create = Instance
 End Function
 
 
 '@Description("Default constructor")
 Friend Sub Init(ByVal db As IDbConnection, _
-                ByVal factory As IDbCommandFactory, _
+                ByVal Factory As IDbCommandFactory, _
        Optional ByVal UseTransactions As Boolean = True, _
        Optional ByVal LogController As ILogger = Nothing)
 Attribute Init.VB_Description = "Default constructor"
               
-    Guard.NullReference factory
+    Guard.NullReference Factory
     Guard.NullReference db
     Guard.Expression db.State = adStateOpen, Source:="DbManager", Message:="Connection should be open."
 
     Set this.LogController = LogController
     Set this.Connection = db
-    Set this.CommandFactory = factory
+    Set this.CommandFactory = Factory
     this.UseTransactions = UseTransactions
 End Sub
 
@@ -110,8 +110,8 @@ Attribute CreateFileDb.VB_Description = "Factory for file-based databases"
     Dim baseCommand As IDbCommandBase
     Set baseCommand = DbCommandBase.Create(provider)
     
-    Dim factory As IDbCommandFactory
-    Set factory = DbCommandFactory.Create(baseCommand)
+    Dim Factory As IDbCommandFactory
+    Set Factory = DbCommandFactory.Create(baseCommand)
     
     Dim DbConnStr As DbConnectionString
     Set DbConnStr = DbConnectionString.CreateFileDb(DbType, DbFileName, , ConnectionOptions)
@@ -119,7 +119,7 @@ Attribute CreateFileDb.VB_Description = "Factory for file-based databases"
     Set db = DbConnection.Create(DbConnStr.ConnectionString, LogController)
     
     Dim Instance As DbManager
-    Set Instance = DbManager.Create(db, factory, UseTransactions, LogController)
+    Set Instance = DbManager.Create(db, Factory, UseTransactions, LogController)
     Set Instance.DbConnStr = DbConnStr
     Set Instance.DbMeta = DbMetaData.Create(DbConnStr)
     Set CreateFileDb = Instance

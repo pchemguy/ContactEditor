@@ -266,8 +266,8 @@ Public Sub SQLiteRecordSetOpenCommandSourceTwoParameterTest()
     Dim Mappings As ITypeMap
     Set Mappings = AdoTypeMappings.Default
     Dim provider As IDbParameters
-    Set provider = DbParameters.Create(AdoCommand, Mappings)
-    provider.FromValues 45, "Simon"
+    Set provider = DbParameters.Create(Mappings)
+    provider.FromValues AdoCommand, 45, "Simon"
     
     With AdoCommand
         .CommandType = adCmdText
@@ -320,9 +320,9 @@ Public Sub SQLiteRecordSetOpenCmdSrc2ParamsTest()
     Dim Mappings As ITypeMap
     Set Mappings = AdoTypeMappings.Default
     Dim provider As IDbParameters
-    Set provider = DbParameters.Create(AdoCommand, Mappings)
-    provider.FromValues 10, "Ivanov"
-    provider.FromValues 45, "Simon"
+    Set provider = DbParameters.Create(Mappings)
+    provider.FromValues AdoCommand, 10, "Ivanov"
+    provider.FromValues AdoCommand, 45, "Simon"
     
     With AdoCommand
         .CommandType = adCmdText

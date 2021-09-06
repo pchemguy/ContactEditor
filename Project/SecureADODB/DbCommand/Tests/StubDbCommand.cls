@@ -26,11 +26,11 @@ Public Property Get ExecuteNonQueryInvokes() As Long
     ExecuteNonQueryInvokes = this.ExecuteNonQueryInvokes
 End Property
 
-Public Function IDbCommand_AdoCommand(ByVal SQL As String, ParamArray args()) As ADODB.Command
+Public Function IDbCommand_AdoCommand(ByVal SQL As String, ParamArray ADODBParamsValues()) As ADODB.Command
     Set IDbCommand_AdoCommand = this.stubCommand
 End Function
 
-Private Sub IDbCommand_ExecuteNonQuery(ByVal SQL As String, ParamArray args() As Variant)
+Private Sub IDbCommand_ExecuteNonQuery(ByVal SQL As String, ParamArray ADODBParamsValues() As Variant)
     this.ExecuteNonQueryInvokes = this.ExecuteNonQueryInvokes + 1
 End Sub
 
