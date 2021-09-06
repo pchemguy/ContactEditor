@@ -11,20 +11,18 @@ Attribute VB_Description = "An object intended to be used as a private instance 
 '@Folder "SecureADODB.DbCommand"
 '@ModuleDescription("An object intended to be used as a private instance field in a class implementing the IDbCommand interface (composition in place of inheritance).")
 '@PredeclaredId
-'@IgnoreModule IllegalAnnotation
 '@Exposed
 Option Explicit
 
 Implements IDbCommandBase
 
 Private Type TCommand
-    AdoCommand As ADODB.Command
-    ParameterProvider As IParameterProvider
+    ParameterProvider As IDbParameters
 End Type
 Private this As TCommand
 
 
-Public Function Create(ByVal provider As IParameterProvider) As IDbCommandBase
+Public Function Create(ByVal provider As IDbParameters) As IDbCommandBase
     Dim Instance As DbCommandBase
     Set Instance = New DbCommandBase
     Instance.Init provider
@@ -33,25 +31,11 @@ End Function
 
 
 '@Description("Default constructor")
-Friend Sub Init(ByVal provider As IParameterProvider)
+Friend Sub Init(ByVal provider As IDbParameters)
 Attribute Init.VB_Description = "Default constructor"
     Guard.NullReference provider
     Set this.ParameterProvider = provider
-    Set this.AdoCommand = New ADODB.Command
 End Sub
-
-
-'@Description "Verifies that the number of placeholders matches the number of provided values"
-Private Function ValidateOrdinalArguments(ByVal SQL As String, ByRef args() As Variant) As Boolean
-Attribute ValidateOrdinalArguments.VB_Description = "Verifies that the number of placeholders matches the number of provided values"
-    Dim Expected As Long
-    Expected = Len(SQL) - Len(Replace(SQL, "?", vbNullString))
-    
-    Dim Actual As Long
-    Actual = UBound(args) + (1 - LBound(args))
-    
-    ValidateOrdinalArguments = (Expected = Actual)
-End Function
 
 
 '@Ignore ProcedureNotUsed
@@ -87,23 +71,16 @@ Private Function IDbCommandBase_CreateCommand(ByVal db As IDbConnection, _
     Guard.NullReference db
     Guard.Expression db.State = adStateOpen, Source:="DbCommandBase", Message:="Connection is not open."
     Guard.EmptyString SQL
-    Guard.Expression ValidateOrdinalArguments(SQL, ADODBParamsValues), _
-                     Source:="DbCommandBase", _
-                     Message:="Arguments supplied are inconsistent with the provided command string parameters."
     
     Dim cmd As ADODB.Command
     Set cmd = New ADODB.Command
-    
     With cmd
         Set .ActiveConnection = db.AdoConnection
         .CommandType = CommandType
         .CommandText = SQL
         .Prepared = True
-        
-        Dim arg As ADODB.Parameter
-        For Each arg In this.ParameterProvider.FromValues(ADODBParamsValues)
-            .Parameters.Append arg
-        Next
     End With
+    this.ParameterProvider.FromValues cmd, ADODBParamsValues
+    
     Set IDbCommandBase_CreateCommand = cmd
 End Function

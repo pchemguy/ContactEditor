@@ -100,15 +100,13 @@ End Function
 
 '@Description "Validates ValueCount, ParamCount (if >0), and PlaceHolderCount (in SQL)"
 Friend Function ValidateParameterValues(ByVal cmd As ADODB.Command, _
-                                        ParamArray ADODBParamsValues()) As Boolean
+                                        ParamArray ADODBParamsValues()) As Long
 Attribute ValidateParameterValues.VB_Description = "Validates ValueCount, ParamCount (if >0), and PlaceHolderCount (in SQL)"
     Dim Values() As Variant
     Values = UnfoldParamArray(ADODBParamsValues)
 
-    '''' Debug.Assert ValueCount > 0
     Dim ValueCount As Long
     ValueCount = UBound(Values) - LBound(Values) + 1
-    Guard.Expression ValueCount > 0, "DbParameters", "Invalid parameter array"
     
     '''' Debug.Assert PlaceHolderCount = ValueCount
     Dim PlaceHolderCount As Long
@@ -125,12 +123,25 @@ Attribute ValidateParameterValues.VB_Description = "Validates ValueCount, ParamC
 
     '''' Debug.Assert ParameterCount = 0 Or ParameterCount = ValueCount
     Dim ParameterCount As Long
+    '''' CSV driver may fail here when .Parameters collection is empty
+    '''' ErrorCode = &H80040E51
+    On Error Resume Next
     ParameterCount = cmd.Parameters.Count
+    With Err
+        If .Number = &H80040E51 Then
+            .Clear
+            ParameterCount = 0
+        End If
+        If .Number > 0 Then
+            .Raise .Number, .Source, .Description, .HelpFile, .HelpContext
+        End If
+    End With
+    On Error GoTo 0
     Guard.Expression ParameterCount = 0 Or ParameterCount = ValueCount, _
                      "DbParameters", _
                      "AdoCommand.Parameters.Count does not match parameter value count"
     
-    ValidateParameterValues = True
+    ValidateParameterValues = ParameterCount
 End Function
 
 
@@ -192,12 +203,9 @@ Private Sub IDbParameters_FromValues(ByVal cmd As ADODB.Command, _
 Attribute IDbParameters_FromValues.VB_Description = "Creates or updates ADODB.Parameters collection in the Command object from an array of values"
     Dim Values() As Variant
     Values = UnfoldParamArray(ADODBParamsValues)
-    
-    '@Ignore FunctionReturnValueDiscarded: Raises error on failure
-    ValidateParameterValues cmd, Values
 
     Dim ParameterCount As Long
-    ParameterCount = cmd.Parameters.Count
+    ParameterCount = ValidateParameterValues(cmd, Values)
     Dim UpdateParams As Boolean
     UpdateParams = ParameterCount > 0
     

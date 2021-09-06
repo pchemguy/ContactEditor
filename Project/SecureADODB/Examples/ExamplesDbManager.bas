@@ -305,4 +305,3 @@ Private Sub InvalidTypeCSVTwoParameterQueryTableTest()
     '''' Should fail with 'Type is invalid' error
     Set Result = rst.OpenRecordset(SQLQuery, 45, "South Korea")
 End Sub
-

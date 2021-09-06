@@ -18,6 +18,7 @@ Implements IDbManager
 
 Private Type TDbManager
     DbMeta As DbMetaData
+    ParameterProvider As DbParameters
     DbConnStr As DbConnectionString
     Connection As IDbConnection
     CommandFactory As IDbCommandFactory
@@ -104,8 +105,8 @@ Attribute CreateFileDb.VB_Description = "Factory for file-based databases"
             Set LogController = Logger.Create
     End Select
     
-    Dim provider As IParameterProvider
-    Set provider = AdoParameterProvider.Create(AdoTypeMappings.Default)
+    Dim provider As IDbParameters
+    Set provider = DbParameters.Create(AdoTypeMappings.Default)
     
     Dim baseCommand As IDbCommandBase
     Set baseCommand = DbCommandBase.Create(provider)

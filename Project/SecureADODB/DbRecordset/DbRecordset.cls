@@ -166,10 +166,10 @@ Private Property Get IDbRecordset_AdoRecordset() As ADODB.Recordset
 End Property
 
 
-Private Function IDbRecordset_InitRecordset(ByVal SQL As String, ParamArray args() As Variant) As ADODB.Recordset
+Private Function IDbRecordset_InitRecordset(ByVal SQL As String, ParamArray ADODBParamsValues() As Variant) As ADODB.Recordset
     If SQL <> vbNullString And AdoRecordset.ActiveCommand Is Nothing Then
         Dim localArgs() As Variant
-        localArgs = UnfoldParamArray(args)
+        localArgs = UnfoldParamArray(ADODBParamsValues)
         
         Set AdoRecordset.Source = this.cmd.AdoCommand(SQL, localArgs)
     End If
@@ -179,9 +179,9 @@ End Function
 
 ' Execute and ExecuteScalar can be combined into one method returning Variant, where distinction
 ' is made based on the AdoRecordset.MaxRecords value (1 - Scalar, regular otherwise)
-Private Function IDbRecordset_OpenRecordset(ByVal SQL As String, ParamArray args() As Variant) As ADODB.Recordset
+Private Function IDbRecordset_OpenRecordset(ByVal SQL As String, ParamArray ADODBParamsValues() As Variant) As ADODB.Recordset
     '@Ignore FunctionReturnValueDiscarded
-    IDbRecordset_InitRecordset SQL, args
+    IDbRecordset_InitRecordset SQL, ADODBParamsValues
     
     On Error GoTo RecordsetOpenError
     AdoRecordset.Open Options:=this.OpenOptions

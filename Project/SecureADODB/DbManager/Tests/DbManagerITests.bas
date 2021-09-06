@@ -391,7 +391,8 @@ Arrange:
     SQLInsert0P = zfxGetSQLInsert0P(zfxGetSQLiteTableNameInsert)
 Act:
     dbm.Command.ExecuteNonQuery SQLInsert0P
-    Dim RecordsAffected As Long: RecordsAffected = conn.RecordsAffected
+    Dim RecordsAffected As Long
+    RecordsAffected = conn.RecordsAffected
     Dim ExecuteStatus As ADODB.EventStatusEnum: ExecuteStatus = conn.ExecuteStatus
 Assert:
     Assert.AreEqual ADODB.EventStatusEnum.adStatusOK, ExecuteStatus, "Execution status mismatch."

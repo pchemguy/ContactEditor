@@ -13,6 +13,6 @@ Attribute VB_Description = "Wraps ADODB.Parameters collection"
 '@Exposed
 Option Explicit
 
-Public Sub FromValues(ByVal AdoCommand As ADODB.Command, ParamArray ValuesArgs())
+Public Sub FromValues(ByVal AdoCommand As ADODB.Command, ParamArray ADODBParamsValues())
 End Sub
 

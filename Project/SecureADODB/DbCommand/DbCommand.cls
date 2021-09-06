@@ -12,7 +12,6 @@ Attribute VB_Description = "An object that builds and executes a parameterized A
 '@ModuleDescription("An object that builds and executes a parameterized ADODB command from a command string and parameter values. Returns connected recordsets that the client should close or disconnected recordset.")
 '@PredeclaredId
 '@Exposed
-'@IgnoreModule IllegalAnnotation
 Option Explicit
 
 Implements IDbCommand
@@ -25,7 +24,6 @@ End Type
 Private this As TCommand
 
 
-'''' @Inject: just an idea.. see #https://github.com/rubberduck-vba/Rubberduck/issues/5463
 Public Function Create(ByVal db As IDbConnection, ByVal baseCommand As IDbCommandBase) As IDbCommand
     Dim Instance As DbCommand
     Set Instance = New DbCommand
