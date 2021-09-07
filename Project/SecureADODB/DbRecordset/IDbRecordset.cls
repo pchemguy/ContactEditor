@@ -28,5 +28,5 @@ End Function
 Public Function OpenScalar(ByVal SQL As String, ParamArray ADODBParamsValues() As Variant) As Variant
 End Function
 
-Public Sub RecordsetToQT(ByVal OutputRange As Excel.Range)
-End Sub
+Public Function RecordsetToQT(ByVal OutputRange As Excel.Range) As Excel.QueryTable
+End Function

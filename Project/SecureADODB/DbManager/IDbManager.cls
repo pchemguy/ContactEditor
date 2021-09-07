@@ -15,11 +15,6 @@ Attribute VB_Description = "Represents an object encapsulating a database transa
 Option Explicit
 
 
-'@Description("Returns class reference")
-Public Property Get Class() As DbManager
-Attribute Class.VB_Description = "Returns class reference"
-End Property
-
 '@Description("Returns logger reference")
 Public Property Get LogController() As ILogger
 Attribute LogController.VB_Description = "Returns logger reference"
@@ -46,10 +41,10 @@ Attribute Command.VB_Description = "Creates a new command to execute."
 End Function
 
 '@Description("Creates a new recordset to execute.")
-Public Function Recordset(Optional ByVal Scalar As Boolean = False, _
-                          Optional ByVal Disconnected As Boolean = True, _
+Public Function Recordset(Optional ByVal Disconnected As Boolean = True, _
                           Optional ByVal CacheSize As Long = 10, _
                           Optional ByVal CursorType As ADODB.CursorTypeEnum = -1, _
+                          Optional ByVal LockType As ADODB.LockTypeEnum = adLockReadOnly, _
                           Optional ByVal AsyncMode As Boolean = False, _
                           Optional ByVal AsyncOption As ADODB.ExecuteOptionEnum = 0) As IDbRecordset
 Attribute Recordset.VB_Description = "Creates a new recordset to execute."

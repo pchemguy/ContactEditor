@@ -30,20 +30,23 @@ Public Function Create(ByVal cmd As IDbCommand, _
               Optional ByVal Disconnected As Boolean = True, _
               Optional ByVal CacheSize As Long = 10, _
               Optional ByVal CursorType As ADODB.CursorTypeEnum = -1, _
+              Optional ByVal LockType As ADODB.LockTypeEnum = adLockReadOnly, _
               Optional ByVal AsyncMode As Boolean = False, _
               Optional ByVal AsyncOption As ADODB.ExecuteOptionEnum = 0) As IDbRecordset
     Dim Instance As DbRecordset
     Set Instance = New DbRecordset
-    Instance.Init cmd, Disconnected, CacheSize, CursorType, AsyncMode, AsyncOption
+    Instance.Init cmd, Disconnected, CacheSize, CursorType, LockType, AsyncMode, AsyncOption
     Set Create = Instance
 End Function
 
 
+'''' For updatable recordset use LockType = adLockBatchOptimistic
 '@Description("Default constructor")
 Friend Sub Init(ByVal cmd As IDbCommand, _
             Optional ByVal Disconnected As Boolean = True, _
             Optional ByVal CacheSize As Long = 10, _
             Optional ByVal CursorType As ADODB.CursorTypeEnum = -1, _
+            Optional ByVal LockType As ADODB.LockTypeEnum = adLockReadOnly, _
             Optional ByVal AsyncMode As Boolean = False, _
             Optional ByVal AsyncOption As ADODB.ExecuteOptionEnum = 0)
 Attribute Init.VB_Description = "Default constructor"
@@ -59,6 +62,8 @@ Attribute Init.VB_Description = "Default constructor"
         AdoRecordset.CursorType = adOpenForwardOnly
     End If
     
+    AdoRecordset.LockType = LockType
+    
     AdoRecordset.CacheSize = CacheSize
     If CursorType > 0 Then
         AdoRecordset.CursorType = CursorType
@@ -68,7 +73,7 @@ End Sub
 
 
 '@Description "Outputs Recordset to Excel Worksheet via QueryTable"
-Public Sub RecordsetToQT(ByVal OutputRange As Excel.Range)
+Public Function RecordsetToQT(ByVal OutputRange As Excel.Range) As Excel.QueryTable
 Attribute RecordsetToQT.VB_Description = "Outputs Recordset to Excel Worksheet via QueryTable"
     Guard.NullReference OutputRange
     
@@ -121,7 +126,9 @@ Attribute RecordsetToQT.VB_Description = "Outputs Recordset to Excel Worksheet v
     WSQueryTable.Refresh
     '@Ignore IndexedDefaultMemberAccess
     QTRange.Worksheet.UsedRange.Rows(1).HorizontalAlignment = xlCenter
-End Sub
+    
+    Set RecordsetToQT = WSQueryTable
+End Function
 
 
 Private Sub SetSource( _
@@ -134,9 +141,9 @@ Private Sub SetSource( _
 End Sub
 
 
-Private Sub IDbRecordset_RecordsetToQT(ByVal OutputRange As Excel.Range)
-    RecordsetToQT OutputRange
-End Sub
+Private Function IDbRecordset_RecordsetToQT(ByVal OutputRange As Excel.Range) As Excel.QueryTable
+    Set IDbRecordset_RecordsetToQT = RecordsetToQT(OutputRange)
+End Function
 
 
 Private Property Get IDbRecordset_AdoRecordset() As ADODB.Recordset

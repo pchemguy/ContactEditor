@@ -26,7 +26,7 @@ Private Sub CSVSingleParameterQueryTableTest()
     Debug.Print dbm.Connection.AdoConnection.Properties("Transaction DDL").Value
     
     Dim rst As IDbRecordset
-    Set rst = dbm.Recordset(Scalar:=False, Disconnected:=True, CacheSize:=10)
+    Set rst = dbm.Recordset(Disconnected:=True, CacheSize:=10)
     
     Dim Result As ADODB.Recordset
     Set Result = rst.OpenRecordset(SQLQuery, 45)
@@ -64,7 +64,7 @@ Private Sub CSVSingleParameterQueryScalarTest()
     Set dbm = DbManager.CreateFileDb("csv", REL_PREFIX & FileName, vbNullString, LoggerTypeEnum.logPrivate)
 
     Dim rst As IDbRecordset
-    Set rst = dbm.Recordset(Scalar:=True, Disconnected:=True, CacheSize:=10)
+    Set rst = dbm.Recordset(Disconnected:=True, CacheSize:=10)
     
     Dim Result As Variant
     Result = rst.OpenScalar(SQLQuery, 45)
@@ -88,12 +88,17 @@ Private Sub SQLiteSingleParameterQueryTableTest()
     Set dbm = DbManager.CreateFileDb("sqlite", FileName, vbNullString, LoggerTypeEnum.logPrivate)
 
     Dim rst As IDbRecordset
-    Set rst = dbm.Recordset(Scalar:=False, Disconnected:=True, CacheSize:=10)
+    Set rst = dbm.Recordset(Disconnected:=True, CacheSize:=10)
     
     Debug.Print dbm.Connection.AdoConnection.Properties("Transaction DDL")
     
     Dim Result As ADODB.Recordset
     Set Result = rst.OpenRecordset(SQLQuery, 45)
+    
+'''' Before .Open
+''''   Result.LockType = adLockBatchOptimistic
+'''' After .Open
+''''   Result.MarshalOptions = adMarshalModifiedOnly
     
     rst.RecordsetToQT Buffer.Range("A1")
 End Sub
@@ -227,7 +232,7 @@ Private Sub SQLiteTwoParameterQueryTableTest()
     Set cmdAdo = cmd.AdoCommand(SQLQuery, 45, "South Korea")
     
     Dim rst As IDbRecordset
-    Set rst = dbm.Recordset(Scalar:=False, Disconnected:=True, CacheSize:=10)
+    Set rst = dbm.Recordset(Disconnected:=True, CacheSize:=10)
     Dim rstAdo As ADODB.Recordset
     Set rstAdo = rst.OpenRecordset(SQLQuery, 45, "South Korea")
     
@@ -235,12 +240,7 @@ Private Sub SQLiteTwoParameterQueryTableTest()
 End Sub
 
 
-'''' This routine should raise 'Type is invalid' error.
-'''' For parametrized queries, SecureADODB uses VBA(String)=>ADODB(adVarWChar)
-'''' correspondence. However, the CSV backend and driver do not support
-'''' ADODB(adVarWChar). Instead, VBA(String)=>ADODB(adVarChar) should be used
-'''' (remove 'W' from 'adVarWChar').
-Private Sub InvalidTypeCSVTwoParameterQueryTableTest()
+Private Sub CSVTwoParameterQueryTableTest()
     Dim FileName As String
     FileName = LIB_NAME & ".csv"
 
@@ -266,9 +266,61 @@ Private Sub InvalidTypeCSVTwoParameterQueryTableTest()
     Set cmdAdo = cmd.AdoCommand(SQLQuery, 45, "South Korea")
     
     Dim rst As IDbRecordset
-    Set rst = dbm.Recordset(Scalar:=False, Disconnected:=True, CacheSize:=10)
+    Set rst = dbm.Recordset(Disconnected:=True, CacheSize:=10)
     Dim rstAdo As ADODB.Recordset
-    '''' Should fail with 'Type is invalid' error
+    
     Set rstAdo = rst.OpenRecordset(SQLQuery, 45, "South Korea")
 End Sub
 
+
+Private Sub SQLiteTwoParameterQueryTableUpdateRstTest()
+    Dim FileName As String
+    FileName = REL_PREFIX & LIB_NAME & ".db"
+
+    Dim TableName As String
+    TableName = "people"
+    Dim SQLQuery As String
+    SQLQuery = "SELECT * FROM " & TableName & " WHERE age >= ? AND country = ?"
+    
+    Dim dbm As IDbManager
+    Set dbm = DbManager.CreateFileDb("sqlite", FileName, vbNullString, LoggerTypeEnum.logPrivate)
+
+    Dim Log As ILogger
+    Set Log = dbm.LogController
+
+    Dim conn As IDbConnection
+    Set conn = dbm.Connection
+    Dim connAdo As ADODB.Connection
+    Set connAdo = conn.AdoConnection
+    
+    Dim cmd As IDbCommand
+    Set cmd = dbm.Command
+    Dim cmdAdo As ADODB.Command
+    Set cmdAdo = cmd.AdoCommand(SQLQuery, 45, "South Korea")
+    
+    Dim rst As IDbRecordset
+    Set rst = dbm.Recordset(Disconnected:=True, CacheSize:=10, LockType:=adLockBatchOptimistic)
+    Dim rstAdo As ADODB.Recordset
+    Set rstAdo = rst.OpenRecordset(SQLQuery, 45, "South Korea")
+    
+    Dim TargetRecordIndex As Long
+    
+    With rstAdo
+        TargetRecordIndex = 2
+        .Move (TargetRecordIndex - .AbsolutePosition)
+        .Fields(1) = .Fields(1) & "XXX"
+        .Fields("last_name") = .Fields("last_name") & "YYY"
+    
+        TargetRecordIndex = 4
+        .Move (TargetRecordIndex - .AbsolutePosition)
+        .Fields(1) = .Fields(1) & "XXX"
+        .Fields("last_name") = .Fields("last_name") & "YYY"
+    End With
+    
+    Dim WSQueryTable As Excel.QueryTable
+    Set WSQueryTable = rst.RecordsetToQT(Buffer.Range("A1"))
+        
+    rstAdo.MarshalOptions = adMarshalModifiedOnly
+    Set rstAdo.ActiveConnection = connAdo
+    rstAdo.UpdateBatch
+End Sub

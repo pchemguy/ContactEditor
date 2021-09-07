@@ -26,14 +26,6 @@ End Type
 Private this As TDbManager
 
 
-'@Ignore ProcedureNotUsed
-'@Description("Returns class reference")
-Public Property Get Class() As DbManager
-Attribute Class.VB_Description = "Returns class reference"
-    Set Class = DbManager
-End Property
-
-
 '@Description("Default factory")
 Public Function Create(ByVal db As IDbConnection, _
                        ByVal Factory As IDbCommandFactory, _
@@ -109,8 +101,11 @@ Attribute CreateFileDb.VB_Description = "Factory for file-based databases"
             Set LogController = Logger.Create
     End Select
     
+    '''' CSV fails if String -> adVarWChar mapping is used
+    ''''              String -> adVarChar must be used for CSV instead
     Dim provider As IDbParameters
-    Set provider = DbParameters.Create(AdoTypeMappings.Default)
+    Set provider = DbParameters.Create( _
+            IIf(LCase$(DbType) <> "csv", AdoTypeMappings.Default, AdoTypeMappings.CSV))
     
     Dim baseCommand As IDbCommandBase
     Set baseCommand = DbCommandBase.Create(provider)
@@ -136,68 +131,49 @@ Public Property Get DbConnStr() As DbConnectionString
     Set DbConnStr = this.DbConnStr
 End Property
 
-
 '@Ignore ProcedureNotUsed
 Public Property Get DbMeta() As DbMetaData
     Set DbMeta = this.DbMeta
 End Property
 
-
-'@Description("Returns class reference")
-Public Property Get IDbManager_Class() As DbManager
-Attribute IDbManager_Class.VB_Description = "Returns class reference"
-    Set IDbManager_Class = DbManager
-End Property
-
-
 Private Property Get IDbManager_LogController() As ILogger
     Set IDbManager_LogController = this.LogController
 End Property
-
 
 Private Property Get IDbManager_DbConnStr() As DbConnectionString
     Set IDbManager_DbConnStr = this.DbConnStr
 End Property
 
-
 Private Property Get IDbManager_DbMeta() As DbMetaData
     Set IDbManager_DbMeta = this.DbMeta
 End Property
-
 
 Private Property Get IDbManager_Connection() As IDbConnection
     Set IDbManager_Connection = this.Connection
 End Property
 
-
 Private Function IDbManager_Command() As IDbCommand
     Set IDbManager_Command = this.CommandFactory.CreateInstance(this.Connection)
 End Function
 
-
 Private Function IDbManager_Recordset( _
-        Optional ByVal Scalar As Boolean = False, _
-        Optional ByVal Disconnected As Boolean = True, _
-        Optional ByVal CacheSize As Long = 10, _
-        Optional ByVal CursorType As ADODB.CursorTypeEnum = -1, _
-        Optional ByVal AsyncMode As Boolean = False, _
-        Optional ByVal AsyncOption As ADODB.ExecuteOptionEnum = 0) As IDbRecordset
-    Dim cmd As IDbCommand
-    Set cmd = this.CommandFactory.CreateInstance(this.Connection)
+            Optional ByVal Disconnected As Boolean = True, _
+            Optional ByVal CacheSize As Long = 10, _
+            Optional ByVal CursorType As ADODB.CursorTypeEnum = -1, _
+            Optional ByVal LockType As ADODB.LockTypeEnum = adLockReadOnly, _
+            Optional ByVal AsyncMode As Boolean = False, _
+            Optional ByVal AsyncOption As ADODB.ExecuteOptionEnum = 0) As IDbRecordset
     Set IDbManager_Recordset = DbRecordset.Create( _
-        cmd, Disconnected, CacheSize, CursorType, AsyncMode, AsyncOption)
+        IDbManager_Command, Disconnected, CacheSize, CursorType, LockType, AsyncMode, AsyncOption)
 End Function
-
 
 Private Sub IDbManager_Begin()
     this.Connection.BeginTransaction
 End Sub
 
-
 Private Sub IDbManager_Commit()
     this.Connection.CommitTransaction
 End Sub
-
 
 Private Sub IDbManager_Rollback()
     this.Connection.RollbackTransaction
