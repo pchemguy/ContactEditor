@@ -59,7 +59,7 @@ Private Function zfxGetDbManager( _
     PathName = zfxGetLibPrefix(LibName) & FileName
     
     Dim dbm As IDbManager
-    Set dbm = DbManager.CreateFileDb(DbType, PathName, vbNullString, True, LoggerTypeEnum.logDisabled)
+    Set dbm = DbManager.CreateFileDb(DbType, PathName, vbNullString, LoggerTypeEnum.logDisabled)
     Set zfxGetDbManager = dbm
 End Function
 
@@ -358,7 +358,7 @@ Private Sub ztiDbManagerOpenRecordset_VerifiesAdoRecordsetScalarCSV()
     
 Arrange:
     Dim dbm As IDbManager
-    Set dbm = DbManager.CreateFileDb("csv", zfxGetLibPrefix("SecureADODB") & "SecureADODB.csv", , False)
+    Set dbm = DbManager.CreateFileDb("csv", zfxGetLibPrefix("SecureADODB") & "SecureADODB.csv")
     Dim SQLSelect As String
     SQLSelect = zfxGetSQLSelect0P(zfxGetCSVTableName)
 Act:
@@ -387,7 +387,7 @@ Arrange:
     '''' Set to false below to disable transactions and activate the autocommit mode to see
     '''' the result of the test insert in the database.
     Dim dbm As IDbManager
-    Set dbm = DbManager.CreateFileDb("sqlite", zfxGetLibPrefix("SecureADODB") & "SecureADODB.db", , True)
+    Set dbm = DbManager.CreateFileDb("sqlite", zfxGetLibPrefix("SecureADODB") & "SecureADODB.db")
     Dim conn As IDbConnection
     Set conn = dbm.Connection
     Dim SQLInsert0P As String

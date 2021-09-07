@@ -149,7 +149,7 @@ Private Function IDbRecordset_GetAdoRecordset( _
             ParamArray ADODBParamsValues() As Variant) As ADODB.Recordset
     Dim localArgs() As Variant
     localArgs = UnfoldParamArray(ADODBParamsValues)
-    SetSource SQL, ADODBParamsValues
+    SetSource SQL, localArgs
     Set IDbRecordset_GetAdoRecordset = AdoRecordset
 End Function
 
@@ -159,7 +159,9 @@ End Function
 Private Function IDbRecordset_OpenRecordset( _
             ByVal SQL As String, _
             ParamArray ADODBParamsValues() As Variant) As ADODB.Recordset
-    SetSource SQL, ADODBParamsValues
+    Dim localArgs() As Variant
+    localArgs = UnfoldParamArray(ADODBParamsValues)
+    SetSource SQL, localArgs
     
     On Error GoTo RecordsetOpenError
     With AdoRecordset
@@ -183,7 +185,9 @@ End Function
 Private Function IDbRecordset_OpenScalar( _
             ByVal SQL As String, _
             ParamArray ADODBParamsValues() As Variant) As Variant
-    SetSource SQL, ADODBParamsValues
+    Dim localArgs() As Variant
+    localArgs = UnfoldParamArray(ADODBParamsValues)
+    SetSource SQL, localArgs
         
     On Error GoTo RecordsetOpenError
     With AdoRecordset

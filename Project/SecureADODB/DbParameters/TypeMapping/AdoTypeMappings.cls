@@ -35,6 +35,7 @@ End Function
 
 '@Description("Creates a CSV mapping for intrinsic data types.")
 Public Function CSV() As ITypeMap
+Attribute CSV.VB_Description = "Creates a CSV mapping for intrinsic data types."
     Dim Instance As AdoTypeMappings
     Set Instance = New AdoTypeMappings
     Instance.InitCSV
@@ -74,7 +75,9 @@ End Sub
 
 '@Description("Adjusts mapping for the CSV backend: adVarWChar -> adVarChar")
 Friend Sub InitCSV()
+Attribute InitCSV.VB_Description = "Adjusts mapping for the CSV backend: adVarWChar -> adVarChar"
     InitDefault
+    '@Ignore IndexedDefaultMemberAccess
     this.Mapping("String") = adVarChar
 End Sub
 
@@ -91,6 +94,7 @@ Attribute Mapping.VB_Description = "Gets/sets the ADODB.DataTypeEnum mapping for
     Guard.Expression IsMapped(Name), _
                      Source:="AdoTypeMappings", _
                      Message:="Argument 'name' must be the name of an intrinsic data type; data type '" & Name & "' is not supported."
+    '@Ignore IndexedDefaultMemberAccess
     Mapping = this.Mapping(Name)
 End Property
 

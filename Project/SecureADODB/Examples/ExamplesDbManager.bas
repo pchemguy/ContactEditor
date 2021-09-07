@@ -21,7 +21,7 @@ Private Sub CSVSingleParameterQueryTableTest()
     SQLQuery = "SELECT * FROM " & TableName & " WHERE age >= ? AND country = 'South Korea'"
     
     Dim dbm As IDbManager
-    Set dbm = DbManager.CreateFileDb("csv", REL_PREFIX & FileName, vbNullString, False, LoggerTypeEnum.logPrivate)
+    Set dbm = DbManager.CreateFileDb("csv", REL_PREFIX & FileName, vbNullString, LoggerTypeEnum.logPrivate)
 
     Debug.Print dbm.Connection.AdoConnection.Properties("Transaction DDL").Value
     
@@ -47,7 +47,7 @@ Private Sub InvalidTypeTest()
     
     Dim dbm As IDbManager
     '''' Throws "Unsupported backend" Error
-    Set dbm = DbManager.CreateFileDb("Driver=", REL_PREFIX & FileName, vbNullString, True, LoggerTypeEnum.logPrivate)
+    Set dbm = DbManager.CreateFileDb("Driver=", REL_PREFIX & FileName, vbNullString, LoggerTypeEnum.logPrivate)
 End Sub
 
 
@@ -61,7 +61,7 @@ Private Sub CSVSingleParameterQueryScalarTest()
     SQLQuery = "SELECT * FROM " & TableName & " WHERE age >= ? AND country = 'South Korea' ORDER BY id DESC"
     
     Dim dbm As IDbManager
-    Set dbm = DbManager.CreateFileDb("csv", REL_PREFIX & FileName, vbNullString, True, LoggerTypeEnum.logPrivate)
+    Set dbm = DbManager.CreateFileDb("csv", REL_PREFIX & FileName, vbNullString, LoggerTypeEnum.logPrivate)
 
     Dim rst As IDbRecordset
     Set rst = dbm.Recordset(Scalar:=True, Disconnected:=True, CacheSize:=10)
@@ -85,7 +85,7 @@ Private Sub SQLiteSingleParameterQueryTableTest()
     SQLQuery = "SELECT * FROM " & TableName & " WHERE age >= ? AND country = 'South Korea'"
     
     Dim dbm As IDbManager
-    Set dbm = DbManager.CreateFileDb("sqlite", FileName, vbNullString, True, LoggerTypeEnum.logPrivate)
+    Set dbm = DbManager.CreateFileDb("sqlite", FileName, vbNullString, LoggerTypeEnum.logPrivate)
 
     Dim rst As IDbRecordset
     Set rst = dbm.Recordset(Scalar:=False, Disconnected:=True, CacheSize:=10)
@@ -107,7 +107,7 @@ Private Sub SQLiteMetaTest()
     TableName = "people"
     
     Dim dbm As IDbManager
-    Set dbm = DbManager.CreateFileDb("sqlite", FileName, vbNullString, True, LoggerTypeEnum.logPrivate)
+    Set dbm = DbManager.CreateFileDb("sqlite", FileName, vbNullString, LoggerTypeEnum.logPrivate)
         
     Dim FieldNames() As String
     Dim FieldTypes() As ADODB.DataTypeEnum
@@ -145,7 +145,7 @@ Private Sub CSVMetaTest()
     TableName = FileName
     
     Dim dbm As IDbManager
-    Set dbm = DbManager.CreateFileDb("csv", REL_PREFIX & FileName, vbNullString, True, LoggerTypeEnum.logPrivate)
+    Set dbm = DbManager.CreateFileDb("csv", REL_PREFIX & FileName, vbNullString, LoggerTypeEnum.logPrivate)
         
     Dim FieldNames() As String
     Dim FieldTypes() As ADODB.DataTypeEnum
@@ -186,7 +186,7 @@ Private Sub SQLiteInsertTest()
                "VALUES (" & GenerateSerialID & ", 'first_name', 'last_name', 32, 'male', 'first_name.last_name@domain.com', 'Country', 'domain.com')"
                
     Dim dbm As IDbManager
-    Set dbm = DbManager.CreateFileDb("sqlite", FileName, vbNullString, True, LoggerTypeEnum.logPrivate)
+    Set dbm = DbManager.CreateFileDb("sqlite", FileName, vbNullString, LoggerTypeEnum.logPrivate)
     
     Dim cmd As IDbCommand
     Set cmd = dbm.Command
@@ -211,7 +211,7 @@ Private Sub SQLiteTwoParameterQueryTableTest()
     SQLQuery = "SELECT * FROM " & TableName & " WHERE age >= ? AND country = ?"
     
     Dim dbm As IDbManager
-    Set dbm = DbManager.CreateFileDb("sqlite", FileName, vbNullString, True, LoggerTypeEnum.logPrivate)
+    Set dbm = DbManager.CreateFileDb("sqlite", FileName, vbNullString, LoggerTypeEnum.logPrivate)
 
     Dim Log As ILogger
     Set Log = dbm.LogController
@@ -250,7 +250,7 @@ Private Sub InvalidTypeCSVTwoParameterQueryTableTest()
     SQLQuery = "SELECT * FROM " & TableName & " WHERE age >= ? AND country = ?"
     
     Dim dbm As IDbManager
-    Set dbm = DbManager.CreateFileDb("csv", REL_PREFIX & FileName, vbNullString, True, LoggerTypeEnum.logPrivate)
+    Set dbm = DbManager.CreateFileDb("csv", REL_PREFIX & FileName, vbNullString, LoggerTypeEnum.logPrivate)
 
     Dim Log As ILogger
     Set Log = dbm.LogController
@@ -271,3 +271,4 @@ Private Sub InvalidTypeCSVTwoParameterQueryTableTest()
     '''' Should fail with 'Type is invalid' error
     Set rstAdo = rst.OpenRecordset(SQLQuery, 45, "South Korea")
 End Sub
+

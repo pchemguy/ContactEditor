@@ -64,6 +64,7 @@ End Sub
 
 '@Description("Initialize additional attributes")
 Friend Sub InitExtra(Optional ByVal DbConnStr As DbConnectionString = Nothing)
+Attribute InitExtra.VB_Description = "Initialize additional attributes"
     With this
         If Not DbConnStr Is Nothing Then Set .DbConnStr = DbConnStr
         If Not .DbConnStr Is Nothing Then Set .DbMeta = DbMetaData.Create(.DbConnStr)
@@ -95,7 +96,6 @@ Public Function CreateFileDb( _
                  ByVal DbType As String, _
         Optional ByVal DbFileName As String = vbNullString, _
         Optional ByVal ConnectionOptions As String = vbNullString, _
-        Optional ByVal UseTransactions As Boolean = True, _
         Optional ByVal LoggerType As LoggerTypeEnum = LoggerTypeEnum.logGlobal _
         ) As IDbManager
 Attribute CreateFileDb.VB_Description = "Factory for file-based databases"
@@ -137,19 +137,9 @@ Public Property Get DbConnStr() As DbConnectionString
 End Property
 
 
-Public Property Set DbConnStr(ByVal Instance As DbConnectionString)
-    Set this.DbConnStr = Instance
-End Property
-
-
 '@Ignore ProcedureNotUsed
 Public Property Get DbMeta() As DbMetaData
     Set DbMeta = this.DbMeta
-End Property
-
-
-Public Property Set DbMeta(ByVal Instance As DbMetaData)
-    Set this.DbMeta = Instance
 End Property
 
 

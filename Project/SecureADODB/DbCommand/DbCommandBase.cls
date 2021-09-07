@@ -68,7 +68,10 @@ Private Function IDbCommandBase_UpdateCommand( _
             ByVal SQL As String, _
             ByRef ADODBParamsValues() As Variant) As ADODB.Command
     Guard.NullReference cmd
-    If Len(SQL) > 0 Then cmd.CommandText = SQL
-    this.ParameterProvider.FromValues cmd, ADODBParamsValues
+    
+    If Len(SQL) > 0 And cmd.CommandText <> SQL Then cmd.CommandText = SQL
+    If UBound(ADODBParamsValues) - LBound(ADODBParamsValues) + 1 > 0 Then
+        this.ParameterProvider.FromValues cmd, ADODBParamsValues
+    End If
     Set IDbCommandBase_UpdateCommand = cmd
 End Function

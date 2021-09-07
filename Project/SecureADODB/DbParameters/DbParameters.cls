@@ -126,6 +126,7 @@ Attribute ValidateParameterValues.VB_Description = "Validates ValueCount, ParamC
     '''' CSV driver may fail here when .Parameters collection is empty
     '''' ErrorCode = &H80040E51
     On Error Resume Next
+    '@Ignore AssignmentNotUsed: false positive
     ParameterCount = cmd.Parameters.Count
     With Err
         If .Number = &H80040E51 Then

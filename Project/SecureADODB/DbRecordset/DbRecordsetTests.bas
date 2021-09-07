@@ -52,20 +52,14 @@ Private Function zfxGetSingleParameterSelectSql() As String
 End Function
 
 
-Private Function zfxGetStubParameter() As ADODB.Parameter
-    Dim stubAdoCommand As ADODB.Command: Set stubAdoCommand = New ADODB.Command
-    Set zfxGetStubParameter = stubAdoCommand.CreateParameter("StubInteger", adInteger, adParamInput, , 42)
-End Function
-
-
 Private Function zfxGetStubDbCommand() As IDbCommand
-    Dim stubExConnection As StubDbConnection
-    Set stubExConnection = New StubDbConnection
+    Dim stubConnection As StubDbConnection
+    Set stubConnection = New StubDbConnection
 
-    Dim stubBase As StubDbCommandBase
-    Set stubBase = New StubDbCommandBase
+    Dim stubCommandBase As StubDbCommandBase
+    Set stubCommandBase = New StubDbCommandBase
     
-    Set zfxGetStubDbCommand = DbCommand.Create(stubExConnection, stubBase)
+    Set zfxGetStubDbCommand = DbCommand.Create(stubConnection, stubCommandBase)
 End Function
 
 
@@ -74,81 +68,13 @@ End Function
 '===================================================='
 
 
-'@TestMethod("Test Fixture")
-Private Sub zfxGetStubParameter_ValidatesStubParameter()
-    On Error GoTo TestFail
-    
-Arrange:
-    
-Act:
-    Dim stubParameter As ADODB.Parameter: Set stubParameter = zfxGetStubParameter
-Assert:
-    Assert.AreEqual "StubInteger", stubParameter.Name, "Stub ADODB.Parameter name mismatch: " & "StubInteger" & " vs. " & stubParameter.Name
-    Assert.AreEqual adInteger, stubParameter.Type, "Stub ADODB.Parameter type mismatch: " & adInteger & " vs. " & stubParameter.Type
-    Assert.AreEqual adParamInput, stubParameter.Direction, "Stub ADODB.Parameter direction mismatch: " & adParamInput & " vs. " & stubParameter.Direction
-    Assert.AreEqual 42, stubParameter.Value, "Stub ADODB.Parameter value mismatch: " & 42 & " vs. " & stubParameter.Value
-    
-CleanExit:
-    Exit Sub
-TestFail:
-    Assert.Fail "Error: " & Err.Number & " - " & Err.Description
-End Sub
-
-
-'@TestMethod("Test Fixture")
-Private Sub ztcGetSingleParameterSelectSql_ValidatesStubQuery()
-    On Error GoTo TestFail
-    
-Arrange:
-    Dim Expected As String
-    Expected = "SELECT * FROM [dbo].[Table1] WHERE [Field1] = ?;"
-Act:
-    Dim Actual As String
-    Actual = zfxGetSingleParameterSelectSql
-Assert:
-    Assert.AreEqual Expected, Actual, "Stub query mismatch: " & Expected & " vs. " & Actual
-    
-CleanExit:
-    Exit Sub
-TestFail:
-    Assert.Fail "Error: " & Err.Number & " - " & Err.Description
-End Sub
-
-
-'@TestMethod("Test Fixture")
-Private Sub zfxGetStubDbCommand_ValidatesStubDbCommand()
-    On Error GoTo TestFail
-    
-Arrange:
-    Dim Expected As String
-    Expected = "SELECT * FROM [dbo].[Table1] WHERE [Field1] = ?;"
-Act:
-    Dim stubCommand As IDbCommand
-    Set stubCommand = zfxGetStubDbCommand
-    
-    Dim stubAdoCommand As ADODB.Command
-    Set stubAdoCommand = stubCommand.AdoCommand(zfxGetSingleParameterSelectSql, zfxGetStubParameter)
-Assert:
-    Assert.IsNotNothing stubCommand, "GetStubDbCommand command did not return IDbCommand"
-    Assert.IsNotNothing stubAdoCommand, "GetStubDbCommand: AdoCommand was not set"
-    Assert.IsTrue TypeOf stubAdoCommand Is ADODB.Command, "GetStubDbCommand: AdoCommand type mismatch"
-    Assert.AreEqual ADODB.CommandTypeEnum.adCmdText, stubAdoCommand.CommandType, "GetStubDbCommand: command type mismatch"
-    Assert.AreEqual Expected, stubAdoCommand.CommandText, "GetStubDbCommand: command text mismatch"
-    
-CleanExit:
-    Exit Sub
-TestFail:
-    Assert.Fail "Error: " & Err.Number & " - " & Err.Description
-End Sub
-
-
 '===================================================='
 '==================== TEST CASES ===================='
 '===================================================='
 
 
-'@TestMethod("Create")
-Private Sub ztcCreate_ValidatesCreationOfDisconnectedFullRecordser()
+'@TestMethod("AdoRecordset")
+Private Sub ztcGetAdoRecordset_ValidatesDefaultAdoRecordset()
     On Error GoTo TestFail
     
 Arrange:
@@ -169,3 +95,5 @@ CleanExit:
 TestFail:
     Assert.Fail "Error: " & Err.Number & " - " & Err.Description
 End Sub
+
+
