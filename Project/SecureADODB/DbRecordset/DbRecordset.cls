@@ -26,16 +26,6 @@ End Type
 Private this As TRecordset
 
 
-Private Sub Class_Initialize()
-    Set AdoRecordset = New ADODB.Recordset
-End Sub
-
-
-Private Sub Class_Terminate()
-    Set AdoRecordset = Nothing
-End Sub
-
-
 Public Function Create(ByVal cmd As IDbCommand, _
               Optional ByVal Disconnected As Boolean = True, _
               Optional ByVal CacheSize As Long = 10, _
@@ -51,12 +41,13 @@ End Function
 
 '@Description("Default constructor")
 Friend Sub Init(ByVal cmd As IDbCommand, _
-       Optional ByVal Disconnected As Boolean = True, _
-       Optional ByVal CacheSize As Long = 10, _
-       Optional ByVal CursorType As ADODB.CursorTypeEnum = -1, _
-       Optional ByVal AsyncMode As Boolean = False, _
-       Optional ByVal AsyncOption As ADODB.ExecuteOptionEnum = 0)
+            Optional ByVal Disconnected As Boolean = True, _
+            Optional ByVal CacheSize As Long = 10, _
+            Optional ByVal CursorType As ADODB.CursorTypeEnum = -1, _
+            Optional ByVal AsyncMode As Boolean = False, _
+            Optional ByVal AsyncOption As ADODB.ExecuteOptionEnum = 0)
 Attribute Init.VB_Description = "Default constructor"
+    Set AdoRecordset = New ADODB.Recordset
     
     Set this.cmd = cmd
     
@@ -133,6 +124,16 @@ Attribute RecordsetToQT.VB_Description = "Outputs Recordset to Excel Worksheet v
 End Sub
 
 
+Private Sub SetSource( _
+            ByVal SQL As String, _
+            ParamArray ADODBParamsValues() As Variant)
+    Dim localArgs() As Variant
+    localArgs = UnfoldParamArray(ADODBParamsValues)
+    If AdoRecordset.State <> adStateClosed Then AdoRecordset.Close
+    Set AdoRecordset.Source = this.cmd.AdoCommand(SQL, localArgs)
+End Sub
+
+
 Private Sub IDbRecordset_RecordsetToQT(ByVal OutputRange As Excel.Range)
     RecordsetToQT OutputRange
 End Sub
@@ -143,14 +144,14 @@ Private Property Get IDbRecordset_AdoRecordset() As ADODB.Recordset
 End Property
 
 
-Private Sub SetSource( _
+Private Function IDbRecordset_GetAdoRecordset( _
             ByVal SQL As String, _
-            ParamArray ADODBParamsValues() As Variant)
+            ParamArray ADODBParamsValues() As Variant) As ADODB.Recordset
     Dim localArgs() As Variant
     localArgs = UnfoldParamArray(ADODBParamsValues)
-    If AdoRecordset.State <> adStateClosed Then AdoRecordset.Close
-    Set AdoRecordset.Source = this.cmd.AdoCommand(SQL, localArgs)
-End Sub
+    SetSource SQL, ADODBParamsValues
+    Set IDbRecordset_GetAdoRecordset = AdoRecordset
+End Function
 
 
 ' Execute and ExecuteScalar can be combined into one method returning Variant, where distinction
@@ -179,7 +180,9 @@ RecordsetOpenError:
 End Function
 
 
-Private Function IDbRecordset_OpenScalar(ByVal SQL As String, ParamArray ADODBParamsValues() As Variant) As Variant
+Private Function IDbRecordset_OpenScalar( _
+            ByVal SQL As String, _
+            ParamArray ADODBParamsValues() As Variant) As Variant
     SetSource SQL, ADODBParamsValues
         
     On Error GoTo RecordsetOpenError

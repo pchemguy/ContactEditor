@@ -19,6 +19,9 @@ Option Explicit
 Public Property Get AdoRecordset() As ADODB.Recordset
 End Property
 
+Public Function GetAdoRecordset(ByVal SQL As String, ParamArray ADODBParamsValues() As Variant) As ADODB.Recordset
+End Function
+
 Public Function OpenRecordset(ByVal SQL As String, ParamArray ADODBParamsValues() As Variant) As ADODB.Recordset
 End Function
 

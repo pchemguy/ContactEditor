@@ -156,61 +156,13 @@ Arrange:
     Set Recordset = DbRecordset.Create(zfxGetStubDbCommand)
 Act:
     Dim AdoRecordset As ADODB.Recordset
-    Set AdoRecordset = Recordset.OpenRecordset(vbNullString)
+    Set AdoRecordset = Recordset.GetAdoRecordset(vbNullString)
 Assert:
     AssertExpectedError Assert, ErrNo.PassedNoErr
-    Assert.AreNotEqual 1, AdoRecordset.MaxRecords, "Regular recordset should have MaxRecords=0 or >1"
+    Assert.AreNotEqual 1, AdoRecordset.MaxRecords, "Regular recordset should have MaxRecords=0 by default"
     Assert.AreEqual ADODB.CursorLocationEnum.adUseClient, AdoRecordset.CursorLocation, "CursorLocation should be set to adUseClient for a disconnected recordset."
     Assert.AreEqual 10, AdoRecordset.CacheSize, "Expected CacheSize=10"
     Assert.AreEqual ADODB.CursorTypeEnum.adOpenStatic, AdoRecordset.CursorType, "Expectec CursorType=adOpenStatic for a disconnected recordset."
-    
-CleanExit:
-    Exit Sub
-TestFail:
-    Assert.Fail "Error: " & Err.Number & " - " & Err.Description
-End Sub
-
-
-'@TestMethod("Create")
-Private Sub ztcCreate_ValidatesCreationOfDisconnectedScalarRecordser()
-    On Error GoTo TestFail
-    
-Arrange:
-    Dim Recordset As IDbRecordset
-    Set Recordset = DbRecordset.Create(zfxGetStubDbCommand)
-Act:
-    Dim AdoRecordset As ADODB.Recordset
-    Set AdoRecordset = Recordset.OpenRecordset(vbNullString)
-Assert:
-    AssertExpectedError Assert, ErrNo.PassedNoErr
-    Assert.AreEqual 1, AdoRecordset.MaxRecords, "Scalar recordset should have MaxRecords=1"
-    Assert.AreEqual ADODB.CursorLocationEnum.adUseClient, AdoRecordset.CursorLocation, "CursorLocation should be set to adUseClient for a disconnected recordset."
-    Assert.AreEqual 10, AdoRecordset.CacheSize, "Expected CacheSize=10"
-    Assert.AreEqual ADODB.CursorTypeEnum.adOpenStatic, AdoRecordset.CursorType, "Expected CursorType=adOpenStatic for a disconnected recordset."
-    
-CleanExit:
-    Exit Sub
-TestFail:
-    Assert.Fail "Error: " & Err.Number & " - " & Err.Description
-End Sub
-
-
-'@TestMethod("Create")
-Private Sub ztcCreate_ValidatesCreationOfOnlineFullRecordser()
-    On Error GoTo TestFail
-    
-Arrange:
-    Dim Recordset As IDbRecordset
-    Set Recordset = DbRecordset.Create(zfxGetStubDbCommand, False)
-Act:
-    Dim AdoRecordset As ADODB.Recordset
-    Set AdoRecordset = Recordset.OpenRecordset(vbNullString)
-Assert:
-    AssertExpectedError Assert, ErrNo.PassedNoErr
-    Assert.AreNotEqual 1, AdoRecordset.MaxRecords, "Regular recordset should have MaxRecords=0 or >1"
-    Assert.AreEqual ADODB.CursorLocationEnum.adUseServer, AdoRecordset.CursorLocation, "CursorLocation should be set to adUseServer for an online recordset."
-    Assert.AreEqual 10, AdoRecordset.CacheSize, "Expected CacheSize=10"
-    Assert.AreEqual ADODB.CursorTypeEnum.adOpenForwardOnly, AdoRecordset.CursorType, "Expected CursorType=adOpenForwardOnly for a disconnected recordset."
     
 CleanExit:
     Exit Sub
