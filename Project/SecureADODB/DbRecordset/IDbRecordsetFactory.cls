@@ -9,7 +9,7 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Attribute VB_Description = "An abstract factory that creates IDbRecordset objects."
 '@Folder "SecureADODB.DbRecordset"
-'@ModuleDescription("An abstract factory that creates IDbRecordset objects.")
+'@ModuleDescription "An abstract factory that creates IDbRecordset objects."
 '@Interface
 '@Exposed
 Option Explicit

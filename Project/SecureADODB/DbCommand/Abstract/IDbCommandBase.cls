@@ -16,14 +16,18 @@ Option Explicit
 
 
 '@Description("Creates and returns an ADODB.Command, without executing it.")
-Public Function CreateCommand(ByVal db As IDbConnection, ByVal CommandType As ADODB.CommandTypeEnum, ByVal SQL As String, ByRef args() As Variant) As ADODB.Command
+Public Function CreateCommand(ByVal db As IDbConnection, _
+                              ByVal CommandType As ADODB.CommandTypeEnum, _
+                              ByVal SQL As String, _
+                              ByRef ADODBParamsValues() As Variant) As ADODB.Command
 Attribute CreateCommand.VB_Description = "Creates and returns an ADODB.Command, without executing it."
 End Function
 
-Public Property Get Self() As IDbCommandBase
-End Property
 
-'@Description("Returns class reference.")
-Public Property Get Class() As Object
-Attribute Class.VB_Description = "Returns class reference."
-End Property
+Public Function UpdateCommand(ByVal cmd As ADODB.Command, _
+                              ByVal SQL As String, _
+                              ByRef ADODBParamsValues() As Variant) As ADODB.Command
+End Function
+
+
+

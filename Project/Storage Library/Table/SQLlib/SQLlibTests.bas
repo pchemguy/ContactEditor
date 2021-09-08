@@ -32,13 +32,6 @@ Private Sub ModuleCleanup()
 End Sub
 
 
-'This method runs after every test in the module.
-'@TestCleanup
-Private Sub TestCleanup()
-    Err.Clear
-End Sub
-
-
 '===================================================='
 '===================== FIXTURES ====================='
 '===================================================='
@@ -204,5 +197,3 @@ CleanExit:
 TestFail:
     Assert.Fail "Error: " & Err.Number & " - " & Err.Description
 End Sub
-
-

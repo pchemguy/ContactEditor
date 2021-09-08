@@ -16,19 +16,11 @@ Option Explicit
 
 
 '@Description("Returns an ADODB.Command, without executing it.")
-Public Function AdoCommand(ByVal SQL As String, ParamArray args()) As ADODB.Command
+Public Function AdoCommand(ByVal SQL As String, ParamArray ADODBParamsValues()) As ADODB.Command
 Attribute AdoCommand.VB_Description = "Returns an ADODB.Command, without executing it."
 End Function
 
 '@Description("Executes the specified parameterized SQL statement/command.")
-Public Sub ExecuteNonQuery(ByVal SQL As String, ParamArray args())
+Public Sub ExecuteNonQuery(ByVal SQL As String, ParamArray ADODBParamsValues())
 Attribute ExecuteNonQuery.VB_Description = "Executes the specified parameterized SQL statement/command."
 End Sub
-
-Public Property Get Self() As IDbCommand
-End Property
-
-'@Description("Returns class reference.")
-Public Property Get Class() As Object
-Attribute Class.VB_Description = "Returns class reference."
-End Property

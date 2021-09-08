@@ -1,14 +1,19 @@
 Attribute VB_Name = "ExamplesDbManager"
-'@Folder "SecureADODB.DbManager.Examples"
+'@Folder "SecureADODB.Examples"
 '@IgnoreModule AssignmentNotUsed, EmptyModule, VariableNotUsed, ProcedureNotUsed
 '@IgnoreModule FunctionReturnValueDiscarded, FunctionReturnValueAlwaysDiscarded
 '@IgnoreModule ImplicitDefaultMemberAccess, IndexedDefaultMemberAccess
 Option Explicit
 
 
+Private Const LIB_NAME As String = "SecureADODB"
+Private Const PATH_SEP As String = "\"
+Private Const REL_PREFIX As String = "Library" & PATH_SEP & LIB_NAME & PATH_SEP
+
+
 Private Sub CSVSingleParameterQueryTableTest()
     Dim FileName As String
-    FileName = ThisWorkbook.VBProject.Name & ".csv"
+    FileName = LIB_NAME & ".csv"
 
     Dim TableName As String
     TableName = FileName
@@ -16,12 +21,12 @@ Private Sub CSVSingleParameterQueryTableTest()
     SQLQuery = "SELECT * FROM " & TableName & " WHERE age >= ? AND country = 'South Korea'"
     
     Dim dbm As IDbManager
-    Set dbm = DbManager.CreateFileDb("csv", FileName, vbNullString, False, LoggerTypeEnum.logPrivate)
+    Set dbm = DbManager.CreateFileDb("csv", REL_PREFIX & FileName, vbNullString, LoggerTypeEnum.logPrivate)
 
     Debug.Print dbm.Connection.AdoConnection.Properties("Transaction DDL").Value
     
     Dim rst As IDbRecordset
-    Set rst = dbm.Recordset(Scalar:=False, Disconnected:=True, CacheSize:=10)
+    Set rst = dbm.Recordset(Disconnected:=True, CacheSize:=10)
     
     Dim Result As ADODB.Recordset
     Set Result = rst.OpenRecordset(SQLQuery, 45)
@@ -33,7 +38,7 @@ End Sub
 '''' Throws "Unsupported backend" Error
 Private Sub InvalidTypeTest()
     Dim FileName As String
-    FileName = ThisWorkbook.VBProject.Name & ".csv"
+    FileName = LIB_NAME & ".csv"
 
     Dim TableName As String
     TableName = FileName
@@ -42,13 +47,13 @@ Private Sub InvalidTypeTest()
     
     Dim dbm As IDbManager
     '''' Throws "Unsupported backend" Error
-    Set dbm = DbManager.CreateFileDb("Driver=", FileName, vbNullString, True, LoggerTypeEnum.logPrivate)
+    Set dbm = DbManager.CreateFileDb("Driver=", REL_PREFIX & FileName, vbNullString, LoggerTypeEnum.logPrivate)
 End Sub
 
 
 Private Sub CSVSingleParameterQueryScalarTest()
     Dim FileName As String
-    FileName = ThisWorkbook.VBProject.Name & ".csv"
+    FileName = LIB_NAME & ".csv"
 
     Dim TableName As String
     TableName = FileName
@@ -56,10 +61,10 @@ Private Sub CSVSingleParameterQueryScalarTest()
     SQLQuery = "SELECT * FROM " & TableName & " WHERE age >= ? AND country = 'South Korea' ORDER BY id DESC"
     
     Dim dbm As IDbManager
-    Set dbm = DbManager.CreateFileDb("csv", FileName, vbNullString, True, LoggerTypeEnum.logPrivate)
+    Set dbm = DbManager.CreateFileDb("csv", REL_PREFIX & FileName, vbNullString, LoggerTypeEnum.logPrivate)
 
     Dim rst As IDbRecordset
-    Set rst = dbm.Recordset(Scalar:=True, Disconnected:=True, CacheSize:=10)
+    Set rst = dbm.Recordset(Disconnected:=True, CacheSize:=10)
     
     Dim Result As Variant
     Result = rst.OpenScalar(SQLQuery, 45)
@@ -72,7 +77,7 @@ End Sub
 
 Private Sub SQLiteSingleParameterQueryTableTest()
     Dim FileName As String
-    FileName = ThisWorkbook.VBProject.Name & ".db"
+    FileName = REL_PREFIX & LIB_NAME & ".db"
 
     Dim TableName As String
     TableName = "people"
@@ -80,15 +85,20 @@ Private Sub SQLiteSingleParameterQueryTableTest()
     SQLQuery = "SELECT * FROM " & TableName & " WHERE age >= ? AND country = 'South Korea'"
     
     Dim dbm As IDbManager
-    Set dbm = DbManager.CreateFileDb("sqlite", FileName, vbNullString, True, LoggerTypeEnum.logPrivate)
+    Set dbm = DbManager.CreateFileDb("sqlite", FileName, vbNullString, LoggerTypeEnum.logPrivate)
 
     Dim rst As IDbRecordset
-    Set rst = dbm.Recordset(Scalar:=False, Disconnected:=True, CacheSize:=10)
+    Set rst = dbm.Recordset(Disconnected:=True, CacheSize:=10)
     
     Debug.Print dbm.Connection.AdoConnection.Properties("Transaction DDL")
     
     Dim Result As ADODB.Recordset
     Set Result = rst.OpenRecordset(SQLQuery, 45)
+    
+'''' Before .Open
+''''   Result.LockType = adLockBatchOptimistic
+'''' After .Open
+''''   Result.MarshalOptions = adMarshalModifiedOnly
     
     rst.RecordsetToQT Buffer.Range("A1")
 End Sub
@@ -96,13 +106,13 @@ End Sub
 
 Private Sub SQLiteMetaTest()
     Dim FileName As String
-    FileName = ThisWorkbook.VBProject.Name & ".db"
+    FileName = REL_PREFIX & LIB_NAME & ".db"
 
     Dim TableName As String
     TableName = "people"
     
     Dim dbm As IDbManager
-    Set dbm = DbManager.CreateFileDb("sqlite", FileName, vbNullString, True, LoggerTypeEnum.logPrivate)
+    Set dbm = DbManager.CreateFileDb("sqlite", FileName, vbNullString, LoggerTypeEnum.logPrivate)
         
     Dim FieldNames() As String
     Dim FieldTypes() As ADODB.DataTypeEnum
@@ -110,20 +120,6 @@ Private Sub SQLiteMetaTest()
     Set FieldMap = New Scripting.Dictionary
     FieldMap.CompareMode = TextCompare
     dbm.DbMeta.QueryTableADOXMeta TableName, FieldNames, FieldTypes, FieldMap
-    
-    Dim ADODBTypeMapping As Scripting.Dictionary
-    Set ADODBTypeMapping = New Scripting.Dictionary
-    ADODBTypeMapping.CompareMode = TextCompare
-    With ADODBTypeMapping
-        .Add CStr(adBoolean), "Boolean   /  adBoolean"
-        .Add CStr(adCurrency), "Currency  /  adCurrency"
-        .Add CStr(adDate), "Date      /  adDate"
-        .Add CStr(adDouble), "Double    /  adDouble"
-        .Add CStr(adInteger), "Long      /  adInteger"
-        .Add CStr(adSingle), "Single    /  adSingle"
-        .Add CStr(adVarWChar), "String    /  adVarWChar"
-        .Add CStr(adVarChar), "String    /  adVarChar"
-    End With
     
     Dim FieldCount As Long
     FieldCount = FieldMap.Count
@@ -134,11 +130,11 @@ Private Sub SQLiteMetaTest()
     ReDim FieldData(1 To FieldCount)
     For FieldIndex = 1 To FieldCount
         FieldName = FieldNames(FieldIndex)
-        FieldType = ADODBTypeMapping(CStr(FieldTypes(FieldIndex)))
-        FieldType = FieldType & String(25 - Len(FieldType), " ")
+        FieldType = AdoTypeMappings.DataTypeEnumAsText(CStr(FieldTypes(FieldIndex)))
+        FieldType = FieldType & String(12 - Len(FieldType), " ")
         FieldData(FieldIndex) = CStr(FieldIndex) & ". " & _
                                 FieldName & String(12 - Len(FieldName), " ") & vbTab & "|" & vbTab & _
-                                FieldType & vbTab & "|" & vbTab & _
+                                FieldType & "|" & vbTab & _
                                 CStr(FieldMap(FieldName)) & " <= '" & FieldName & "'"
     Next FieldIndex
     
@@ -148,13 +144,13 @@ End Sub
 
 Private Sub CSVMetaTest()
     Dim FileName As String
-    FileName = ThisWorkbook.VBProject.Name & ".csv"
+    FileName = LIB_NAME & ".csv"
 
     Dim TableName As String
     TableName = FileName
     
     Dim dbm As IDbManager
-    Set dbm = DbManager.CreateFileDb("csv", FileName, vbNullString, True, LoggerTypeEnum.logPrivate)
+    Set dbm = DbManager.CreateFileDb("csv", REL_PREFIX & FileName, vbNullString, LoggerTypeEnum.logPrivate)
         
     Dim FieldNames() As String
     Dim FieldTypes() As ADODB.DataTypeEnum
@@ -162,20 +158,6 @@ Private Sub CSVMetaTest()
     Set FieldMap = New Scripting.Dictionary
     FieldMap.CompareMode = TextCompare
     dbm.DbMeta.QueryTableADOXMeta TableName, FieldNames, FieldTypes, FieldMap
-    
-    Dim ADODBTypeMapping As Scripting.Dictionary
-    Set ADODBTypeMapping = New Scripting.Dictionary
-    ADODBTypeMapping.CompareMode = TextCompare
-    With ADODBTypeMapping
-        .Add CStr(adBoolean), "Boolean   /  adBoolean"
-        .Add CStr(adCurrency), "Currency  /  adCurrency"
-        .Add CStr(adDate), "Date      /  adDate"
-        .Add CStr(adDouble), "Double    /  adDouble"
-        .Add CStr(adInteger), "Long      /  adInteger"
-        .Add CStr(adSingle), "Single    /  adSingle"
-        .Add CStr(adVarWChar), "String    /  adVarWChar"
-        .Add CStr(adVarChar), "String    /  adVarChar"
-    End With
     
     Dim FieldCount As Long
     FieldCount = FieldMap.Count
@@ -186,8 +168,8 @@ Private Sub CSVMetaTest()
     ReDim FieldData(1 To FieldCount)
     For FieldIndex = 1 To FieldCount
         FieldName = FieldNames(FieldIndex)
-        FieldType = ADODBTypeMapping(CStr(FieldTypes(FieldIndex)))
-        FieldType = FieldType & String(25 - Len(FieldType), " ")
+        FieldType = AdoTypeMappings.DataTypeEnumAsText(CStr(FieldTypes(FieldIndex)))
+        FieldType = FieldType & String(12 - Len(FieldType), " ")
         FieldData(FieldIndex) = CStr(FieldIndex) & ". " & _
                                 FieldName & String(12 - Len(FieldName), " ") & vbTab & "|" & vbTab & _
                                 FieldType & vbTab & "|" & vbTab & _
@@ -200,7 +182,7 @@ End Sub
 
 Private Sub SQLiteInsertTest()
     Dim FileName As String
-    FileName = ThisWorkbook.VBProject.Name & ".db"
+    FileName = REL_PREFIX & LIB_NAME & ".db"
 
     Dim TableName As String
     TableName = "people_insert"
@@ -209,7 +191,7 @@ Private Sub SQLiteInsertTest()
                "VALUES (" & GenerateSerialID & ", 'first_name', 'last_name', 32, 'male', 'first_name.last_name@domain.com', 'Country', 'domain.com')"
                
     Dim dbm As IDbManager
-    Set dbm = DbManager.CreateFileDb("sqlite", FileName, vbNullString, True, LoggerTypeEnum.logPrivate)
+    Set dbm = DbManager.CreateFileDb("sqlite", FileName, vbNullString, LoggerTypeEnum.logPrivate)
     
     Dim cmd As IDbCommand
     Set cmd = dbm.Command
@@ -226,7 +208,7 @@ End Sub
 
 Private Sub SQLiteTwoParameterQueryTableTest()
     Dim FileName As String
-    FileName = ThisWorkbook.VBProject.Name & ".db"
+    FileName = REL_PREFIX & LIB_NAME & ".db"
 
     Dim TableName As String
     TableName = "people"
@@ -234,7 +216,7 @@ Private Sub SQLiteTwoParameterQueryTableTest()
     SQLQuery = "SELECT * FROM " & TableName & " WHERE age >= ? AND country = ?"
     
     Dim dbm As IDbManager
-    Set dbm = DbManager.CreateFileDb("sqlite", FileName, vbNullString, True, LoggerTypeEnum.logPrivate)
+    Set dbm = DbManager.CreateFileDb("sqlite", FileName, vbNullString, LoggerTypeEnum.logPrivate)
 
     Dim Log As ILogger
     Set Log = dbm.LogController
@@ -250,25 +232,17 @@ Private Sub SQLiteTwoParameterQueryTableTest()
     Set cmdAdo = cmd.AdoCommand(SQLQuery, 45, "South Korea")
     
     Dim rst As IDbRecordset
-    Set rst = dbm.Recordset(Scalar:=False, Disconnected:=True, CacheSize:=10)
+    Set rst = dbm.Recordset(Disconnected:=True, CacheSize:=10)
     Dim rstAdo As ADODB.Recordset
-    Set rstAdo = rst.AdoRecordset(SQLQuery, 45, "South Korea")
+    Set rstAdo = rst.OpenRecordset(SQLQuery, 45, "South Korea")
     
-    Dim Result As ADODB.Recordset
-    Set Result = rst.OpenRecordset(SQLQuery, 45, "South Korea")
-
     rst.RecordsetToQT Buffer.Range("A1")
 End Sub
 
 
-'''' This routine should raise 'Type is invalid' error.
-'''' For parametrized queries, SecureADODB uses VBA(String)=>ADODB(adVarWChar)
-'''' correspondence. However, the CSV backend and driver do not support
-'''' ADODB(adVarWChar). Instead, VBA(String)=>ADODB(adVarChar) should be used
-'''' (remove 'W' from 'adVarWChar').
 Private Sub CSVTwoParameterQueryTableTest()
     Dim FileName As String
-    FileName = ThisWorkbook.VBProject.Name & ".csv"
+    FileName = LIB_NAME & ".csv"
 
     Dim TableName As String
     TableName = FileName
@@ -276,7 +250,7 @@ Private Sub CSVTwoParameterQueryTableTest()
     SQLQuery = "SELECT * FROM " & TableName & " WHERE age >= ? AND country = ?"
     
     Dim dbm As IDbManager
-    Set dbm = DbManager.CreateFileDb("csv", FileName, vbNullString, True, LoggerTypeEnum.logPrivate)
+    Set dbm = DbManager.CreateFileDb("csv", REL_PREFIX & FileName, vbNullString, LoggerTypeEnum.logPrivate)
 
     Dim Log As ILogger
     Set Log = dbm.LogController
@@ -292,11 +266,61 @@ Private Sub CSVTwoParameterQueryTableTest()
     Set cmdAdo = cmd.AdoCommand(SQLQuery, 45, "South Korea")
     
     Dim rst As IDbRecordset
-    Set rst = dbm.Recordset(Scalar:=False, Disconnected:=True, CacheSize:=10)
+    Set rst = dbm.Recordset(Disconnected:=True, CacheSize:=10)
     Dim rstAdo As ADODB.Recordset
-    Set rstAdo = rst.AdoRecordset(SQLQuery, 45, "South Korea")
     
-    Dim Result As ADODB.Recordset
-    '''' Should fail with 'Type is invalid' error
-    Set Result = rst.OpenRecordset(SQLQuery, 45, "South Korea")
+    Set rstAdo = rst.OpenRecordset(SQLQuery, 45, "South Korea")
+End Sub
+
+
+Private Sub SQLiteTwoParameterQueryTableUpdateRstTest()
+    Dim FileName As String
+    FileName = REL_PREFIX & LIB_NAME & ".db"
+
+    Dim TableName As String
+    TableName = "people"
+    Dim SQLQuery As String
+    SQLQuery = "SELECT * FROM " & TableName & " WHERE age >= ? AND country = ?"
+    
+    Dim dbm As IDbManager
+    Set dbm = DbManager.CreateFileDb("sqlite", FileName, vbNullString, LoggerTypeEnum.logPrivate)
+
+    Dim Log As ILogger
+    Set Log = dbm.LogController
+
+    Dim conn As IDbConnection
+    Set conn = dbm.Connection
+    Dim connAdo As ADODB.Connection
+    Set connAdo = conn.AdoConnection
+    
+    Dim cmd As IDbCommand
+    Set cmd = dbm.Command
+    Dim cmdAdo As ADODB.Command
+    Set cmdAdo = cmd.AdoCommand(SQLQuery, 45, "South Korea")
+    
+    Dim rst As IDbRecordset
+    Set rst = dbm.Recordset(Disconnected:=True, CacheSize:=10, LockType:=adLockBatchOptimistic)
+    Dim rstAdo As ADODB.Recordset
+    Set rstAdo = rst.OpenRecordset(SQLQuery, 45, "South Korea")
+    
+    Dim TargetRecordIndex As Long
+    
+    With rstAdo
+        TargetRecordIndex = 2
+        .Move (TargetRecordIndex - .AbsolutePosition)
+        .Fields(1) = .Fields(1) & "XXX"
+        .Fields("last_name") = .Fields("last_name") & "YYY"
+    
+        TargetRecordIndex = 4
+        .Move (TargetRecordIndex - .AbsolutePosition)
+        .Fields(1) = .Fields(1) & "XXX"
+        .Fields("last_name") = .Fields("last_name") & "YYY"
+    End With
+    
+    Dim WSQueryTable As Excel.QueryTable
+    Set WSQueryTable = rst.RecordsetToQT(Buffer.Range("A1"))
+        
+    rstAdo.MarshalOptions = adMarshalModifiedOnly
+    Set rstAdo.ActiveConnection = connAdo
+    rstAdo.UpdateBatch
 End Sub

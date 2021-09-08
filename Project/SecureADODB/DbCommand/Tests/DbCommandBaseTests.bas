@@ -30,8 +30,8 @@ Private Sub ModuleCleanup()
 End Sub
 
 
-Private Function GetParameterProvider() As IParameterProvider
-    Set GetParameterProvider = AdoParameterProvider.Create(AdoTypeMappings.Default)
+Private Function GetParameterProvider() As IDbParameters
+    Set GetParameterProvider = DbParameters.Create(AdoTypeMappings.Default)
 End Function
 
 

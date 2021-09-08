@@ -17,6 +17,8 @@ Implements IDbCommandBase
 
 Private Type TInvokeState
     CreateCommandInvokes As Long
+    UpdateCommandInvokes As Long
+    ParameterProviderInvokes As Long
     ValidateOrdinalArgumentsInvokes As Long
 End Type
 Private this As TInvokeState
@@ -26,25 +28,39 @@ Public Property Get CreateCommandInvokes() As Long
     CreateCommandInvokes = this.CreateCommandInvokes
 End Property
 
+Public Property Get UpdateCommandInvokes() As Long
+    UpdateCommandInvokes = this.UpdateCommandInvokes
+End Property
+
+Public Property Get ParameterProviderInvokes() As Long
+    ParameterProviderInvokes = this.ParameterProviderInvokes
+End Property
+
 Public Property Get ValidateOrdinalArgumentsInvokes() As Long
     ValidateOrdinalArgumentsInvokes = this.ValidateOrdinalArgumentsInvokes
 End Property
 
-Private Property Get IDbCommandBase_Self() As IDbCommandBase
-    Set IDbCommandBase_Self = Me
-End Property
-
-'@Description("Returns class reference.")
-Private Property Get IDbCommandBase_Class() As Object
-Attribute IDbCommandBase_Class.VB_Description = "Returns class reference."
-    Set IDbCommandBase_Class = DbCommandBase
-End Property
-
-Private Function IDbCommandBase_CreateCommand(ByVal db As IDbConnection, ByVal CommandType As ADODB.CommandTypeEnum, ByVal SQL As String, args() As Variant) As ADODB.Command
+Private Function IDbCommandBase_CreateCommand( _
+            ByVal db As IDbConnection, _
+            ByVal CommandType As ADODB.CommandTypeEnum, _
+            ByVal SQL As String, _
+            ADODBParamsValues() As Variant) As ADODB.Command
     this.CreateCommandInvokes = this.CreateCommandInvokes + 1
     Dim Result As ADODB.Command
     Set Result = New ADODB.Command
     Result.CommandType = CommandType
     Result.CommandText = SQL
     Set IDbCommandBase_CreateCommand = Result
+End Function
+
+
+Private Function IDbCommandBase_UpdateCommand(ByVal cmd As ADODB.Command, _
+                                              ByVal SQL As String, _
+                                              ByRef ADODBParamsValues() As Variant) As ADODB.Command
+    this.UpdateCommandInvokes = this.UpdateCommandInvokes + 1
+    If Len(SQL) > 0 And cmd.CommandText <> SQL Then cmd.CommandText = SQL
+    If UBound(ADODBParamsValues) - LBound(ADODBParamsValues) + 1 > 0 Then
+        this.ParameterProviderInvokes = this.ParameterProviderInvokes + 1
+    End If
+    Set IDbCommandBase_UpdateCommand = cmd
 End Function

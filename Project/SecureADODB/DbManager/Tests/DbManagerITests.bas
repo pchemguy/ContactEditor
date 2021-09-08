@@ -59,7 +59,7 @@ Private Function zfxGetDbManager( _
     PathName = zfxGetLibPrefix(LibName) & FileName
     
     Dim dbm As IDbManager
-    Set dbm = DbManager.CreateFileDb(DbType, PathName, vbNullString, True, LoggerTypeEnum.logDisabled)
+    Set dbm = DbManager.CreateFileDb(DbType, PathName, vbNullString, LoggerTypeEnum.logDisabled)
     Set zfxGetDbManager = dbm
 End Function
 
@@ -171,10 +171,10 @@ Arrange:
     SQLSelect2P = zfxGetSQLSelect2P(zfxGetSQLiteTableName)
 Act:
     Dim rstAdo As ADODB.Recordset
-    Set rstAdo = dbm.Recordset.AdoRecordset(SQLSelect2P, zfxGetParameterOne, zfxGetParameterTwo)
+    Set rstAdo = dbm.Recordset.OpenRecordset(SQLSelect2P, zfxGetParameterOne, zfxGetParameterTwo)
 Assert:
-    Assert.IsNotNothing rstAdo.ActiveConnection, "ActiveConnection of the Recordset object is not set."
-    Assert.IsNotNothing rstAdo.ActiveCommand, "ActiveCommand of the Recordset object is not set."
+    Assert.IsNothing rstAdo.ActiveConnection, "ActiveConnection of the Recordset object should be nothing."
+    Assert.IsNothing rstAdo.ActiveCommand, "ActiveCommand of the Recordset object should not be set."
     Assert.IsFalse IsFalsy(rstAdo.Source), "The Source property of the Recordset object is not set."
     Assert.AreEqual ADODB.CursorTypeEnum.adOpenStatic, rstAdo.CursorType, "The CursorType of the Recordset object should be adOpenStatic."
     Assert.AreEqual ADODB.CursorLocationEnum.adUseClient, rstAdo.CursorLocation, "The CursorLocation of the Recordset object should be adUseClient."
@@ -188,7 +188,7 @@ End Sub
 
 
 '@TestMethod("DbManager.Recordset")
-Private Sub ztiDbManagerRecordset_VerifiesAdoRecordsetDisconnectedScalar()
+Private Sub ztiDbManagerRecordset_VerifiesAdoRecordsetScalar()
     On Error GoTo TestFail
     
 Arrange:
@@ -198,10 +198,13 @@ Arrange:
     SQLSelect2P = zfxGetSQLSelect2P(zfxGetSQLiteTableName)
 Act:
     Dim rst As IDbRecordset
-    Set rst = dbm.Recordset(Scalar:=True, CacheSize:=15)
+    Set rst = dbm.Recordset(CacheSize:=15)
+    Dim Result As Variant
+    Result = rst.OpenScalar(SQLSelect2P, zfxGetParameterOne, zfxGetParameterTwo)
     Dim rstAdo As ADODB.Recordset
-    Set rstAdo = rst.AdoRecordset(SQLSelect2P, zfxGetParameterOne, zfxGetParameterTwo)
+    Set rstAdo = rst.AdoRecordset
 Assert:
+    Assert.AreEqual 1, rstAdo.RecordCount, "The RecordCount of the Recordset object should be 1 for a scalar query."
     Assert.AreEqual 1, rstAdo.MaxRecords, "The MaxRecords of the Recordset object should be set to 1 for a scalar query."
     Assert.AreEqual 15, rstAdo.CacheSize, "The CacheSize of the Recordset object should be set to 15."
 
@@ -223,7 +226,7 @@ Arrange:
     SQLSelect2P = zfxGetSQLSelect2P(zfxGetSQLiteTableName)
 Act:
     Dim rstAdo As ADODB.Recordset
-    Set rstAdo = dbm.Recordset(Disconnected:=False).AdoRecordset(SQLSelect2P, zfxGetParameterOne, zfxGetParameterTwo)
+    Set rstAdo = dbm.Recordset(Disconnected:=False).OpenRecordset(SQLSelect2P, zfxGetParameterOne, zfxGetParameterTwo)
 Assert:
     Assert.AreEqual ADODB.CursorTypeEnum.adOpenForwardOnly, rstAdo.CursorType, "The CursorType of the Recordset object should be adOpenForwardOnly."
     Assert.AreEqual ADODB.CursorLocationEnum.adUseServer, rstAdo.CursorLocation, "The CursorLocation of the Recordset object should be adUseServer."
@@ -289,34 +292,7 @@ Private Sub ztiDbManagerFactoryGuard_ThrowsIfRequestedTransactionNotSupported()
     Dim dbm As IDbManager
     Set dbm = zfxGetDbManager("csv", "SecureADODB")
     dbm.Begin
-    AssertExpectedError Assert, ErrNo.AdoInvalidTransactionErr
-End Sub
-
-
-'@TestMethod("DbManager.Recordset.Query")
-Private Sub ztiDbManagerOpenRecordset_ThrowsGivenUnsupportedParameterTypeCSV()
-    '''' Present mapping maps VBA string to adVarWChar, unsupported by the CSV backend (Office 2002, 32bit)
-    On Error GoTo TestFail
-    
-    Dim dbm As IDbManager
-    Set dbm = zfxGetDbManager("csv", "SecureADODB")
-    Dim SQLSelect2P As String
-    SQLSelect2P = zfxGetSQLSelect2P(zfxGetCSVTableName)
-    
-    On Error Resume Next
-    Dim rstAdo As ADODB.Recordset
-    Set rstAdo = dbm.Recordset.OpenRecordset(SQLSelect2P, zfxGetParameterOne, zfxGetParameterTwo)
-    AssertExpectedError Assert, ErrNo.AdoInvalidParameterTypeErr
-    On Error GoTo TestFail
-    
-    Assert.IsNothing rstAdo, "Recordset variable unexpectedly set."
-    Dim ExecuteStatus As ADODB.EventStatusEnum: ExecuteStatus = dbm.Connection.ExecuteStatus
-    Assert.AreEqual ADODB.EventStatusEnum.adStatusErrorsOccurred, ExecuteStatus, "Connection error status mismatch."
-    
-    Exit Sub
-
-TestFail:
-    Assert.Fail "Error: " & Err.Number & " - " & Err.Description
+    Guard.AssertExpectedError Assert, ErrNo.AdoInvalidTransactionErr
 End Sub
 
 
@@ -355,7 +331,7 @@ Private Sub ztiDbManagerOpenRecordset_VerifiesAdoRecordsetScalarCSV()
     
 Arrange:
     Dim dbm As IDbManager
-    Set dbm = DbManager.CreateFileDb("csv", zfxGetLibPrefix("SecureADODB") & "SecureADODB.csv", , False)
+    Set dbm = DbManager.CreateFileDb("csv", zfxGetLibPrefix("SecureADODB") & "SecureADODB.csv")
     Dim SQLSelect As String
     SQLSelect = zfxGetSQLSelect0P(zfxGetCSVTableName)
 Act:
@@ -384,14 +360,15 @@ Arrange:
     '''' Set to false below to disable transactions and activate the autocommit mode to see
     '''' the result of the test insert in the database.
     Dim dbm As IDbManager
-    Set dbm = DbManager.CreateFileDb("sqlite", zfxGetLibPrefix("SecureADODB") & "SecureADODB.db", , True)
+    Set dbm = DbManager.CreateFileDb("sqlite", zfxGetLibPrefix("SecureADODB") & "SecureADODB.db")
     Dim conn As IDbConnection
     Set conn = dbm.Connection
     Dim SQLInsert0P As String
     SQLInsert0P = zfxGetSQLInsert0P(zfxGetSQLiteTableNameInsert)
 Act:
     dbm.Command.ExecuteNonQuery SQLInsert0P
-    Dim RecordsAffected As Long: RecordsAffected = conn.RecordsAffected
+    Dim RecordsAffected As Long
+    RecordsAffected = conn.RecordsAffected
     Dim ExecuteStatus As ADODB.EventStatusEnum: ExecuteStatus = conn.ExecuteStatus
 Assert:
     Assert.AreEqual ADODB.EventStatusEnum.adStatusOK, ExecuteStatus, "Execution status mismatch."
@@ -402,3 +379,5 @@ CleanExit:
 TestFail:
     Assert.Fail "Error: " & Err.Number & " - " & Err.Description
 End Sub
+
+

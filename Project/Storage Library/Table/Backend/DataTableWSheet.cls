@@ -11,8 +11,8 @@ Attribute VB_Description = "Abstracts Excel worksheet"
 '@Folder "Storage Library.Table.Backend"
 '@ModuleDescription "Abstracts Excel worksheet"
 '@PredeclaredId
-'@IgnoreModule IndexedDefaultMemberAccess
 '@Exposed
+'@IgnoreModule IndexedDefaultMemberAccess
 Option Explicit
 
 Implements IDataTableStorage
@@ -59,6 +59,7 @@ End Function
 Friend Sub Init(ByVal Model As DataTableModel, _
                 ByVal ConnectionString As String, _
                 ByVal TableName As String)
+Attribute Init.VB_Description = "Creates an instance of IDataRecordStorage"
     Set this.Model = Model
     Dim Status As Long
     

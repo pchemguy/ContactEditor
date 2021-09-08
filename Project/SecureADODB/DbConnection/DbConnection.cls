@@ -11,7 +11,7 @@ Attribute VB_Description = "A thin wrapper around an ADODB connection."
 '@Folder "SecureADODB.DbConnection"
 '@ModuleDescription("A thin wrapper around an ADODB connection.")
 '@PredeclaredId
-'@IgnoreModule AssignmentNotUsed, IllegalAnnotation
+'@IgnoreModule AssignmentNotUsed
 '@Exposed
 Option Explicit
 
@@ -33,60 +33,6 @@ End Type
 Private this As TDbConnection
 
 
-'''' @Inject: just an idea.. see #https://github.com/rubberduck-vba/Rubberduck/issues/5463
-Public Function Create(ByVal connString As String, _
-              Optional ByVal LogController As ILogger = Nothing) As IDbConnection
-    Dim Instance As DbConnection
-    Set Instance = New DbConnection
-    Instance.Init connString, LogController
-    Set Create = Instance
-End Function
-
-
-'@Description("Default constructor")
-Friend Sub Init(ByVal connString As String, Optional ByVal LogController As ILogger = Nothing)
-Attribute Init.VB_Description = "Default constructor"
-    Guard.ConnectionString connString
-    
-    Set this.LogController = LogController
-    this.TransactionsDisabled = False
-    On Error GoTo ConnectionError
-    AdoConnection.Open connString
-    On Error GoTo TransactionCheckError
-    Dim TransactionDDL As Long
-    '@Ignore ImplicitDefaultMemberAccess, IndexedDefaultMemberAccess
-    TransactionDDL = AdoConnection.Properties("Transaction DDL")
-    this.TransactionsDisabled = IIf(TransactionDDL = 0, True, False)
-    On Error GoTo 0
-    Exit Sub
-    
-TransactionCheckError:
-    this.TransactionsDisabled = True
-    Resume
-    
-ConnectionError:
-    If Err.Number = &H80004005 Then
-        Guard.ConnectionString Nothing
-    Else
-        Err.Raise Err.Number, Err.Source, Err.Description, Err.HelpFile, Err.HelpContext
-    End If
-End Sub
-
-
-'@Ignore ProcedureNotUsed
-Public Property Get Self() As IDbConnection
-    Set Self = Me
-End Property
-
-
-'@Description("Returns class reference.")
-'@Ignore ProcedureNotUsed
-Public Property Get Class() As DbConnection
-Attribute Class.VB_Description = "Returns class reference."
-    Set Class = DbConnection
-End Property
-
-
 Private Sub Class_Initialize()
     Set AdoConnection = New ADODB.Connection
     '@Ignore EmptyStringLiteral
@@ -106,6 +52,47 @@ Private Sub Class_Terminate()
 ErrorHandler:
     LogAdoErrors
     Resume Next
+End Sub
+
+
+Public Function Create(ByVal connString As String, _
+              Optional ByVal LogController As ILogger = Nothing) As IDbConnection
+    Dim Instance As DbConnection
+    Set Instance = New DbConnection
+    Instance.Init connString, LogController
+    Set Create = Instance
+End Function
+
+
+'@Description("Default constructor")
+Friend Sub Init(ByVal connString As String, Optional ByVal LogController As ILogger = Nothing)
+Attribute Init.VB_Description = "Default constructor"
+    Guard.ConnectionString connString
+    
+    Set this.LogController = LogController
+    this.TransactionsDisabled = False
+    
+    On Error GoTo ConnectionError
+    AdoConnection.Open connString
+    
+    Dim TransactionDDL As Long
+    On Error GoTo TransactionCheckError
+    '@Ignore ImplicitDefaultMemberAccess, IndexedDefaultMemberAccess
+    TransactionDDL = AdoConnection.Properties("Transaction DDL")
+    On Error GoTo 0
+    this.TransactionsDisabled = IIf(TransactionDDL = 0, True, False)
+    
+    Exit Sub
+TransactionCheckError:
+    this.TransactionsDisabled = True
+    Resume
+    
+ConnectionError:
+    If Err.Number = &H80004005 Then
+        Guard.ConnectionString Nothing
+    Else
+        Err.Raise Err.Number, Err.Source, Err.Description, Err.HelpFile, Err.HelpContext
+    End If
 End Sub
 
 
@@ -142,17 +129,6 @@ End Sub
 '================================================================================'
 '============================ IDbConnection INTERFACE ==========================='
 '================================================================================'
-
-Private Property Get IDbConnection_Self() As IDbConnection
-    Set IDbConnection_Self = Me
-End Property
-
-
-'@Description("Returns class reference.")
-Private Property Get IDbConnection_Class() As DbConnection
-Attribute IDbConnection_Class.VB_Description = "Returns class reference."
-    Set IDbConnection_Class = DbConnection
-End Property
 
 
 Private Property Get IDbConnection_AdoConnection() As ADODB.Connection
@@ -200,7 +176,6 @@ End Sub
 
 
 Private Sub IDbConnection_CommitTransaction()
-    If this.TransactionsDisabled Then Exit Sub
     Guard.NotInTransaction this.HasActiveTransaction
     
     AdoConnection.CommitTrans
@@ -210,7 +185,6 @@ End Sub
 
 
 Private Sub IDbConnection_RollbackTransaction()
-    If this.TransactionsDisabled Then Exit Sub
     Guard.NotInTransaction this.HasActiveTransaction
     
     AdoConnection.RollbackTrans
@@ -222,6 +196,7 @@ End Sub
 '================================================================================'
 '========================= AdoConnection EVENT HANDLERS ========================='
 '================================================================================'
+
 
 Private Sub AdoConnection_BeginTransComplete(ByVal TransactionLevel As Long, ByVal pError As ADODB.Error, adStatus As ADODB.EventStatusEnum, ByVal pConnection As ADODB.Connection)
     Debug.Print "Begin transaction completed. "

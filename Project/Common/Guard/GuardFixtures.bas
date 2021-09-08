@@ -1,7 +1,6 @@
-Attribute VB_Name = "CommonStructuresForErrors"
+Attribute VB_Name = "GuardFixtures"
 '@Folder "Common.Guard"
 Option Explicit
-
 
 Private Const adErrInvalidParameterType As Long = &HE3D&
 Public Enum ErrNo
@@ -34,7 +33,6 @@ Public Enum ErrNo
     AdoConnectionStringErr = ADODB.ErrorValueEnum.adErrProviderNotFound
     AdoInvalidParameterTypeErr = VBA.vbObjectError + adErrInvalidParameterType
 End Enum
-
 
 Public Type TError
     Number As ErrNo
@@ -74,63 +72,3 @@ Attribute RaiseError.VB_Description = "Formats and raises a run-time error."
         VBA.Err.Raise .Number, .Source, .Message
     End With
 End Sub
-
-
-'''' Tests if argument is falsy
-''''
-'''' Falsy values:
-''''   Numeric: 0
-''''   String:  vbNullString
-''''   Variant: Empty
-''''   Object:  Nothing
-''''   Boolean: False
-''''   Null:    Null
-''''
-'''' Args:
-''''   arg:
-''''     Value to be tested for falsiness
-''''
-'''' Returns:
-''''   True, if "arg" is Falsy
-''''   Flase, if "arg" is Truthy (not Falsy)
-''''
-'''' Examples:
-''''   >>> ?IsFalsy(0.0#)
-''''   True
-''''
-''''   >>> ?IsFalsy(0.1)
-''''   False
-''''
-''''   >>> ?IsFalsy(Null)
-''''   True
-''''
-''''   >>> ?IsFalsy(Empty)
-''''   True
-''''
-''''   >>> ?IsFalsy(False)
-''''   True
-''''
-''''   >>> ?IsFalsy(Nothing)
-''''   True
-''''
-''''   >>> ?IsFalsy("")
-''''   True
-''''
-'@Description("Tests if argument is falsy: 0, False, vbNullString, Empty, Null, Nothing")
-Public Function IsFalsy(ByVal arg As Variant) As Boolean
-Attribute IsFalsy.VB_Description = "Tests if argument is falsy: 0, False, vbNullString, Empty, Null, Nothing"
-    Select Case VarType(arg)
-        Case vbEmpty, vbNull
-            IsFalsy = True
-        Case vbInteger, vbLong, vbSingle, vbDouble
-            IsFalsy = Not CBool(arg)
-        Case vbString
-            IsFalsy = (arg = vbNullString)
-        Case vbObject
-            IsFalsy = (arg Is Nothing)
-        Case vbBoolean
-            IsFalsy = Not arg
-        Case Else
-            IsFalsy = False
-    End Select
-End Function

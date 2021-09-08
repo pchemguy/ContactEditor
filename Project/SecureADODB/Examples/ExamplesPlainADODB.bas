@@ -1,11 +1,14 @@
 Attribute VB_Name = "ExamplesPlainADODB"
-'@Folder "SecureADODB.DbManager.Examples"
+'@Folder "SecureADODB.Examples"
 '@IgnoreModule
 Option Explicit
 
+Private Const LIB_NAME As String = "SecureADODB"
+Private Const PATH_SEP As String = "\"
+Private Const REL_PREFIX As String = "Library" & PATH_SEP & LIB_NAME & PATH_SEP
+
 
 Public Sub SQLiteRecordSetOpenBasicTest()
-    Dim fso As New Scripting.FileSystemObject
     Dim sDriver As String
     Dim sDatabase As String
     Dim sDatabaseExt As String
@@ -16,7 +19,7 @@ Public Sub SQLiteRecordSetOpenBasicTest()
     sDriver = "SQLite3 ODBC Driver"
     sDatabaseExt = ".db"
     sTable = "people"
-    sDatabase = ThisWorkbook.Path & Application.PathSeparator & fso.GetBaseName(ThisWorkbook.Name) & sDatabaseExt
+    sDatabase = ThisWorkbook.Path & PATH_SEP & REL_PREFIX & LIB_NAME & sDatabaseExt
     adoConnStr = "Driver=" & sDriver & ";" & _
                  "Database=" & sDatabase & ";"
     
@@ -36,7 +39,6 @@ End Sub
 
 
 Public Sub CSVRecordSetOpenBasicTest()
-    Dim fso As New Scripting.FileSystemObject
     Dim sDriver As String
     Dim sDatabase As String
     Dim sDatabaseExt As String
@@ -50,8 +52,8 @@ Public Sub CSVRecordSetOpenBasicTest()
         sDriver = "{Microsoft Text Driver (*.txt; *.csv)}"
     #End If
     sDatabaseExt = ".csv"
-    sDatabase = ThisWorkbook.Path
-    sTable = fso.GetBaseName(ThisWorkbook.Name) & sDatabaseExt
+    sDatabase = ThisWorkbook.Path & PATH_SEP & REL_PREFIX
+    sTable = LIB_NAME & sDatabaseExt
     adoConnStr = "Driver=" & sDriver & ";" & _
                  "DefaultDir=" & sDatabase & ";"
     
@@ -72,7 +74,6 @@ End Sub
 
 
 Public Sub CSVRecordSetOpenBasicTest2()
-    Dim fso As New Scripting.FileSystemObject
     Dim sDriver As String
     Dim sDatabase As String
     Dim sDatabaseExt As String
@@ -86,8 +87,8 @@ Public Sub CSVRecordSetOpenBasicTest2()
         sDriver = "{Microsoft Text Driver (*.txt; *.csv)}"
     #End If
     sDatabaseExt = ".csv"
-    sDatabase = ThisWorkbook.Path
-    sTable = fso.GetBaseName(ThisWorkbook.Name) & sDatabaseExt
+    sDatabase = ThisWorkbook.Path & PATH_SEP & REL_PREFIX
+    sTable = LIB_NAME & sDatabaseExt
     adoConnStr = "Driver=" & sDriver & ";" & _
                  "DefaultDir=" & sDatabase & ";"
     
@@ -119,7 +120,6 @@ End Sub
 
 
 Public Sub SQLiteRecordSetOpenBasicTest2()
-    Dim fso As New Scripting.FileSystemObject
     Dim sDriver As String
     Dim sDatabase As String
     Dim sDatabaseExt As String
@@ -130,7 +130,7 @@ Public Sub SQLiteRecordSetOpenBasicTest2()
     sDriver = "SQLite3 ODBC Driver"
     sDatabaseExt = ".db"
     sTable = "people"
-    sDatabase = ThisWorkbook.Path & Application.PathSeparator & fso.GetBaseName(ThisWorkbook.Name) & sDatabaseExt
+    sDatabase = ThisWorkbook.Path & PATH_SEP & REL_PREFIX & LIB_NAME & sDatabaseExt
     adoConnStr = "Driver=" & sDriver & ";" & _
                  "Database=" & sDatabase & ";"
     
@@ -161,7 +161,7 @@ Public Sub SQLiteRecordSetOpenTest()
     Dim sSQL As String
     Dim sQTName As String
     
-    sDatabase = ThisWorkbook.Path + "\" + "SecureADODB.db"
+    sDatabase = ThisWorkbook.Path & PATH_SEP & REL_PREFIX & LIB_NAME & ".db"
     sDriver = "SQLite3 ODBC Driver"
     sOptions = "SyncPragma=NORMAL;FKSupport=True;"
     adoConnStr = "Driver=" + sDriver + ";" + _
@@ -201,7 +201,7 @@ Public Sub SQLiteRecordSetOpenCommandSourceTest()
     Dim sSQL As String
     Dim sQTName As String
     
-    sDatabase = ThisWorkbook.Path + "\" + "SecureADODB.db"
+    sDatabase = ThisWorkbook.Path & PATH_SEP & REL_PREFIX & LIB_NAME & ".db"
     sDriver = "SQLite3 ODBC Driver"
     sOptions = "SyncPragma=NORMAL;FKSupport=True;"
     adoConnStr = "Driver=" + sDriver + ";" + _
@@ -233,6 +233,7 @@ Public Sub SQLiteRecordSetOpenCommandSourceTest()
         Set .ActiveConnection = Nothing
     End With
     AdoCommand.ActiveConnection.Close
+    
 End Sub
 
 
@@ -247,7 +248,7 @@ Public Sub SQLiteRecordSetOpenCommandSourceTwoParameterTest()
     Dim sSQL As String
     Dim sQTName As String
     
-    sDatabase = ThisWorkbook.Path + "\" + "SecureADODB.db"
+    sDatabase = ThisWorkbook.Path & PATH_SEP & REL_PREFIX & LIB_NAME & ".db"
     sDriver = "SQLite3 ODBC Driver"
     sOptions = "SyncPragma=NORMAL;FKSupport=True;"
     adoConnStr = "Driver=" + sDriver + ";" + _
@@ -263,24 +264,71 @@ Public Sub SQLiteRecordSetOpenCommandSourceTwoParameterTest()
     Dim AdoCommand As ADODB.Command
     Set AdoCommand = New ADODB.Command
     
-    Dim mappings As ITypeMap
-    Set mappings = AdoTypeMappings.Default
-    Dim provider As IParameterProvider
-    Set provider = AdoParameterProvider.Create(mappings)
-    
-    Dim adoParameter As ADODB.Parameter
-    Set adoParameter = provider.FromValue(45)
-    'adoParameter.name = "@category_id"
-    AdoCommand.Parameters.Append adoParameter
-    Set adoParameter = provider.FromValue("machinery")
-    'adoParameter.name = "@section"
-    AdoCommand.Parameters.Append adoParameter
+    Dim Mappings As ITypeMap
+    Set Mappings = AdoTypeMappings.Default
+    Dim provider As IDbParameters
+    Set provider = DbParameters.Create(Mappings)
+    provider.FromValues AdoCommand, 45, "Simon"
     
     With AdoCommand
         .CommandType = adCmdText
         .CommandText = sSQL
         .Prepared = True
         '.NamedParameters = True
+        .ActiveConnection = adoConnStr
+        .ActiveConnection.CursorLocation = adUseClient
+    End With
+        
+    With AdoRecordset
+        Set .Source = AdoCommand
+        .CursorLocation = adUseClient
+        .CursorType = adOpenKeyset
+        .LockType = adLockReadOnly
+        .Open Options:=adAsyncFetch
+        Set .ActiveConnection = Nothing
+    End With
+    AdoCommand.ActiveConnection.Close
+    Debug.Print "RecordCount: " & CStr(AdoRecordset.RecordCount)
+End Sub
+
+
+Public Sub SQLiteRecordSetOpenCmdSrc2ParamsTest()
+    Dim sDriver As String
+    Dim sOptions As String
+    Dim sDatabase As String
+
+    Dim adoConnStr As String
+    Dim qtConnStr As String
+    Dim sSQL As String
+    Dim sQTName As String
+    
+    sDatabase = ThisWorkbook.Path & PATH_SEP & REL_PREFIX & LIB_NAME & ".db"
+    sDriver = "SQLite3 ODBC Driver"
+    sOptions = "SyncPragma=NORMAL;FKSupport=True;"
+    adoConnStr = "Driver=" + sDriver + ";" + _
+                 "Database=" + sDatabase + ";" + _
+                 sOptions
+
+    qtConnStr = "OLEDB;" + adoConnStr
+    
+    sSQL = "SELECT * FROM people WHERE id <= ? AND last_name <> ?"
+    
+    Dim AdoRecordset As ADODB.Recordset
+    Set AdoRecordset = New ADODB.Recordset
+    Dim AdoCommand As ADODB.Command
+    Set AdoCommand = New ADODB.Command
+    
+    Dim Mappings As ITypeMap
+    Set Mappings = AdoTypeMappings.Default
+    Dim provider As IDbParameters
+    Set provider = DbParameters.Create(Mappings)
+    provider.FromValues AdoCommand, 10, "Ivanov"
+    provider.FromValues AdoCommand, 45, "Simon"
+    
+    With AdoCommand
+        .CommandType = adCmdText
+        .CommandText = sSQL
+        .Prepared = True
         .ActiveConnection = adoConnStr
         .ActiveConnection.CursorLocation = adUseClient
     End With

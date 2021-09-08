@@ -35,13 +35,6 @@ Private Sub ModuleCleanup()
 End Sub
 
 
-'This method runs after every test in the module.
-'@TestCleanup
-Private Sub TestCleanup()
-    Err.Clear
-End Sub
-
-
 '===================================================='
 '==================== TEST CASES ===================='
 '===================================================='
@@ -51,7 +44,7 @@ End Sub
 Private Sub ztcUnfoldParamArray_ThrowsIfScalarArgument()
     On Error Resume Next
     UnfoldParamArray 1
-    AssertExpectedError Assert, ErrNo.ExpectedArrayErr
+    Guard.AssertExpectedError Assert, ErrNo.ExpectedArrayErr
 End Sub
 
 
@@ -59,7 +52,7 @@ End Sub
 Private Sub ztcUnfoldParamArray_ThrowsIfObjectArgument()
     On Error Resume Next
     UnfoldParamArray Application
-    AssertExpectedError Assert, ErrNo.ExpectedArrayErr
+    Guard.AssertExpectedError Assert, ErrNo.ExpectedArrayErr
 End Sub
 
 
@@ -260,7 +253,7 @@ End Sub
 
 
 '@TestMethod("PathCheck")
-Private Sub ztcVerifyOrGetDefaultPath_ValidatesValidPath()
+Private Sub ztcVerifyOrGetDefaultPath_ValidatesValidPathName()
     On Error GoTo TestFail
 
 Arrange:
@@ -270,7 +263,7 @@ Act:
     Dim Actual As String
     Actual = VerifyOrGetDefaultPath(Expected, Array("db", "sqlite"))
 Assert:
-    Assert.AreEqual Expected, Actual, "CheckPath failed with valid path"
+    Assert.AreEqual Expected, Actual, "CheckPath failed with valid pathname"
 CleanExit:
     Exit Sub
 TestFail:
@@ -290,7 +283,8 @@ Act:
     Dim Actual As String
     Actual = VerifyOrGetDefaultPath(vbNullString, Array("db", "sqlite"))
 Assert:
-    Assert.AreEqual Expected, Actual, "CheckPath failed with empty file pathname"
+    Assert.AreEqual Expected, Actual, "CheckPath failed with empty file pathname." _
+                                    & "Expected: < " & Expected & " > "
 
 CleanExit:
     Exit Sub
@@ -305,13 +299,34 @@ Private Sub ztcVerifyOrGetDefaultPath_ValidatesFileName()
 
 Arrange:
     Dim Expected As String
-    Expected = ThisWorkbook.Path & Application.PathSeparator & _
-               ThisWorkbook.VBProject.Name & "." & "db"
+    Expected = ThisWorkbook.Path & Application.PathSeparator & ThisWorkbook.Name
 Act:
     Dim Actual As String
-    Actual = VerifyOrGetDefaultPath(ThisWorkbook.VBProject.Name & "." & "db", vbNullString)
+    Actual = VerifyOrGetDefaultPath(ThisWorkbook.Name, vbNullString)
 Assert:
-    Assert.AreEqual Expected, Actual, "CheckPath failed filename"
+    Assert.AreEqual Expected, Actual, "CheckPath failed with filename"
+
+CleanExit:
+    Exit Sub
+TestFail:
+    Assert.Fail "Error: " & Err.Number & " - " & Err.Description
+End Sub
+
+
+'@TestMethod("PathCheck")
+Private Sub ztcVerifyOrGetDefaultPath_ValidatesRelativePath()
+    On Error GoTo TestFail
+
+Arrange:
+    Dim DotPathSep As String
+    DotPathSep = "." & Application.PathSeparator
+    Dim Expected As String
+    Expected = ThisWorkbook.Path & Application.PathSeparator & DotPathSep & ThisWorkbook.Name
+Act:
+    Dim Actual As String
+    Actual = VerifyOrGetDefaultPath(DotPathSep & ThisWorkbook.Name, vbNullString)
+Assert:
+    Assert.AreEqual Expected, Actual, "CheckPath failed with relative path"
 
 CleanExit:
     Exit Sub
@@ -325,14 +340,58 @@ Private Sub ztcVerifyOrGetDefaultPath_ThrowsIfFileNotFound()
     On Error Resume Next
     Dim FilePathName As String
     FilePathName = VerifyOrGetDefaultPath(vbNullString, vbNullString)
-    AssertExpectedError Assert, ErrNo.FileNotFoundErr
+    Guard.AssertExpectedError Assert, ErrNo.FileNotFoundErr
 End Sub
 
 
 '@TestMethod("PathCheck")
-Private Sub ztcVerifyOrGetDefaultPath_ThrowsIfDirectorySupplied()
+Private Sub ztcVerifyOrGetDefaultPath_ThrowsIfAbsolutePathSupplied()
     On Error Resume Next
     Dim FilePathName As String
     FilePathName = VerifyOrGetDefaultPath(Environ$("SystemRoot"), vbNullString)
-    AssertExpectedError Assert, ErrNo.FileNotFoundErr
+    Guard.AssertExpectedError Assert, ErrNo.FileNotFoundErr
+End Sub
+
+
+'@TestMethod("PathCheck")
+Private Sub ztcVerifyOrGetDefaultPath_ThrowsIfRootedPathSupplied()
+    On Error Resume Next
+    Dim FilePathName As String
+    FilePathName = VerifyOrGetDefaultPath("\ABC\DEF", vbNullString)
+    Guard.AssertExpectedError Assert, ErrNo.FileNotFoundErr
+End Sub
+
+
+'@TestMethod("IsFalsy")
+Private Sub IsFalsy_VerifiesFalsiness()
+    On Error GoTo TestFail
+    
+Arrange:
+    Dim TestVar As Variant
+    TestVar = Empty
+    Dim TestObj As Object
+    Set TestObj = Nothing
+    Dim TestColl As VBA.Collection
+    Set TestColl = New VBA.Collection
+Act:
+    
+Assert:
+    Assert.IsTrue IsFalsy(Empty), "Empty should be falsy"
+    Assert.IsTrue IsFalsy(Null), "Null should be falsy"
+    Assert.IsTrue IsFalsy(Nothing), "Nothing should be falsy"
+    Assert.IsTrue IsFalsy(False), "False should be falsy"
+    Assert.IsFalse IsFalsy(True), "True should be truthy"
+    Assert.IsTrue IsFalsy(vbNullString), "vbNullString should be falsy"
+    Assert.IsTrue IsFalsy(vbNullString), "Empty string literal should be falsy"
+    Assert.IsFalse IsFalsy("Some text"), "Non-empty should be truthy"
+    Assert.IsTrue IsFalsy(TestVar), "Empty variant should be falsy"
+    Assert.IsTrue IsFalsy(0&), "0 should be falsy"
+    Assert.IsTrue IsFalsy(0#), "0.0 should be falsy"
+    Assert.IsTrue IsFalsy(TestObj), "Not set object should be falsy"
+    Assert.IsFalse IsFalsy(TestColl), "Set object should be truthy"
+
+CleanExit:
+    Exit Sub
+TestFail:
+    Assert.Fail "Error: " & Err.Number & " - " & Err.Description
 End Sub

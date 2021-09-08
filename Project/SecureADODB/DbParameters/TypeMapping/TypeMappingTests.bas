@@ -1,5 +1,5 @@
 Attribute VB_Name = "TypeMappingTests"
-'@Folder "SecureADODB.DbParameterProvider.Tests"
+'@Folder "SecureADODB.DbParameters.TypeMapping"
 '@TestModule
 '@IgnoreModule
 Option Explicit
@@ -32,22 +32,6 @@ Private Sub ModuleCleanup()
 End Sub
 
 
-'@TestMethod("Factory Guard")
-Private Sub Default_ThrowsIfNotInvokedFromDefaultInstance()
-    On Error GoTo TestFail
-    With New AdoTypeMappings
-        On Error GoTo CleanFail
-        Dim sut As AdoTypeMappings
-        Set sut = .Default
-        On Error GoTo 0
-    End With
-CleanFail:
-    If Err.Number = ErrNo.NonDefaultInstanceErr Then Exit Sub
-TestFail:
-    Assert.Fail "Expected error was not raised."
-End Sub
-
-
 Private Sub DefaultMapping_MapsType(ByVal Name As String)
     Dim sut As ITypeMap
     Set sut = AdoTypeMappings.Default
@@ -69,6 +53,7 @@ CleanFail:
 TestFail:
     Assert.Fail "Expected error was not raised."
 End Sub
+
 
 '@TestMethod("Type Mappings")
 Private Sub IsMapped_FalseIfUndefined()
@@ -232,4 +217,3 @@ Private Sub DefaultMappingForString_MapsTo_adVarWChar()
     Dim Value As String
     Assert.AreEqual Expected, GetDefaultMappingFor(TypeName(Value))
 End Sub
-

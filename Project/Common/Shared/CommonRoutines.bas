@@ -128,6 +128,7 @@ End Function
 ''''          & ThisWorkbook.VBProject.Name & Application.PathSeparator
 ''''    construct an array of possible file names:
 ''''      - FilePathName
+''''          skip if len=0, or prefix is not relative
 ''''      - ThisWorkbook.VBProject.Name & Ext (Ext comes from the second argument
 '''' 3) loop through all possible path/filename combinations until a valid
 ''''    pathname is found or all options are exhausted
@@ -154,8 +155,10 @@ End Function
 '@Description "Resolves file pathname"
 Public Function VerifyOrGetDefaultPath(ByVal FilePathName As String, ByVal DefaultExts As Variant) As String
 Attribute VerifyOrGetDefaultPath.VB_Description = "Resolves file pathname"
-    Dim PATHuSEP As String: PATHuSEP = Application.PathSeparator
-    Dim PROJuNAME As String: PROJuNAME = ThisWorkbook.VBProject.Name
+    Dim PATHuSEP As String
+    PATHuSEP = Application.PathSeparator
+    Dim PROJuNAME As String
+    PROJuNAME = ThisWorkbook.VBProject.Name
     
     Dim FileExist As Variant
     Dim PathNameCandidate As String
@@ -184,7 +187,12 @@ Attribute VerifyOrGetDefaultPath.VB_Description = "Resolves file pathname"
     '''' === (2b) === Array of filenames
     Dim NameCount As Long
     NameCount = 0
-    If Len(FilePathName) > 1 And InStr(FilePathName, PATHuSEP) = 0 Then
+    
+    Dim UseFilePathName As Boolean
+    UseFilePathName = Len(FilePathName) > 1 And _
+                      Mid$(FilePathName, 1, 1) <> "\" And _
+                      Mid$(FilePathName, 2, 1) <> ":"
+    If UseFilePathName Then
         NameCount = NameCount + 1
     End If
     If VarType(DefaultExts) = vbString Then
@@ -205,7 +213,7 @@ Attribute VerifyOrGetDefaultPath.VB_Description = "Resolves file pathname"
     Dim ExtIndex As Long
     Dim FileNameIndex As Long
     FileNameIndex = 0
-    If Len(FilePathName) > 1 And InStr(FilePathName, PATHuSEP) = 0 Then
+    If UseFilePathName Then
         FileNames(FileNameIndex) = FilePathName
         FileNameIndex = FileNameIndex + 1
     End If
@@ -242,4 +250,63 @@ Attribute VerifyOrGetDefaultPath.VB_Description = "Resolves file pathname"
         Number:=ErrNo.FileNotFoundErr, _
         Source:="CommonRoutines", _
         Description:="File <" & FilePathName & "> not found!"
+End Function
+
+
+'''' Tests if argument is falsy
+''''
+'''' Falsy values:
+''''   Numeric: 0
+''''   String:  vbNullString
+''''   Variant: Empty
+''''   Object:  Nothing
+''''   Boolean: False
+''''   Null:    Null
+''''
+'''' Args:
+''''   arg:
+''''     Value to be tested for falsiness
+''''
+'''' Returns:
+''''   True, if "arg" is Falsy
+''''   Flase, if "arg" is Truthy (not Falsy)
+''''
+'''' Examples:
+''''   >>> ?IsFalsy(0.0#)
+''''   True
+''''
+''''   >>> ?IsFalsy(0.1)
+''''   False
+''''
+''''   >>> ?IsFalsy(Null)
+''''   True
+''''
+''''   >>> ?IsFalsy(Empty)
+''''   True
+''''
+''''   >>> ?IsFalsy(False)
+''''   True
+''''
+''''   >>> ?IsFalsy(Nothing)
+''''   True
+''''
+''''   >>> ?IsFalsy("")
+''''   True
+''''
+'@Description("Tests if argument is falsy: 0, False, vbNullString, Empty, Null, Nothing")
+Public Function IsFalsy(ByVal arg As Variant) As Boolean
+    Select Case VarType(arg)
+        Case vbEmpty, vbNull
+            IsFalsy = True
+        Case vbInteger, vbLong, vbSingle, vbDouble
+            IsFalsy = Not CBool(arg)
+        Case vbString
+            IsFalsy = (arg = vbNullString)
+        Case vbObject
+            IsFalsy = (arg Is Nothing)
+        Case vbBoolean
+            IsFalsy = Not arg
+        Case Else
+            IsFalsy = False
+    End Select
 End Function

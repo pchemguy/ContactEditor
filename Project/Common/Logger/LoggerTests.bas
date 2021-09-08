@@ -34,13 +34,6 @@ Private Sub ModuleCleanup()
 End Sub
 
 
-'This method runs after every test in the module.
-'@TestCleanup
-Private Sub TestCleanup()
-    Err.Clear
-End Sub
-
-
 '===================================================='
 '==================== TEST CASES ===================='
 '===================================================='
@@ -49,7 +42,7 @@ End Sub
 Private Sub ztcCreate_PassesIfInvokedFromDefaultInstance()
     On Error Resume Next
     Dim AdoLogger As ILogger: Set AdoLogger = Logger.Create
-    AssertExpectedError Assert, ErrNo.PassedNoErr
+    Guard.AssertExpectedError Assert, ErrNo.PassedNoErr
 End Sub
 
 
@@ -59,7 +52,7 @@ Private Sub ztcCreate_ThrowsIfNotInvokedFromDefaultInstance()
     Dim stubLogger As Logger: Set stubLogger = New Logger
     Dim stubILogger As Logger: Set stubILogger = stubLogger.Create
     Assert.IsNothing stubILogger
-    AssertExpectedError Assert, ErrNo.NonDefaultInstanceErr
+    Guard.AssertExpectedError Assert, ErrNo.NonDefaultInstanceErr
 End Sub
 
 
