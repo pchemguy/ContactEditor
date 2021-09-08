@@ -251,3 +251,62 @@ Attribute VerifyOrGetDefaultPath.VB_Description = "Resolves file pathname"
         Source:="CommonRoutines", _
         Description:="File <" & FilePathName & "> not found!"
 End Function
+
+
+'''' Tests if argument is falsy
+''''
+'''' Falsy values:
+''''   Numeric: 0
+''''   String:  vbNullString
+''''   Variant: Empty
+''''   Object:  Nothing
+''''   Boolean: False
+''''   Null:    Null
+''''
+'''' Args:
+''''   arg:
+''''     Value to be tested for falsiness
+''''
+'''' Returns:
+''''   True, if "arg" is Falsy
+''''   Flase, if "arg" is Truthy (not Falsy)
+''''
+'''' Examples:
+''''   >>> ?IsFalsy(0.0#)
+''''   True
+''''
+''''   >>> ?IsFalsy(0.1)
+''''   False
+''''
+''''   >>> ?IsFalsy(Null)
+''''   True
+''''
+''''   >>> ?IsFalsy(Empty)
+''''   True
+''''
+''''   >>> ?IsFalsy(False)
+''''   True
+''''
+''''   >>> ?IsFalsy(Nothing)
+''''   True
+''''
+''''   >>> ?IsFalsy("")
+''''   True
+''''
+'@Description("Tests if argument is falsy: 0, False, vbNullString, Empty, Null, Nothing")
+Public Function IsFalsy(ByVal arg As Variant) As Boolean
+    Select Case VarType(arg)
+        Case vbEmpty, vbNull
+            IsFalsy = True
+        Case vbInteger, vbLong, vbSingle, vbDouble
+            IsFalsy = Not CBool(arg)
+        Case vbString
+            IsFalsy = (arg = vbNullString)
+        Case vbObject
+            IsFalsy = (arg Is Nothing)
+        Case vbBoolean
+            IsFalsy = Not arg
+        Case Else
+            IsFalsy = False
+    End Select
+End Function

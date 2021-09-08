@@ -72,8 +72,24 @@ Attribute Init.VB_Description = "Default constructor"
 End Sub
 
 
+'''' Updates record values
+''''
+'''' Args:
+''''   AbsolutePosition (Long):
+''''     Recordset.AbsolutePosition identifying the target record
+''''
+''''   ValuesDict (Dictionary):
+''''     FieldName -> Value map
+''''
+'@Description "Updates modified records"
+Friend Sub UpdateRecord(ByVal AbsolutePosition As Long, _
+                        ByVal ValuesDict As Scripting.Dictionary)
+
+End Sub
+
+
 '@Description "Outputs Recordset to Excel Worksheet via QueryTable"
-Public Function RecordsetToQT(ByVal OutputRange As Excel.Range) As Excel.QueryTable
+Friend Function RecordsetToQT(ByVal OutputRange As Excel.Range) As Excel.QueryTable
 Attribute RecordsetToQT.VB_Description = "Outputs Recordset to Excel Worksheet via QueryTable"
     Guard.NullReference OutputRange
     

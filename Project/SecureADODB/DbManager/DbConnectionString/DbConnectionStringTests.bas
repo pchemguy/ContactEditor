@@ -153,7 +153,7 @@ Private Sub ztcConnectionString_ThrowsForXLSBackend()
     On Error Resume Next
     Dim ConnectionString As String
     ConnectionString = DbConnectionString.CreateFileDb("xls").ConnectionString
-    AssertExpectedError Assert, ErrNo.NotImplementedErr
+    Guard.AssertExpectedError Assert, ErrNo.NotImplementedErr
 End Sub
 
 

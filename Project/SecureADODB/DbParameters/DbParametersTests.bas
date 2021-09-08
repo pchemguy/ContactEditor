@@ -308,7 +308,7 @@ Private Sub ztcValidateParameterValues_ThrowsGivenNoArgs()
     Set cmd = zfxGetAdoCommandWith2PlaceHolders()
     Dim ValidateStatus As Boolean
     ValidateStatus = sut.ValidateParameterValues(cmd)
-    AssertExpectedError Assert, ErrNo.CustomErr
+    Guard.AssertExpectedError Assert, ErrNo.CustomErr
 End Sub
 
 
@@ -321,7 +321,7 @@ Private Sub ztcValidateParameterValues_ThrowsGivenValueSQLMismatch()
     Set cmd = zfxGetAdoCommandWith2PlaceHolders()
     Dim ValidateStatus As Boolean
     ValidateStatus = sut.ValidateParameterValues(cmd, 1)
-    AssertExpectedError Assert, ErrNo.CustomErr
+    Guard.AssertExpectedError Assert, ErrNo.CustomErr
 End Sub
 
 

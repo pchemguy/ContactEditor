@@ -33,13 +33,6 @@ Private Sub ModuleCleanup()
 End Sub
 
 
-'This method runs after every test in the module.
-'@TestCleanup
-Private Sub TestCleanup()
-    Err.Clear
-End Sub
-
-
 '===================================================='
 '==================== TEST CASES ===================='
 '===================================================='

@@ -39,7 +39,7 @@ End Sub
 Private Sub ztcCreate_ThrowsGivenNullConnection()
     On Error Resume Next
     Dim sut As IDbManager: Set sut = DbManager.Create(Nothing, New StubDbCommandFactory)
-    AssertExpectedError Assert, ErrNo.ObjectNotSetErr
+    Guard.AssertExpectedError Assert, ErrNo.ObjectNotSetErr
 End Sub
 
 
@@ -47,7 +47,7 @@ End Sub
 Private Sub ztcCreate_ThrowsGivenNullCommandFactory()
     On Error Resume Next
     Dim sut As IDbManager: Set sut = DbManager.Create(New StubDbConnection, Nothing)
-    AssertExpectedError Assert, ErrNo.ObjectNotSetErr
+    Guard.AssertExpectedError Assert, ErrNo.ObjectNotSetErr
 End Sub
 
 
@@ -106,7 +106,7 @@ Private Sub ztcCommit_ThrowsIfAlreadyCommitted()
     
     sut.Commit
     sut.Commit
-    AssertExpectedError Assert, ErrNo.AdoInvalidTransactionErr
+    Guard.AssertExpectedError Assert, ErrNo.AdoInvalidTransactionErr
 End Sub
 
 
@@ -122,7 +122,7 @@ Private Sub ztcCommit_ThrowsIfAlreadyRolledBack()
     
     sut.Rollback
     sut.Commit
-    AssertExpectedError Assert, ErrNo.AdoInvalidTransactionErr
+    Guard.AssertExpectedError Assert, ErrNo.AdoInvalidTransactionErr
 End Sub
 
 
@@ -138,7 +138,7 @@ Private Sub ztcRollback_ThrowsIfAlreadyCommitted()
     
     sut.Commit
     sut.Rollback
-    AssertExpectedError Assert, ErrNo.AdoInvalidTransactionErr
+    Guard.AssertExpectedError Assert, ErrNo.AdoInvalidTransactionErr
 End Sub
 
 

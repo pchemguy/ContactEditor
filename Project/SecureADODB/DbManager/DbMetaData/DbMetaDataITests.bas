@@ -101,7 +101,7 @@ Private Sub ztcCreate_ThrowsGivenNullConnectionString()
     On Error Resume Next
     Dim sut As DbMetaData
     Set sut = DbMetaData.Create(Nothing)
-    AssertExpectedError Assert, ErrNo.ObjectNotSetErr
+    Guard.AssertExpectedError Assert, ErrNo.ObjectNotSetErr
 End Sub
 
 

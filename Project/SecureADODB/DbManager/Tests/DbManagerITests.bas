@@ -292,34 +292,7 @@ Private Sub ztiDbManagerFactoryGuard_ThrowsIfRequestedTransactionNotSupported()
     Dim dbm As IDbManager
     Set dbm = zfxGetDbManager("csv", "SecureADODB")
     dbm.Begin
-    AssertExpectedError Assert, ErrNo.AdoInvalidTransactionErr
-End Sub
-
-
-'@TestMethod("DbManager.Recordset.Query")
-Private Sub ztiDbManagerOpenRecordset_ThrowsGivenUnsupportedParameterTypeCSV()
-    '''' Present mapping maps VBA string to adVarWChar, unsupported by the CSV backend (Office 2002, 32bit)
-    On Error GoTo TestFail
-    
-    Dim dbm As IDbManager
-    Set dbm = zfxGetDbManager("csv", "SecureADODB")
-    Dim SQLSelect2P As String
-    SQLSelect2P = zfxGetSQLSelect2P(zfxGetCSVTableName)
-    
-    On Error Resume Next
-    Dim rstAdo As ADODB.Recordset
-    Set rstAdo = dbm.Recordset.OpenRecordset(SQLSelect2P, zfxGetParameterOne, zfxGetParameterTwo)
-    AssertExpectedError Assert, ErrNo.AdoInvalidParameterTypeErr
-    On Error GoTo TestFail
-    
-    Assert.IsNothing rstAdo, "Recordset variable unexpectedly set."
-    Dim ExecuteStatus As ADODB.EventStatusEnum: ExecuteStatus = dbm.Connection.ExecuteStatus
-    Assert.AreEqual ADODB.EventStatusEnum.adStatusErrorsOccurred, ExecuteStatus, "Connection error status mismatch."
-    
-    Exit Sub
-
-TestFail:
-    Assert.Fail "Error: " & Err.Number & " - " & Err.Description
+    Guard.AssertExpectedError Assert, ErrNo.AdoInvalidTransactionErr
 End Sub
 
 

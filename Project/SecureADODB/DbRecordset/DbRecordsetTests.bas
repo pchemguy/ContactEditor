@@ -35,13 +35,6 @@ Private Sub ModuleCleanup()
 End Sub
 
 
-'This method runs after every test in the module.
-'@TestCleanup
-Private Sub TestCleanup()
-    Err.Clear
-End Sub
-
-
 '===================================================='
 '===================== FIXTURES ====================='
 '===================================================='
@@ -84,7 +77,7 @@ Act:
     Dim AdoRecordset As ADODB.Recordset
     Set AdoRecordset = Recordset.GetAdoRecordset(vbNullString)
 Assert:
-    AssertExpectedError Assert, ErrNo.PassedNoErr
+    Guard.AssertExpectedError Assert, ErrNo.PassedNoErr
     Assert.AreNotEqual 1, AdoRecordset.MaxRecords, "Regular recordset should have MaxRecords=0 by default"
     Assert.AreEqual ADODB.CursorLocationEnum.adUseClient, AdoRecordset.CursorLocation, "CursorLocation should be set to adUseClient for a disconnected recordset."
     Assert.AreEqual 10, AdoRecordset.CacheSize, "Expected CacheSize=10"
@@ -95,5 +88,3 @@ CleanExit:
 TestFail:
     Assert.Fail "Error: " & Err.Number & " - " & Err.Description
 End Sub
-
-

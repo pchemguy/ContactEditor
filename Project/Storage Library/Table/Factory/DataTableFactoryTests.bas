@@ -33,13 +33,6 @@ Private Sub ModuleCleanup()
 End Sub
 
 
-'This method runs after every test in the module.
-'@TestCleanup
-Private Sub TestCleanup()
-    Err.Clear
-End Sub
-
-
 '===================================================='
 '==================== TEST CASES ===================='
 '===================================================='
@@ -88,7 +81,7 @@ Act:
     Dim StorageManager As IDataTableStorage
     Set StorageManager = DataTableFactory.CreateInstance(ClassName, StorageModel, ConnectionString, TableName)
 Assert:
-    AssertExpectedError Assert, ErrNo.NotImplementedErr
+    Guard.AssertExpectedError Assert, ErrNo.NotImplementedErr
 
 CleanExit:
     Exit Sub

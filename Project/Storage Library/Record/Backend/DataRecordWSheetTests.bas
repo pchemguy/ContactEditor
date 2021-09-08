@@ -33,13 +33,6 @@ Private Sub ModuleCleanup()
 End Sub
 
 
-'This method runs after every test in the module.
-'@TestCleanup
-Private Sub TestCleanup()
-    Err.Clear
-End Sub
-
-
 '===================================================='
 '===================== FIXTURES ====================='
 '===================================================='
@@ -104,7 +97,7 @@ Act:
     Dim StorageManager As IDataRecordStorage
     Set StorageManager = DataRecordWSheet.Create(StorageModel, ConnectionString, TableName)
 Assert:
-    AssertExpectedError Assert, ErrNo.CustomErr
+    Guard.AssertExpectedError Assert, ErrNo.CustomErr
 
 CleanExit:
     Exit Sub
@@ -128,7 +121,7 @@ Act:
     Dim StorageManager As IDataRecordStorage
     Set StorageManager = DataRecordWSheet.Create(StorageModel, ConnectionString, TableName)
 Assert:
-    AssertExpectedError Assert, ErrNo.CustomErr
+    Guard.AssertExpectedError Assert, ErrNo.CustomErr
 
 CleanExit:
     Exit Sub
