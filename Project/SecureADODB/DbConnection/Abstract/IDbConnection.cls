@@ -39,6 +39,12 @@ Public Property Get TransRecordsAffected() As Long
 Attribute TransRecordsAffected.VB_Description = "Gets the number of affected records [via a query]"
 End Property
 
+Public Property Get ExpectedRecordsAffected() As Long
+End Property
+
+Public Property Let ExpectedRecordsAffected(ByVal Value As Long)
+End Property
+
 Public Property Get Engine() As String
 End Property
 

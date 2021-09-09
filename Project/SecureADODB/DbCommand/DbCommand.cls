@@ -72,3 +72,8 @@ Private Sub IDbCommand_ExecuteNonQuery(ByVal SQL As String, ParamArray ADODBPara
     '@Ignore FunctionReturnValueDiscarded
     this.cmd.Execute Options:=ADODB.ExecuteOptionEnum.adExecuteNoRecords
 End Sub
+
+
+Private Property Get IDbCommand_Connection() As IDbConnection
+    Set IDbCommand_Connection = this.Connection
+End Property

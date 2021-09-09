@@ -21,7 +21,6 @@ Private WithEvents AdoRecordset As ADODB.Recordset
 Attribute AdoRecordset.VB_VarHelpID = -1
 Private Type TRecordset
     cmd As IDbCommand
-    db As ADODB.Connection
     OpenOptions As Long
 End Type
 Private this As TRecordset
@@ -76,14 +75,13 @@ End Sub
 '@Ignore ProcedureNotUsed
 Friend Sub PersistRecordsetChanges()
     With AdoRecordset
-        Guard.NullReference this.db
         Guard.ExpressionErr .State = adStateOpen, _
                             IncompatibleStatusErr, _
                             "DbRecordset", _
                             "Expected AdoRecordset.Status = adStateOpen"
                             
         .MarshalOptions = adMarshalModifiedOnly
-        Set .ActiveConnection = this.db
+        Set .ActiveConnection = this.cmd.Connection.AdoConnection
         .UpdateBatch
         If .CursorLocation = adUseClient Then Set .ActiveConnection = Nothing
     End With
@@ -162,7 +160,6 @@ Attribute SetSource.VB_Description = "Sets AdoCommand as to AdoRecordset.Source 
     localArgs = UnfoldParamArray(ADODBParamsValues)
     If AdoRecordset.State <> adStateClosed Then AdoRecordset.Close
     Set AdoRecordset.Source = this.cmd.AdoCommand(SQL, localArgs)
-    Set this.db = AdoRecordset.ActiveConnection
 End Sub
 
 

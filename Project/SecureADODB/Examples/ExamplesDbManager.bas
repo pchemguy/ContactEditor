@@ -419,11 +419,8 @@ Private Sub SQLiteTwoParameterQueryTableUpdateRstTransactionChangesTest()
         .Fields("last_name") = "Eakins"
     End With
     
-    TotalChanges = RstTotalChanges.OpenScalar(SQLiteSQLTotalChanges)
-    Debug.Print TotalChanges
+    dbm.Connection.ExpectedRecordsAffected = 2
     dbm.Begin
     rstAdo.UpdateBatch
     dbm.Commit
-    TotalChanges = RstTotalChanges.OpenScalar(SQLiteSQLTotalChanges)
-    Debug.Print TotalChanges
 End Sub

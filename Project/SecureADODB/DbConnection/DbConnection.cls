@@ -24,13 +24,16 @@ Private Type TDbConnection
     ExecuteStatus As ADODB.EventStatusEnum
     '''' This attribute is set to a value received by a Connection event handler
     RecordsAffected As Long
-    '''' This attribute is used to query affected rows count
-    TransRecordsAffected As Long
     '''' If a particular backend does not support transaction, "begin" raises
     '''' an error, and the corresponding handler sets this flag
     TransactionsDisabled As Boolean
     HasActiveTransaction As Boolean
     LogController As ILogger
+    '''' This attribute is used to query affected rows count across a transaction
+    TransRecordsAffected As Long
+    '''' Set before transaction
+    ExpectedRecordsAffected As Long
+    cmdAffectedRows As ADODB.Command
     Engine As String
 End Type
 Private this As TDbConnection
@@ -67,6 +70,7 @@ Attribute Init.VB_Description = "Default constructor"
 
     Set AdoConnection = New ADODB.Connection
     Set this.LogController = LogController
+    this.ExpectedRecordsAffected = -1
     
     On Error GoTo ConnectionError
     AdoConnection.Open connString
@@ -126,6 +130,16 @@ Private Sub LogAdoErrors()
 End Sub
 
 
+Friend Function TotalChanges() As Long
+    TotalChanges = 0
+    If Not this.cmdAffectedRows Is Nothing Then
+        On Error Resume Next
+        TotalChanges = this.cmdAffectedRows.Execute.Fields.Item(0).Value
+        On Error GoTo 0
+    End If
+End Function
+
+
 '================================================================================'
 '============================ IDbConnection INTERFACE ==========================='
 '================================================================================'
@@ -161,8 +175,27 @@ Private Property Get IDbConnection_Engine() As String
 End Property
 
 
+Private Property Get IDbConnection_ExpectedRecordsAffected() As Long
+    IDbConnection_ExpectedRecordsAffected = this.ExpectedRecordsAffected
+End Property
+
+
+Private Property Let IDbConnection_ExpectedRecordsAffected(ByVal Value As Long)
+    this.ExpectedRecordsAffected = Value
+End Property
+
+
 Private Property Let IDbConnection_Engine(ByVal EngineName As String)
     this.Engine = EngineName
+    If LCase$(EngineName) = "sqlite" Then
+        Set this.cmdAffectedRows = New ADODB.Command
+        With this.cmdAffectedRows
+            .CommandType = adCmdText
+            .Prepared = True
+            .CommandText = "SELECT total_changes()"
+            .ActiveConnection = AdoConnection
+        End With
+    End If
 End Property
 
 
@@ -220,6 +253,7 @@ Private Sub AdoConnection_BeginTransComplete( _
             ByVal pConnection As ADODB.Connection)
     Debug.Print "Begin transaction completed. "
     If Not pError Is Nothing Then Debug.Print "Error: " & pError.Number, pError.Description
+    this.TransRecordsAffected = TotalChanges()
 End Sub
 
 Private Sub AdoConnection_CommitTransComplete( _
@@ -228,6 +262,17 @@ Private Sub AdoConnection_CommitTransComplete( _
             ByVal pConnection As ADODB.Connection)
     Debug.Print "Commit transaction completed. "
     If Not pError Is Nothing Then Debug.Print "Error: " & pError.Number, pError.Description
+    With this
+        .TransRecordsAffected = TotalChanges() - .TransRecordsAffected
+        If .ExpectedRecordsAffected >= 0 Then
+            Guard.Expression .ExpectedRecordsAffected = .TransRecordsAffected, _
+                    "DbConnection", "Affected rows count mismatch"
+            Debug.Print "Affected rows count (matched): " & CStr(.TransRecordsAffected)
+        Else
+            Debug.Print "Affected rows count: " & CStr(.TransRecordsAffected)
+        End If
+        .ExpectedRecordsAffected = -1
+    End With
 End Sub
 
 Private Sub AdoConnection_RollbackTransComplete( _
@@ -236,6 +281,7 @@ Private Sub AdoConnection_RollbackTransComplete( _
             ByVal pConnection As ADODB.Connection)
     Debug.Print "Rollback transaction completed."
     If Not pError Is Nothing Then Debug.Print "Error: " & pError.Number, pError.Description
+    this.ExpectedRecordsAffected = -1
 End Sub
 
 Private Sub AdoConnection_WillConnect( _
@@ -281,9 +327,9 @@ Private Sub AdoConnection_ExecuteComplete( _
             ByVal pCommand As ADODB.Command, _
             ByVal pRecordset As ADODB.Recordset, _
             ByVal pConnection As ADODB.Connection)
+    Debug.Print "Execute completed, " & RecordsAffected & " record(s) affected."
     this.ExecuteStatus = adStatus
     this.RecordsAffected = RecordsAffected
-    Debug.Print "Execute completed, " & RecordsAffected & " record(s) affected."
     If Not pError Is Nothing Then Debug.Print "Error: " & pError.Number, pError.Description
 End Sub
 
