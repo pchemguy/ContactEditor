@@ -73,17 +73,32 @@ End Sub
 
 
 '@Ignore ProcedureNotUsed
-Friend Sub PersistRecordsetChanges()
+Friend Sub PersistRecordsetChanges(ByVal DirtyRecordCount As Long)
     With AdoRecordset
         Guard.ExpressionErr .State = adStateOpen, _
                             IncompatibleStatusErr, _
                             "DbRecordset", _
                             "Expected AdoRecordset.Status = adStateOpen"
                             
+        Dim db As IDbConnection
+        Set db = this.cmd.Connection
         .MarshalOptions = adMarshalModifiedOnly
         Set .ActiveConnection = this.cmd.Connection.AdoConnection
+        On Error GoTo ROLLBACK
+        db.ExpectedRecordsAffected = DirtyRecordCount
+        db.BeginTransaction
         .UpdateBatch
+        db.CommitTransaction
+        On Error GoTo 0
         If .CursorLocation = adUseClient Then Set .ActiveConnection = Nothing
+    End With
+    
+    Exit Sub
+    
+ROLLBACK:
+    this.cmd.Connection.RollbackTransaction
+    With Err
+        .Raise .Number, .Source, .Description, .HelpFile, .HelpContext
     End With
 End Sub
 
@@ -284,8 +299,34 @@ Attribute IDbRecordset_UpdateRecord.VB_Description = "Updates modified records"
 End Sub
 
 
-Private Sub IDbRecordset_UpdateRecordset(ByRef AbsolutePositions() As Long, ByRef RecordsetData() As Variant)
-    Err.Raise 5                                  'TODO implement interface member
+'''' Factory for file-based databases.
+''''
+'''' Args:
+''''   AbsolutePositions (1D array of long):
+''''     A 1D 1-based array containing absolute positions of dirty records in
+''''     the recordset object (as in AdoRecordset.AbsolutePosition)
+''''
+''''   RecordsetData (2D variant array):
+''''     2D record-wise 1-based array of recordset data
+''''
+'@Description "Updates recordset data from 2D array of field values and an array of dirty records"
+Private Sub IDbRecordset_UpdateRecordset(ByRef AbsolutePositions() As Long, _
+                                         ByRef RecordsetData() As Variant)
+Attribute IDbRecordset_UpdateRecordset.VB_Description = "Updates recordset data from 2D array of field values and an array of dirty records"
+    Dim FieldCount As Long
+    FieldCount = UBound(RecordsetData, 2) - LBound(RecordsetData, 2) + 1
+    Dim RecordCount As Long
+    RecordCount = UBound(RecordsetData, 1) - LBound(RecordsetData, 1) + 1
+    
+    Guard.ExpressionErr AdoRecordset.Fields.Count = FieldCount, _
+                        IncompatibleArraysErr, "DbRecordset", "Field count mismatch"
+    Guard.ExpressionErr AdoRecordset.RecordCount = RecordCount, _
+                        IncompatibleArraysErr, "DbRecordset", "Record count mismatch"
+    
+    Dim DirtyRecordsCount As Long
+    DirtyRecordsCount = UBound(AbsolutePositions) - LBound(AbsolutePositions) + 1
+    
+    PersistRecordsetChanges DirtyRecordsCount
 End Sub
 
 

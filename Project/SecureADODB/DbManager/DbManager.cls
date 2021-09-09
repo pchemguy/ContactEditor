@@ -9,7 +9,7 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = True
 Attribute VB_Description = "An object that encapsulates a database transaction."
 '@Folder "SecureADODB.DbManager"
-'@ModuleDescription("An object that encapsulates a database transaction.")
+'@ModuleDescription "An object that encapsulates a database transaction."
 '@PredeclaredId
 '@Exposed
 Option Explicit
@@ -176,6 +176,7 @@ Private Sub IDbManager_Commit()
     this.Connection.CommitTransaction
 End Sub
 
+'@Ignore ProcedureNotUsed
 Private Sub IDbManager_Rollback()
     this.Connection.RollbackTransaction
 End Sub

@@ -9,7 +9,7 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = True
 Attribute VB_Description = "A thin wrapper around an ADODB connection."
 '@Folder "SecureADODB.DbConnection"
-'@ModuleDescription("A thin wrapper around an ADODB connection.")
+'@ModuleDescription "A thin wrapper around an ADODB connection."
 '@PredeclaredId
 '@IgnoreModule AssignmentNotUsed
 '@Exposed
@@ -193,7 +193,7 @@ Private Property Let IDbConnection_Engine(ByVal EngineName As String)
             .CommandType = adCmdText
             .Prepared = True
             .CommandText = "SELECT total_changes()"
-            .ActiveConnection = AdoConnection
+            Set .ActiveConnection = AdoConnection
         End With
     End If
 End Property

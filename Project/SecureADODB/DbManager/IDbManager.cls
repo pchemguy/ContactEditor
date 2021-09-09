@@ -61,6 +61,6 @@ Attribute Commit.VB_Description = "Commits the transaction."
 End Sub
 
 '@Description("Rolls back the transaction.")
-Public Sub Rollback()
-Attribute Rollback.VB_Description = "Rolls back the transaction."
+Public Sub ROLLBACK()
+Attribute ROLLBACK.VB_Description = "Rolls back the transaction."
 End Sub
