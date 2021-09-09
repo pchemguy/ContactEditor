@@ -3,7 +3,7 @@ Attribute VB_Description = "Tests for the DbRecordset class."
 '@Folder "SecureADODB.DbRecordset"
 '@ModuleDescription "Tests for the DbRecordset class."
 '@TestModule
-'@IgnoreModule LineLabelNotUsed, UnhandledOnErrorResumeNext
+'@IgnoreModule LineLabelNotUsed, UnhandledOnErrorResumeNext, VariableNotUsed, AssignmentNotUsed
 Option Explicit
 Option Private Module
 
@@ -31,7 +31,6 @@ End Sub
 '@ModuleCleanup
 Private Sub ModuleCleanup()
     Set Assert = Nothing
-    Set Guard = Nothing
 End Sub
 
 
@@ -40,8 +39,13 @@ End Sub
 '===================================================='
 
 
-Private Function zfxGetSingleParameterSelectSql() As String
-    zfxGetSingleParameterSelectSql = "SELECT * FROM [dbo].[Table1] WHERE [Field1] = ?;"
+''Private Function zfxGetSingleParameterSelectSQL() As String
+''    zfxGetSingleParameterSelectSQL = "SELECT * FROM [dbo].[Table1] WHERE [Field1] = ?;"
+''End Function
+
+
+Private Function zfxGetTwoParameterSelectSQL() As String
+    zfxGetTwoParameterSelectSQL = "SELECT * FROM people WHERE age >= ? AND country = ?"
 End Function
 
 
@@ -73,18 +77,62 @@ Private Sub ztcGetAdoRecordset_ValidatesDefaultAdoRecordset()
 Arrange:
     Dim Recordset As IDbRecordset
     Set Recordset = DbRecordset.Create(zfxGetStubDbCommand)
+    Dim SQLQuery As String
+    SQLQuery = zfxGetTwoParameterSelectSQL
 Act:
     Dim AdoRecordset As ADODB.Recordset
-    Set AdoRecordset = Recordset.GetAdoRecordset(vbNullString)
+    Set AdoRecordset = Recordset.GetAdoRecordset(SQLQuery)
 Assert:
-    Guard.AssertExpectedError Assert, ErrNo.PassedNoErr
     Assert.AreNotEqual 1, AdoRecordset.MaxRecords, "Regular recordset should have MaxRecords=0 by default"
     Assert.AreEqual ADODB.CursorLocationEnum.adUseClient, AdoRecordset.CursorLocation, "CursorLocation should be set to adUseClient for a disconnected recordset."
     Assert.AreEqual 10, AdoRecordset.CacheSize, "Expected CacheSize=10"
     Assert.AreEqual ADODB.CursorTypeEnum.adOpenStatic, AdoRecordset.CursorType, "Expectec CursorType=adOpenStatic for a disconnected recordset."
+    Assert.AreEqual SQLQuery, AdoRecordset.Source, "SQL query mismatch"
     
 CleanExit:
     Exit Sub
 TestFail:
     Assert.Fail "Error: " & Err.Number & " - " & Err.Description
+End Sub
+
+
+'@TestMethod("UpdateRecord")
+Private Sub ztcUpdateRecord_ThrowsIfWrongLockType()
+    On Error Resume Next
+    Dim Recordset As IDbRecordset
+    Set Recordset = DbRecordset.Create(zfxGetStubDbCommand)
+    Dim AdoRecordset As ADODB.Recordset
+    Set AdoRecordset = Recordset.GetAdoRecordset(vbNullString)
+    Dim ValuesDict As Scripting.Dictionary
+    Set ValuesDict = New Scripting.Dictionary
+    Recordset.UpdateRecord 0, ValuesDict
+    Guard.AssertExpectedError Assert, ErrNo.AdoFeatureNotAvailableErr
+End Sub
+
+
+'@TestMethod("UpdateRecord")
+Private Sub ztcUpdateRecord_ThrowsIfRecordSetIsClosed()
+    On Error Resume Next
+    Dim Recordset As IDbRecordset
+    Set Recordset = DbRecordset.Create(zfxGetStubDbCommand)
+    Dim AdoRecordset As ADODB.Recordset
+    Set AdoRecordset = Recordset.GetAdoRecordset(vbNullString)
+    AdoRecordset.LockType = adLockBatchOptimistic
+    Dim ValuesDict As Scripting.Dictionary
+    Set ValuesDict = New Scripting.Dictionary
+    Recordset.UpdateRecord 0, ValuesDict
+    Guard.AssertExpectedError Assert, ErrNo.IncompatibleStatusErr
+End Sub
+
+
+'@TestMethod("UpdateRecord")
+Private Sub ztcUpdateRecord_ThrowsIfValuesDictNotSet()
+    On Error Resume Next
+    Dim Recordset As IDbRecordset
+    Set Recordset = DbRecordset.Create(zfxGetStubDbCommand)
+    Dim AdoRecordset As ADODB.Recordset
+    Set AdoRecordset = Recordset.GetAdoRecordset(vbNullString)
+    AdoRecordset.LockType = adLockBatchOptimistic
+    Recordset.UpdateRecord 0, Nothing
+    Guard.AssertExpectedError Assert, ErrNo.ObjectNotSetErr
 End Sub

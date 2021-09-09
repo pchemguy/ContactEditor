@@ -117,6 +117,7 @@ Attribute CreateFileDb.VB_Description = "Factory for file-based databases"
     Set DbConnStr = DbConnectionString.CreateFileDb(DbType, DbFileName, , ConnectionOptions)
     Dim db As IDbConnection
     Set db = DbConnection.Create(DbConnStr.ConnectionString, LogController)
+    db.Engine = DbType
     
     Dim Instance As DbManager
     Set Instance = DbManager.Create(db, Factory, LogController)

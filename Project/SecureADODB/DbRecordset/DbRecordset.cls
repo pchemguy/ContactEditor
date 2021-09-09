@@ -21,6 +21,7 @@ Private WithEvents AdoRecordset As ADODB.Recordset
 Attribute AdoRecordset.VB_VarHelpID = -1
 Private Type TRecordset
     cmd As IDbCommand
+    db As ADODB.Connection
     OpenOptions As Long
 End Type
 Private this As TRecordset
@@ -72,26 +73,31 @@ Attribute Init.VB_Description = "Default constructor"
 End Sub
 
 
-'''' Updates record values
-''''
-'''' Args:
-''''   AbsolutePosition (Long):
-''''     Recordset.AbsolutePosition identifying the target record
-''''
-''''   ValuesDict (Dictionary):
-''''     FieldName -> Value map
-''''
-'@Description "Updates modified records"
-Friend Sub UpdateRecord(ByVal AbsolutePosition As Long, _
-                        ByVal ValuesDict As Scripting.Dictionary)
-
+'@Ignore ProcedureNotUsed
+Friend Sub PersistRecordsetChanges()
+    With AdoRecordset
+        Guard.NullReference this.db
+        Guard.ExpressionErr .State = adStateOpen, _
+                            IncompatibleStatusErr, _
+                            "DbRecordset", _
+                            "Expected AdoRecordset.Status = adStateOpen"
+                            
+        .MarshalOptions = adMarshalModifiedOnly
+        Set .ActiveConnection = this.db
+        .UpdateBatch
+        If .CursorLocation = adUseClient Then Set .ActiveConnection = Nothing
+    End With
 End Sub
 
 
 '@Description "Outputs Recordset to Excel Worksheet via QueryTable"
-Friend Function RecordsetToQT(ByVal OutputRange As Excel.Range) As Excel.QueryTable
+Friend Function RecordsetToQT(ByVal OutputRange As Excel.Range, _
+                     Optional ByVal AdoRst As ADODB.Recordset = Nothing) As Excel.QueryTable
 Attribute RecordsetToQT.VB_Description = "Outputs Recordset to Excel Worksheet via QueryTable"
     Guard.NullReference OutputRange
+    
+    Dim rst As ADODB.Recordset
+    Set rst = IIf(AdoRst Is Nothing, AdoRecordset, AdoRst)
     
     Dim QTs As Excel.QueryTables
     Set QTs = OutputRange.Worksheet.QueryTables
@@ -105,7 +111,7 @@ Attribute RecordsetToQT.VB_Description = "Outputs Recordset to Excel Worksheet v
     '''' EntireColumn.Delete shifts columns to the left, so the target range
     '''' may not be clear. EntireColumn.Clear clears the contents.
     Dim FieldsCount As Long
-    FieldsCount = AdoRecordset.Fields.Count
+    FieldsCount = rst.Fields.Count
     Dim QTRangeAddress As String
     QTRangeAddress = OutputRange.Address(External:=True)
     Dim QTRange As Excel.Range
@@ -125,7 +131,7 @@ Attribute RecordsetToQT.VB_Description = "Outputs Recordset to Excel Worksheet v
         NamedRange.Delete
     Next NamedRange
     
-    Set WSQueryTable = QTs.Add(Connection:=AdoRecordset, Destination:=QTRange.Range("A1"))
+    Set WSQueryTable = QTs.Add(Connection:=rst, Destination:=QTRange.Range("A1"))
     With WSQueryTable
         .FieldNames = True
         .RowNumbers = False
@@ -147,13 +153,16 @@ Attribute RecordsetToQT.VB_Description = "Outputs Recordset to Excel Worksheet v
 End Function
 
 
+'@Description "Sets AdoCommand as to AdoRecordset.Source in preparation for .OpenXXX"
 Private Sub SetSource( _
             ByVal SQL As String, _
             ParamArray ADODBParamsValues() As Variant)
+Attribute SetSource.VB_Description = "Sets AdoCommand as to AdoRecordset.Source in preparation for .OpenXXX"
     Dim localArgs() As Variant
     localArgs = UnfoldParamArray(ADODBParamsValues)
     If AdoRecordset.State <> adStateClosed Then AdoRecordset.Close
     Set AdoRecordset.Source = this.cmd.AdoCommand(SQL, localArgs)
+    Set this.db = AdoRecordset.ActiveConnection
 End Sub
 
 
@@ -232,6 +241,57 @@ RecordsetOpenError:
 End Function
 
 
+'''' Updates record values
+''''
+'''' Args:
+''''   AbsolutePosition (Long):
+''''     Recordset.AbsolutePosition identifying the target record
+''''
+''''   ValuesDict (Dictionary):
+''''     FieldName -> Value map
+''''
+'@Description "Updates modified records"
+Private Sub IDbRecordset_UpdateRecord( _
+            ByVal AbsolutePosition As Long, _
+            ByVal ValuesDict As Scripting.Dictionary)
+Attribute IDbRecordset_UpdateRecord.VB_Description = "Updates modified records"
+    Dim NumRecords As Long
+    
+    With AdoRecordset
+        Guard.NullReference ValuesDict
+        Guard.ExpressionErr .LockType = adLockBatchOptimistic, _
+                            AdoFeatureNotAvailableErr, _
+                            "DbRecordset", _
+                            "Set LockType = adLockBatchOptimistic"
+        Guard.ExpressionErr .State = adStateOpen, _
+                            IncompatibleStatusErr, _
+                            "DbRecordset", _
+                            "Expected AdoRecordset.Status = adStateOpen"
+        '@Ignore ValueRequired: false positive
+        Guard.ExpressionErr AbsolutePosition <= .RecordCount, _
+                            InvalidParameterErr, _
+                            "DbRecordset", _
+                            "AbsolutePosition must be <= AdoRecordset.RecordCount"
+        
+        '@Ignore ValueRequired: False positive
+        NumRecords = AbsolutePosition - .AbsolutePosition
+        '@Ignore ArgumentWithIncompatibleObjectType: False positive
+        .Move NumRecords
+        
+        Dim FieldName As Variant
+        For Each FieldName In ValuesDict.Keys
+            '@Ignore ImplicitDefaultMemberAccess, IndexedDefaultMemberAccess
+            .Fields(FieldName) = ValuesDict(FieldName)
+        Next FieldName
+    End With
+End Sub
+
+
+Private Sub IDbRecordset_UpdateRecordset(ByRef AbsolutePositions() As Long, ByRef RecordsetData() As Variant)
+    Err.Raise 5                                  'TODO implement interface member
+End Sub
+
+
 '================================================================================'
 '========================= AdoRecordset EVENT HANDLERS =========================='
 '================================================================================'
@@ -261,4 +321,14 @@ Private Sub AdoRecordset_FetchComplete(ByVal pError As ADODB.Error, _
     If adStatus = ADODB.EventStatusEnum.adStatusErrorsOccurred And pError Is Nothing Then
         Debug.Print "Error: " & pError.Number, pError.Description, pError.Source, pError.Source
     End If
+End Sub
+
+
+'@Ignore ProcedureNotUsed, ParameterNotUsed, ParameterCanBeByVal
+Private Sub AdoRecordset_RecordsetChangeComplete( _
+                ByVal adReason As ADODB.EventReasonEnum, _
+                ByVal pError As ADODB.Error, _
+                ByRef adStatus As ADODB.EventStatusEnum, _
+                ByVal pRecordset As ADODB.Recordset)
+    Debug.Print "RecordsetChangeComplete"
 End Sub

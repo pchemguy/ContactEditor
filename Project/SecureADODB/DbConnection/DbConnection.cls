@@ -22,22 +22,18 @@ Private WithEvents AdoConnection As ADODB.Connection
 Attribute AdoConnection.VB_VarHelpID = -1
 Private Type TDbConnection
     ExecuteStatus As ADODB.EventStatusEnum
+    '''' This attribute is set to a value received by a Connection event handler
     RecordsAffected As Long
+    '''' This attribute is used to query affected rows count
+    TransRecordsAffected As Long
     '''' If a particular backend does not support transaction, "begin" raises
     '''' an error, and the corresponding handler sets this flag
     TransactionsDisabled As Boolean
     HasActiveTransaction As Boolean
-    StateMap As Variant    '''' Map for ADODB.ObjectStateEnum
     LogController As ILogger
+    Engine As String
 End Type
 Private this As TDbConnection
-
-
-Private Sub Class_Initialize()
-    Set AdoConnection = New ADODB.Connection
-    '@Ignore EmptyStringLiteral
-    this.StateMap = Array("adStateClosed", "adStateOpen", "adStateConnecting", "", "adStateExecuting", "", "", "", "adStateFetching")
-End Sub
 
 
 Private Sub Class_Terminate()
@@ -68,28 +64,27 @@ End Function
 Friend Sub Init(ByVal connString As String, Optional ByVal LogController As ILogger = Nothing)
 Attribute Init.VB_Description = "Default constructor"
     Guard.ConnectionString connString
-    
+
+    Set AdoConnection = New ADODB.Connection
     Set this.LogController = LogController
-    this.TransactionsDisabled = False
     
     On Error GoTo ConnectionError
     AdoConnection.Open connString
     
     Dim TransactionDDL As Long
-    On Error GoTo TransactionCheckError
+    TransactionDDL = 0
+    On Error Resume Next
     '@Ignore ImplicitDefaultMemberAccess, IndexedDefaultMemberAccess
     TransactionDDL = AdoConnection.Properties("Transaction DDL")
     On Error GoTo 0
     this.TransactionsDisabled = IIf(TransactionDDL = 0, True, False)
     
     Exit Sub
-TransactionCheckError:
-    this.TransactionsDisabled = True
-    Resume
     
 ConnectionError:
     If Err.Number = &H80004005 Then
-        Guard.ConnectionString Nothing
+        '''' Raise invalid connection string error
+        Guard.ConnectionString vbNullString
     Else
         Err.Raise Err.Number, Err.Source, Err.Description, Err.HelpFile, Err.HelpContext
     End If
@@ -99,9 +94,14 @@ End Sub
 Private Sub LogAdoErrors()
     If this.LogController Is Nothing Then Exit Sub
     
+    Dim StateMap As Variant
+    StateMap = Array("adStateClosed", "adStateOpen", "adStateConnecting", _
+                     vbNullString, "adStateExecuting", vbNullString, _
+                     vbNullString, vbNullString, "adStateFetching")
+    
     Dim AdoError As ADODB.Error
     Dim Message As String
-    Message = "ADODB.Connection State: " + CStr(this.StateMap(AdoConnection.State))
+    Message = "ADODB.Connection State: " + CStr(StateMap(AdoConnection.State))
     this.LogController.Log Message
     For Each AdoError In AdoConnection.Errors
         With AdoError
@@ -148,6 +148,21 @@ End Property
 
 Private Property Get IDbConnection_RecordsAffected() As Long
     IDbConnection_RecordsAffected = this.RecordsAffected
+End Property
+
+
+Private Property Get IDbConnection_TransRecordsAffected() As Long
+    IDbConnection_TransRecordsAffected = this.TransRecordsAffected
+End Property
+
+
+Private Property Get IDbConnection_Engine() As String
+    IDbConnection_Engine = this.Engine
+End Property
+
+
+Private Property Let IDbConnection_Engine(ByVal EngineName As String)
+    this.Engine = EngineName
 End Property
 
 
@@ -198,46 +213,84 @@ End Sub
 '================================================================================'
 
 
-Private Sub AdoConnection_BeginTransComplete(ByVal TransactionLevel As Long, ByVal pError As ADODB.Error, adStatus As ADODB.EventStatusEnum, ByVal pConnection As ADODB.Connection)
+Private Sub AdoConnection_BeginTransComplete( _
+            ByVal TransactionLevel As Long, _
+            ByVal pError As ADODB.Error, _
+            ByRef adStatus As ADODB.EventStatusEnum, _
+            ByVal pConnection As ADODB.Connection)
     Debug.Print "Begin transaction completed. "
     If Not pError Is Nothing Then Debug.Print "Error: " & pError.Number, pError.Description
 End Sub
 
-Private Sub AdoConnection_CommitTransComplete(ByVal pError As ADODB.Error, adStatus As ADODB.EventStatusEnum, ByVal pConnection As ADODB.Connection)
+Private Sub AdoConnection_CommitTransComplete( _
+            ByVal pError As ADODB.Error, _
+            ByRef adStatus As ADODB.EventStatusEnum, _
+            ByVal pConnection As ADODB.Connection)
     Debug.Print "Commit transaction completed. "
     If Not pError Is Nothing Then Debug.Print "Error: " & pError.Number, pError.Description
 End Sub
 
-Private Sub AdoConnection_RollbackTransComplete(ByVal pError As ADODB.Error, adStatus As ADODB.EventStatusEnum, ByVal pConnection As ADODB.Connection)
+Private Sub AdoConnection_RollbackTransComplete( _
+            ByVal pError As ADODB.Error, _
+            ByRef adStatus As ADODB.EventStatusEnum, _
+            ByVal pConnection As ADODB.Connection)
     Debug.Print "Rollback transaction completed."
     If Not pError Is Nothing Then Debug.Print "Error: " & pError.Number, pError.Description
 End Sub
 
-Private Sub AdoConnection_WillConnect(ConnectionString As String, UserID As String, Password As String, Options As Long, adStatus As ADODB.EventStatusEnum, ByVal pConnection As ADODB.Connection)
+Private Sub AdoConnection_WillConnect( _
+            ByRef ConnectionString As String, _
+            ByRef UserID As String, _
+            ByRef Password As String, _
+            ByRef Options As Long, _
+            ByRef adStatus As ADODB.EventStatusEnum, _
+            ByVal pConnection As ADODB.Connection)
     Debug.Print "Begin connect..."
 End Sub
 
-Private Sub AdoConnection_ConnectComplete(ByVal pError As ADODB.Error, adStatus As ADODB.EventStatusEnum, ByVal pConnection As ADODB.Connection)
+Private Sub AdoConnection_ConnectComplete( _
+            ByVal pError As ADODB.Error, _
+            ByRef adStatus As ADODB.EventStatusEnum, _
+            ByVal pConnection As ADODB.Connection)
     Debug.Print "Connect completed. Status: " & adStatus
     If Not pError Is Nothing Then Debug.Print "Error: " & pError.Number, pError.Description
 End Sub
 
-Private Sub AdoConnection_Disconnect(adStatus As ADODB.EventStatusEnum, ByVal pConnection As ADODB.Connection)
+Private Sub AdoConnection_Disconnect( _
+            ByRef adStatus As ADODB.EventStatusEnum, _
+            ByVal pConnection As ADODB.Connection)
     Debug.Print "Disconnect completed. Status: " & adStatus
 End Sub
 
-Private Sub AdoConnection_WillExecute(Source As String, CursorType As ADODB.CursorTypeEnum, LockType As ADODB.LockTypeEnum, Options As Long, adStatus As ADODB.EventStatusEnum, ByVal pCommand As ADODB.Command, ByVal pRecordset As ADODB.Recordset, ByVal pConnection As ADODB.Connection)
+Private Sub AdoConnection_WillExecute( _
+            ByRef Source As String, _
+            ByRef CursorType As ADODB.CursorTypeEnum, _
+            ByRef LockType As ADODB.LockTypeEnum, _
+            ByRef Options As Long, _
+            ByRef adStatus As ADODB.EventStatusEnum, _
+            ByVal pCommand As ADODB.Command, _
+            ByVal pRecordset As ADODB.Recordset, _
+            ByVal pConnection As ADODB.Connection)
     Debug.Print "Begin execute..."
 End Sub
 
-Private Sub AdoConnection_ExecuteComplete(ByVal RecordsAffected As Long, ByVal pError As ADODB.Error, adStatus As ADODB.EventStatusEnum, ByVal pCommand As ADODB.Command, ByVal pRecordset As ADODB.Recordset, ByVal pConnection As ADODB.Connection)
+Private Sub AdoConnection_ExecuteComplete( _
+            ByVal RecordsAffected As Long, _
+            ByVal pError As ADODB.Error, _
+            ByRef adStatus As ADODB.EventStatusEnum, _
+            ByVal pCommand As ADODB.Command, _
+            ByVal pRecordset As ADODB.Recordset, _
+            ByVal pConnection As ADODB.Connection)
     this.ExecuteStatus = adStatus
     this.RecordsAffected = RecordsAffected
     Debug.Print "Execute completed, " & RecordsAffected & " record(s) affected."
     If Not pError Is Nothing Then Debug.Print "Error: " & pError.Number, pError.Description
 End Sub
 
-Private Sub AdoConnection_InfoMessage(ByVal pError As ADODB.Error, adStatus As ADODB.EventStatusEnum, ByVal pConnection As ADODB.Connection)
+Private Sub AdoConnection_InfoMessage( _
+            ByVal pError As ADODB.Error, _
+            ByRef adStatus As ADODB.EventStatusEnum, _
+            ByVal pConnection As ADODB.Connection)
     If pError.Number = 0 Then
         Debug.Print "Info: " & pError.Description
     Else

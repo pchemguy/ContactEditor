@@ -33,7 +33,6 @@ End Sub
 '@ModuleCleanup
 Private Sub ModuleCleanup()
     Set Assert = Nothing
-    Set Guard = Nothing
 End Sub
 
 

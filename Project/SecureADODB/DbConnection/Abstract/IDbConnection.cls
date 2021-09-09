@@ -29,9 +29,20 @@ Public Property Get ExecuteStatus() As ADODB.EventStatusEnum
 Attribute ExecuteStatus.VB_Description = "Gets the execute completed status of the wrapped ADODB connection."
 End Property
 
-'@Description("Gets the number of affected records.")
+'@Description("Gets the number of affected records [recieved from ADODB]")
 Public Property Get RecordsAffected() As Long
-Attribute RecordsAffected.VB_Description = "Gets the number of affected records."
+Attribute RecordsAffected.VB_Description = "Gets the number of affected records [recieved from ADODB]"
+End Property
+
+'@Description("Gets the number of affected records [via a query]")
+Public Property Get TransRecordsAffected() As Long
+Attribute TransRecordsAffected.VB_Description = "Gets the number of affected records [via a query]"
+End Property
+
+Public Property Get Engine() As String
+End Property
+
+Public Property Let Engine(ByVal EngineName As String)
 End Property
 
 Public Sub BeginTransaction()

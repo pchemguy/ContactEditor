@@ -47,17 +47,15 @@ Private Function IDbCommandBase_CreateCommand( _
     Guard.Expression db.State = adStateOpen, _
                      Source:="DbCommandBase", _
                      Message:="Connection is not open."
-    Guard.EmptyString SQL
-    
     Dim cmd As ADODB.Command
     Set cmd = New ADODB.Command
-    With cmd
-        Set .ActiveConnection = db.AdoConnection
-        .CommandType = CommandType
-        .CommandText = SQL
-        .Prepared = True
-    End With
-    this.ParameterProvider.FromValues cmd, ADODBParamsValues
+    Set cmd.ActiveConnection = db.AdoConnection
+    cmd.Prepared = True
+    If Len(SQL) > 0 Then
+        cmd.CommandType = CommandType
+        cmd.CommandText = SQL
+        this.ParameterProvider.FromValues cmd, ADODBParamsValues
+    End If
     
     Set IDbCommandBase_CreateCommand = cmd
 End Function
