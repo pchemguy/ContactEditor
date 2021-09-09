@@ -168,6 +168,27 @@ Attribute Expression.VB_Description = "Raises a run-time error if the specified 
 End Sub
 
 
+'@Description("Raises a run-time error if the specified expression is false.")
+Friend Sub ExpressionErr(ByVal AssertIsTrue As Boolean, _
+                         ByVal ErrorCode As ErrNo, _
+                         ByVal Source As String, _
+                         ByVal Message As String)
+Attribute ExpressionErr.VB_Description = "Raises a run-time error if the specified expression is false."
+    Dim errorDetails As TError
+    With errorDetails
+        .Trapped = Not AssertIsTrue
+        If .Trapped Then
+            .Name = "CustomErr"
+            .Number = ErrorCode
+            .Source = Source
+            .Message = Message
+            .Description = vbNullString
+            RaiseError errorDetails
+        End If
+    End With
+End Sub
+
+
 '@Description("Raises a run-time InvalidCharcterErr if the specified expression is false.")
 Friend Sub InvalidCharacter(ByVal AssertIsTrue As Boolean, ByVal Source As String, ByVal Message As String)
 Attribute InvalidCharacter.VB_Description = "Raises a run-time InvalidCharcterErr if the specified expression is false."
