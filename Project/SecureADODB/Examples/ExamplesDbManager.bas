@@ -1,8 +1,8 @@
 Attribute VB_Name = "ExamplesDbManager"
 '@Folder "SecureADODB.Examples"
-'@IgnoreModule AssignmentNotUsed, EmptyModule, VariableNotUsed, ProcedureNotUsed
-'@IgnoreModule FunctionReturnValueDiscarded, FunctionReturnValueAlwaysDiscarded
+'@IgnoreModule AssignmentNotUsed, VariableNotUsed, ProcedureNotUsed
 '@IgnoreModule ImplicitDefaultMemberAccess, IndexedDefaultMemberAccess
+'@IgnoreModule FunctionReturnValueDiscarded
 Option Explicit
 Option Private Module
 

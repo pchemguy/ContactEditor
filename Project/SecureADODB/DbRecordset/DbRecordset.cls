@@ -326,6 +326,7 @@ Attribute IDbRecordset_UpdateRecordset.VB_Description = "Updates recordset data 
     Guard.ExpressionErr AdoRecordset.Fields.Count = FieldCount, _
                         IncompatibleArraysErr, "DbRecordset", _
                         "Field count mismatch"
+    '@Ignore ValueRequired: false positive
     Guard.ExpressionErr AdoRecordset.RecordCount = RecordCount, _
                         IncompatibleArraysErr, "DbRecordset", _
                         "Record count mismatch"
@@ -342,14 +343,17 @@ Attribute IDbRecordset_UpdateRecordset.VB_Description = "Updates recordset data 
     '''' Initialize RecordPos to current recordset position. Since setting
     '''' the .AbsolutePosition attribute directly invalidates cache, use
     '''' this value to calculate relative shift for the .Move method
+    '@Ignore ValueRequired: false positive
     RecordPos = AdoRecordset.AbsolutePosition
     '''' Loop through the list of dirty record indices
     For RecordPosIndex = LBound(AbsolutePositions) To UBound(AbsolutePositions)
         NumRecords = AbsolutePositions(RecordPosIndex) - RecordPos
         RecordPos = AbsolutePositions(RecordPosIndex)
+        '@Ignore ArgumentWithIncompatibleObjectType: False positive
         AdoRecordset.Move NumRecords
         '''' Update field values
         For FieldIndex = 1 To FieldCount
+            '@Ignore ImplicitDefaultMemberAccess, IndexedDefaultMemberAccess
             AdoRecordset.Fields(FieldIndex) = RecordsetData(RecordPos, FieldIndex)
         Next FieldIndex
     Next RecordPosIndex

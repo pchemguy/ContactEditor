@@ -1,5 +1,8 @@
 Attribute VB_Name = "ExamplesDbRecordsetUpdate"
 '@Folder "SecureADODB.Examples"
+'@IgnoreModule AssignmentNotUsed, VariableNotUsed, ProcedureNotUsed
+'@IgnoreModule ImplicitDefaultMemberAccess, IndexedDefaultMemberAccess
+'@IgnoreModule FunctionReturnValueDiscarded
 Option Explicit
 Option Private Module
 
