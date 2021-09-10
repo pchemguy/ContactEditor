@@ -317,7 +317,7 @@ End Sub
 '@Description "Updates recordset data from 2D array of field values and an array of dirty record indices"
 Private Sub IDbRecordset_UpdateRecordset(ByRef AbsolutePositions() As Long, _
                                          ByRef RecordsetData() As Variant)
-Attribute IDbRecordset_UpdateRecordset.VB_Description = "Updates recordset data from 2D array of field values and an array of dirty records"
+Attribute IDbRecordset_UpdateRecordset.VB_Description = "Updates recordset data from 2D array of field values and an array of dirty record indices"
     Dim FieldCount As Long
     FieldCount = UBound(RecordsetData, 2) - LBound(RecordsetData, 2) + 1
     Dim RecordCount As Long
