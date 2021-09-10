@@ -139,7 +139,7 @@ End Sub
 
 
 Private Sub TestUpdate()
-    Playground.Range("A1:E1").Value = Array(1, 2, 3, 4, 5)
+    ThisWorkbook.Worksheets("Playground").Range("A1:E1").Value = Array(1, 2, 3, 4, 5)
     Dim Val As Variant
     Dim ColumnIndex As Long
     ColumnIndex = 3 - 1

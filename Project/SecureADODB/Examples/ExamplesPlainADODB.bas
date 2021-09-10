@@ -2,13 +2,14 @@ Attribute VB_Name = "ExamplesPlainADODB"
 '@Folder "SecureADODB.Examples"
 '@IgnoreModule
 Option Explicit
+Option Private Module
 
 Private Const LIB_NAME As String = "SecureADODB"
 Private Const PATH_SEP As String = "\"
 Private Const REL_PREFIX As String = "Library" & PATH_SEP & LIB_NAME & PATH_SEP
 
 
-Public Sub SQLiteRecordSetOpenBasicTest()
+Private Sub SQLiteRecordSetOpenBasicTest()
     Dim sDriver As String
     Dim sDatabase As String
     Dim sDatabaseExt As String
@@ -38,7 +39,7 @@ Public Sub SQLiteRecordSetOpenBasicTest()
 End Sub
 
 
-Public Sub CSVRecordSetOpenBasicTest()
+Private Sub CSVRecordSetOpenBasicTest()
     Dim sDriver As String
     Dim sDatabase As String
     Dim sDatabaseExt As String
@@ -73,7 +74,7 @@ Public Sub CSVRecordSetOpenBasicTest()
 End Sub
 
 
-Public Sub CSVRecordSetOpenBasicTest2()
+Private Sub CSVRecordSetOpenBasicTest2()
     Dim sDriver As String
     Dim sDatabase As String
     Dim sDatabaseExt As String
@@ -119,7 +120,7 @@ Public Sub CSVRecordSetOpenBasicTest2()
 End Sub
 
 
-Public Sub SQLiteRecordSetOpenBasicTest2()
+Private Sub SQLiteRecordSetOpenBasicTest2()
     Dim sDriver As String
     Dim sDatabase As String
     Dim sDatabaseExt As String
@@ -151,7 +152,7 @@ Public Sub SQLiteRecordSetOpenBasicTest2()
 End Sub
 
 
-Public Sub SQLiteRecordSetOpenTest()
+Private Sub SQLiteRecordSetOpenTest()
     Dim sDriver As String
     Dim sOptions As String
     Dim sDatabase As String
@@ -191,7 +192,7 @@ Public Sub SQLiteRecordSetOpenTest()
 End Sub
 
 
-Public Sub SQLiteRecordSetOpenCommandSourceTest()
+Private Sub SQLiteRecordSetOpenCommandSourceTest()
     Dim sDriver As String
     Dim sOptions As String
     Dim sDatabase As String
@@ -233,12 +234,11 @@ Public Sub SQLiteRecordSetOpenCommandSourceTest()
         Set .ActiveConnection = Nothing
     End With
     AdoCommand.ActiveConnection.Close
-    
 End Sub
 
 
 ' Could not make it to work with named parameters
-Public Sub SQLiteRecordSetOpenCommandSourceTwoParameterTest()
+Private Sub SQLiteRecordSetOpenCommandSourceTwoParameterTest()
     Dim sDriver As String
     Dim sOptions As String
     Dim sDatabase As String
@@ -292,7 +292,7 @@ Public Sub SQLiteRecordSetOpenCommandSourceTwoParameterTest()
 End Sub
 
 
-Public Sub SQLiteRecordSetOpenCmdSrc2ParamsTest()
+Private Sub SQLiteRecordSetOpenCmdSrc2ParamsTest()
     Dim sDriver As String
     Dim sOptions As String
     Dim sDatabase As String
@@ -313,8 +313,6 @@ Public Sub SQLiteRecordSetOpenCmdSrc2ParamsTest()
     
     sSQL = "SELECT * FROM people WHERE id <= ? AND last_name <> ?"
     
-    Dim AdoRecordset As ADODB.Recordset
-    Set AdoRecordset = New ADODB.Recordset
     Dim AdoCommand As ADODB.Command
     Set AdoCommand = New ADODB.Command
     
@@ -333,6 +331,8 @@ Public Sub SQLiteRecordSetOpenCmdSrc2ParamsTest()
         .ActiveConnection.CursorLocation = adUseClient
     End With
         
+    Dim AdoRecordset As ADODB.Recordset
+    Set AdoRecordset = New ADODB.Recordset
     With AdoRecordset
         Set .Source = AdoCommand
         .CursorLocation = adUseClient
@@ -341,6 +341,37 @@ Public Sub SQLiteRecordSetOpenCmdSrc2ParamsTest()
         .Open Options:=adAsyncFetch
         Set .ActiveConnection = Nothing
     End With
-    AdoCommand.ActiveConnection.Close
+    Set AdoCommand.ActiveConnection = Nothing
+
     Debug.Print "RecordCount: " & CStr(AdoRecordset.RecordCount)
+'    DbRecordset.RecordsetToQT Buffer.Range("A1"), AdoRecordset
+End Sub
+
+
+Private Sub SQLiteConnectionTest()
+    Dim sDriver As String
+    Dim sOptions As String
+    Dim sDatabase As String
+
+    Dim adoConnStr As String
+    Dim qtConnStr As String
+    Dim sSQL As String
+    Dim sQTName As String
+    
+    sDatabase = ThisWorkbook.Path & PATH_SEP & REL_PREFIX & LIB_NAME & ".db"
+    sDriver = "SQLite3 ODBC Driver"
+    sOptions = "SyncPragma=NORMAL;FKSupport=True;"
+    adoConnStr = "Driver=" + sDriver + ";" + _
+                 "Database=" + sDatabase + ";" + _
+                 sOptions
+
+    qtConnStr = "OLEDB;" + adoConnStr
+    
+    Dim AdoConnection As ADODB.Connection
+    Set AdoConnection = New ADODB.Connection
+    With AdoConnection
+        .ConnectionString = adoConnStr
+        .CursorLocation = adUseClient
+        .Open
+    End With
 End Sub

@@ -33,3 +33,11 @@ End Function
 Private Sub IDbCommand_ExecuteNonQuery(ByVal SQL As String, ParamArray ADODBParamsValues() As Variant)
     this.ExecuteNonQueryInvokes = this.ExecuteNonQueryInvokes + 1
 End Sub
+
+Private Property Get IDbCommand_Connection() As IDbConnection
+    Set IDbCommand_Connection = New DbConnection
+End Property
+
+Private Property Get IDbCommand_SQL() As String
+    IDbCommand_SQL = vbNullString
+End Property

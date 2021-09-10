@@ -295,6 +295,7 @@ End Function
 ''''
 '@Description("Tests if argument is falsy: 0, False, vbNullString, Empty, Null, Nothing")
 Public Function IsFalsy(ByVal arg As Variant) As Boolean
+Attribute IsFalsy.VB_Description = "Tests if argument is falsy: 0, False, vbNullString, Empty, Null, Nothing"
     Select Case VarType(arg)
         Case vbEmpty, vbNull
             IsFalsy = True

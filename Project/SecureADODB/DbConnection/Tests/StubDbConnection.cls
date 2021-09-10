@@ -20,6 +20,8 @@ Private stubConnection As ADODB.Connection
 Private beganTransaction As Boolean
 Private committedTransaction As Boolean
 Private rolledBackTransaction As Boolean
+Private Engine As String
+Private ExpectedRecordsAffectedInvokes As Long
 
 
 Public Property Get State() As ADODB.ObjectStateEnum
@@ -83,3 +85,23 @@ Private Sub IDbConnection_RollbackTransaction()
     Guard.NotInTransaction beganTransaction And Not committedTransaction And Not rolledBackTransaction
     rolledBackTransaction = True
 End Sub
+
+Private Property Get IDbConnection_TransRecordsAffected() As Long
+    IDbConnection_TransRecordsAffected = 1
+End Property
+
+Private Property Get IDbConnection_Engine() As String
+    IDbConnection_Engine = Engine
+End Property
+
+Private Property Let IDbConnection_Engine(ByVal EngineName As String)
+    Engine = EngineName
+End Property
+
+Private Property Get IDbConnection_ExpectedRecordsAffected() As Long
+    IDbConnection_ExpectedRecordsAffected = 1
+End Property
+
+Private Property Let IDbConnection_ExpectedRecordsAffected(ByVal Value As Long)
+    ExpectedRecordsAffectedInvokes = ExpectedRecordsAffectedInvokes + 1
+End Property

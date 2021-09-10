@@ -33,7 +33,6 @@ End Sub
 '@ModuleCleanup
 Private Sub ModuleCleanup()
     Set Assert = Nothing
-    Set Guard = Nothing
 End Sub
 
 
@@ -374,6 +373,31 @@ Assert:
     Assert.AreEqual vbNullString, AdoParams(1).Value, "Parameter #2 value mismatch"
     Assert.AreEqual adVarWChar, AdoParams(1).Type, "Parameter #2 type mismatch"
     Assert.AreEqual 1, AdoParams(1).Size, "Parameter #2 size mismatch"
+
+CleanExit:
+    Exit Sub
+TestFail:
+    Assert.Fail "Error: " & Err.Number & " - " & Err.Description
+End Sub
+
+
+'@TestMethod("SQL")
+Private Sub ztcGetSQL_VerifiesQuery()
+    On Error GoTo TestFail
+
+Arrange:
+    Dim sut As IDbParameters
+    Set sut = zfxGetSUT
+    Dim cmd As ADODB.Command
+    Set cmd = zfxGetAdoCommandWith2PlaceHolders()
+    sut.FromValues cmd, 19, "John"
+    Dim Expected As String
+    Expected = "SELECT * FROM people WHERE id <= 19 AND last_name <> 'John'"
+Act:
+    Dim Actual As String
+    Actual = sut.GetSQL(cmd)
+Assert:
+    Assert.AreEqual Expected, Actual, "SQLQuery text mismatch"
 
 CleanExit:
     Exit Sub

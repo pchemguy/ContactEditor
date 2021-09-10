@@ -55,7 +55,11 @@ Assert:
 CleanExit:
     Exit Sub
 TestFail:
-    Assert.Fail "Error: " & Err.Number & " - " & Err.Description
+    If Err.Number = ErrNo.FileNotFoundErr Then
+        Assert.Inconclusive "Target file not found. This test require particular settings and this error may be ignored"
+    Else
+        Assert.Fail "Error: " & Err.Number & " - " & Err.Description
+    End If
 End Sub
 
 
@@ -80,7 +84,11 @@ Assert:
 CleanExit:
     Exit Sub
 TestFail:
-    Assert.Fail "Error: " & Err.Number & " - " & Err.Description
+    If Err.Number = ErrNo.FileNotFoundErr Then
+        Assert.Inconclusive "Target file not found. This test require particular settings and this error may be ignored"
+    Else
+        Assert.Fail "Error: " & Err.Number & " - " & Err.Description
+    End If
 End Sub
 
 
@@ -112,7 +120,11 @@ Assert:
 CleanExit:
     Exit Sub
 TestFail:
-    Assert.Fail "Error: " & Err.Number & " - " & Err.Description
+    If Err.Number = ErrNo.FileNotFoundErr Then
+        Assert.Inconclusive "Target file not found. This test require particular settings and this error may be ignored"
+    Else
+        Assert.Fail "Error: " & Err.Number & " - " & Err.Description
+    End If
 End Sub
 
 
@@ -155,5 +167,3 @@ Private Sub ztcConnectionString_ThrowsForXLSBackend()
     ConnectionString = DbConnectionString.CreateFileDb("xls").ConnectionString
     Guard.AssertExpectedError Assert, ErrNo.NotImplementedErr
 End Sub
-
-

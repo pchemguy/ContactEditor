@@ -19,6 +19,7 @@ Public Enum ErrNo
     CustomErr = VBA.vbObjectError + 1000&
     NotImplementedErr = VBA.vbObjectError + 1001&
     IncompatibleArraysErr = VBA.vbObjectError + 1002&
+    IncompatibleStatusErr = VBA.vbObjectError + 1003&
     DefaultInstanceErr = VBA.vbObjectError + 1011&
     NonDefaultInstanceErr = VBA.vbObjectError + 1012&
     EmptyStringErr = VBA.vbObjectError + 1013&

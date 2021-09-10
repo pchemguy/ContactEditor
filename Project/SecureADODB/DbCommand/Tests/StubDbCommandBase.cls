@@ -64,3 +64,7 @@ Private Function IDbCommandBase_UpdateCommand(ByVal cmd As ADODB.Command, _
     End If
     Set IDbCommandBase_UpdateCommand = cmd
 End Function
+
+Private Function IDbCommandBase_GetSQL(ByVal AdoCommand As ADODB.Command) As String
+    IDbCommandBase_GetSQL = AdoCommand.CommandText
+End Function

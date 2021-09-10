@@ -120,7 +120,7 @@ Private Sub ztcCommit_ThrowsIfAlreadyRolledBack()
     Dim sut As IDbManager
     Set sut = DbManager.Create(stubConnection, New StubDbCommandFactory)
     
-    sut.Rollback
+    sut.ROLLBACK
     sut.Commit
     Guard.AssertExpectedError Assert, ErrNo.AdoInvalidTransactionErr
 End Sub
@@ -137,7 +137,7 @@ Private Sub ztcRollback_ThrowsIfAlreadyCommitted()
     Set sut = DbManager.Create(stubConnection, New StubDbCommandFactory)
     
     sut.Commit
-    sut.Rollback
+    sut.ROLLBACK
     Guard.AssertExpectedError Assert, ErrNo.AdoInvalidTransactionErr
 End Sub
 
@@ -151,7 +151,7 @@ Private Sub ztcRollback_RollbacksTransaction()
     Set sut = DbManager.Create(stubConnection, New StubDbCommandFactory)
     
     sut.Begin
-    sut.Rollback
+    sut.ROLLBACK
     
     Assert.IsTrue stubConnection.DidRollBackTransaction
 End Sub

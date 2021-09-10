@@ -137,7 +137,7 @@ End Sub
 
 
 Public Function AdoCommandInit(ByVal SQLQuery As String, _
-                               Optional ByVal CursorLocation As ADODB.CursorLocationEnum = adUseClient) As ADODB.Command
+                      Optional ByVal CursorLocation As ADODB.CursorLocationEnum = adUseClient) As ADODB.Command
     If Not this.AdoCommand Is Nothing Then
         On Error Resume Next
         this.AdoCommand.ActiveConnection.Close

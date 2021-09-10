@@ -32,13 +32,6 @@ Private Sub ModuleCleanup()
 End Sub
 
 
-Private Sub DefaultMapping_MapsType(ByVal Name As String)
-    Dim sut As ITypeMap
-    Set sut = AdoTypeMappings.Default
-    Assert.IsTrue sut.IsMapped(Name)
-End Sub
-
-
 '@TestMethod("Type Mappings")
 Private Sub Mapping_ThrowsIfUndefined()
     On Error GoTo TestFail
@@ -64,156 +57,62 @@ End Sub
 
 
 '@TestMethod("Default Type Mappings")
-Private Sub DefaultMapping_MapsBoolean()
-    Dim Value As Boolean
-    DefaultMapping_MapsType TypeName(Value)
-End Sub
-
-
-'@TestMethod("Default Type Mappings")
-Private Sub DefaultMapping_MapsByte()
-    Dim Value As Byte
-    DefaultMapping_MapsType TypeName(Value)
-End Sub
-
-'@TestMethod("Default Type Mappings")
-Private Sub DefaultMapping_MapsCurrency()
-    Dim Value As Currency
-    DefaultMapping_MapsType TypeName(Value)
-End Sub
-
-'@TestMethod("Default Type Mappings")
-Private Sub DefaultMapping_MapsDate()
-    Dim Value As Date
-    DefaultMapping_MapsType TypeName(Value)
-End Sub
-
-'@TestMethod("Default Type Mappings")
-Private Sub DefaultMapping_MapsDouble()
-    Dim Value As Double
-    DefaultMapping_MapsType TypeName(Value)
-End Sub
-
-'@TestMethod("Default Type Mappings")
-Private Sub DefaultMapping_MapsInteger()
-    Dim Value As Integer
-    DefaultMapping_MapsType TypeName(Value)
-End Sub
-
-'@TestMethod("Default Type Mappings")
-Private Sub DefaultMapping_MapsLong()
-    Dim Value As Long
-    DefaultMapping_MapsType TypeName(Value)
-End Sub
-
-'@TestMethod("Default Type Mappings")
-Private Sub DefaultMapping_MapsSingle()
-    Dim Value As Single
-    DefaultMapping_MapsType TypeName(Value)
-End Sub
-
-'@TestMethod("Default Type Mappings")
-Private Sub DefaultMapping_MapsString()
-    Dim Value As String
-    DefaultMapping_MapsType TypeName(Value)
-End Sub
-
-'@TestMethod("Default Type Mappings")
-Private Sub DefaultMapping_MapsEmpty()
-    Dim Value As Variant
-    DefaultMapping_MapsType TypeName(Value)
-End Sub
-
-'@TestMethod("Default Type Mappings")
-Private Sub DefaultMapping_MapsNull()
-    Dim Value As Variant
-    Value = Null
-    DefaultMapping_MapsType TypeName(Value)
-End Sub
-
-Private Function GetDefaultMappingFor(ByVal Name As String) As ADODB.DataTypeEnum
-    On Error GoTo CleanFail
+Private Sub DefaultMapping_MapsTypes()
     Dim sut As ITypeMap
     Set sut = AdoTypeMappings.Default
-    GetDefaultMappingFor = sut.Mapping(Name)
-    Exit Function
-CleanFail:
-    Assert.Inconclusive "Default mapping is undefined for '" & Name & "'."
-End Function
-
-'@TestMethod("Default Type Mappings")
-Private Sub DefaultMappingForBoolean_MapsTo_adBoolean()
-    Const Expected = adBoolean
-    Dim Value As Boolean
-    Assert.AreEqual Expected, GetDefaultMappingFor(TypeName(Value))
+    
+    Dim BooleanValue As Boolean
+    Assert.IsTrue sut.IsMapped(TypeName(BooleanValue)), "Boolean is not mapped"
+    Assert.AreEqual adBoolean, sut.Mapping(TypeName(BooleanValue)), "Expected Boolean->adBoolean"
+    
+    Dim ByteValue As Byte
+    Assert.IsTrue sut.IsMapped(TypeName(ByteValue)), "Byte is not mapped"
+    Assert.AreEqual adInteger, sut.Mapping(TypeName(ByteValue)), "Expected Byte->adInteger"
+    
+    Dim CurrencyValue As Currency
+    Assert.IsTrue sut.IsMapped(TypeName(CurrencyValue)), "Currency is not mapped"
+    Assert.AreEqual adCurrency, sut.Mapping(TypeName(CurrencyValue)), "Expected Currency->adCurrency"
+    
+    Dim DateValue As Date
+    Assert.IsTrue sut.IsMapped(TypeName(DateValue)), "Date is not mapped"
+    Assert.AreEqual adDate, sut.Mapping(TypeName(DateValue)), "Expected Date->adDate"
+    
+    Dim DoubleValue As Double
+    Assert.IsTrue sut.IsMapped(TypeName(DoubleValue)), "Double is not mapped"
+    Assert.AreEqual adDouble, sut.Mapping(TypeName(DoubleValue)), "Expected Double->adDouble"
+    
+    Dim IntegerValue As Integer
+    Assert.IsTrue sut.IsMapped(TypeName(IntegerValue)), "Integer is not mapped"
+    Assert.AreEqual adInteger, sut.Mapping(TypeName(IntegerValue)), "Expected Integer->adInteger"
+    
+    Dim LongValue As Long
+    Assert.IsTrue sut.IsMapped(TypeName(LongValue)), "Long is not mapped"
+    Assert.AreEqual adInteger, sut.Mapping(TypeName(LongValue)), "Expected Long->adInteger"
+    
+    Dim SingleValue As Single
+    Assert.IsTrue sut.IsMapped(TypeName(SingleValue)), "Single is not mapped"
+    Assert.AreEqual adSingle, sut.Mapping(TypeName(SingleValue)), "Expected Single->adSingle"
+    
+    Dim StringValue As String
+    Assert.IsTrue sut.IsMapped(TypeName(StringValue)), "String is not mapped"
+    Assert.AreEqual adVarWChar, sut.Mapping(TypeName(StringValue)), "Expected String->adVarWChar"
+    
+    Assert.IsTrue sut.IsMapped(TypeName(Empty)), "Empty is not mapped"
+    Assert.AreEqual adVarChar, sut.Mapping(TypeName(Empty)), "Expected Empty->adVarChar"
+    
+    Dim NullValue As Variant
+    NullValue = Null
+    Assert.IsTrue sut.IsMapped(TypeName(NullValue)), "Null is not mapped"
+    Assert.AreEqual adVarChar, sut.Mapping(TypeName(NullValue)), "Expected Null->adVarChar"
 End Sub
 
-'@TestMethod("Default Type Mappings")
-Private Sub DefaultMappingForByte_MapsTo_adInteger()
-    Const Expected = adInteger
-    Dim Value As Byte
-    Assert.AreEqual Expected, GetDefaultMappingFor(TypeName(Value))
-End Sub
 
 '@TestMethod("Default Type Mappings")
-Private Sub DefaultMappingForCurrency_MapsTo_adCurrency()
-    Const Expected = adCurrency
-    Dim Value As Currency
-    Assert.AreEqual Expected, GetDefaultMappingFor(TypeName(Value))
-End Sub
-
-'@TestMethod("Default Type Mappings")
-Private Sub DefaultMappingForDate_MapsTo_adDate()
-    Const Expected = adDate
-    Dim Value As Date
-    Assert.AreEqual Expected, GetDefaultMappingFor(TypeName(Value))
-End Sub
-
-'@TestMethod("Default Type Mappings")
-Private Sub DefaultMappingForDouble_MapsTo_adDouble()
-    Const Expected = adDouble
-    Dim Value As Double
-    Assert.AreEqual Expected, GetDefaultMappingFor(TypeName(Value))
-End Sub
-
-'@TestMethod("Default Type Mappings")
-Private Sub DefaultMappingForInteger_MapsTo_adInteger()
-    Const Expected = adInteger
-    Dim Value As Integer
-    Assert.AreEqual Expected, GetDefaultMappingFor(TypeName(Value))
-End Sub
-
-'@TestMethod("Default Type Mappings")
-Private Sub DefaultMappingForLong_MapsTo_adInteger()
-    Const Expected = adInteger
-    Dim Value As Long
-    Assert.AreEqual Expected, GetDefaultMappingFor(TypeName(Value))
-End Sub
-
-'@TestMethod("Default Type Mappings")
-Private Sub DefaultMappingForNull_MapsTo_DefaultNullMapping()
-    Dim Expected As ADODB.DataTypeEnum
-    Expected = AdoTypeMappings.DefaultNullMapping
-    Assert.AreEqual Expected, GetDefaultMappingFor(TypeName(Null))
-End Sub
-
-'@TestMethod("Default Type Mappings")
-Private Sub DefaultMappingForEmpty_MapsTo_DefaultNullMapping()
-    Dim Expected As ADODB.DataTypeEnum
-    Expected = AdoTypeMappings.DefaultNullMapping
-    Assert.AreEqual Expected, GetDefaultMappingFor(TypeName(Empty))
-End Sub
-
-'@TestMethod("Default Type Mappings")
-Private Sub DefaultMappingForSingle_MapsTo_adSingle()
-    Const Expected = adSingle
-    Dim Value As Single
-    Assert.AreEqual Expected, GetDefaultMappingFor(TypeName(Value))
-End Sub
-
-'@TestMethod("Default Type Mappings")
-Private Sub DefaultMappingForString_MapsTo_adVarWChar()
-    Const Expected = adVarWChar
-    Dim Value As String
-    Assert.AreEqual Expected, GetDefaultMappingFor(TypeName(Value))
+Private Sub CSVMapping_MapsTypes()
+    Dim sut As ITypeMap
+    Set sut = AdoTypeMappings.CSV
+    
+    Dim StringValue As String
+    Assert.IsTrue sut.IsMapped(TypeName(StringValue)), "String is not mapped"
+    Assert.AreEqual adVarChar, sut.Mapping(TypeName(StringValue)), "Expected String->adVarChar for CSV"
 End Sub

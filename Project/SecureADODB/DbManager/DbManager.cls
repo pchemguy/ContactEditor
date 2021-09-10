@@ -9,7 +9,7 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = True
 Attribute VB_Description = "An object that encapsulates a database transaction."
 '@Folder "SecureADODB.DbManager"
-'@ModuleDescription("An object that encapsulates a database transaction.")
+'@ModuleDescription "An object that encapsulates a database transaction."
 '@PredeclaredId
 '@Exposed
 Option Explicit
@@ -117,6 +117,7 @@ Attribute CreateFileDb.VB_Description = "Factory for file-based databases"
     Set DbConnStr = DbConnectionString.CreateFileDb(DbType, DbFileName, , ConnectionOptions)
     Dim db As IDbConnection
     Set db = DbConnection.Create(DbConnStr.ConnectionString, LogController)
+    db.Engine = DbType
     
     Dim Instance As DbManager
     Set Instance = DbManager.Create(db, Factory, LogController)
@@ -175,6 +176,7 @@ Private Sub IDbManager_Commit()
     this.Connection.CommitTransaction
 End Sub
 
+'@Ignore ProcedureNotUsed
 Private Sub IDbManager_Rollback()
     this.Connection.RollbackTransaction
 End Sub

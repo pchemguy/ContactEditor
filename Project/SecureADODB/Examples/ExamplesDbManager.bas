@@ -1,10 +1,10 @@
 Attribute VB_Name = "ExamplesDbManager"
 '@Folder "SecureADODB.Examples"
-'@IgnoreModule AssignmentNotUsed, EmptyModule, VariableNotUsed, ProcedureNotUsed
-'@IgnoreModule FunctionReturnValueDiscarded, FunctionReturnValueAlwaysDiscarded
+'@IgnoreModule AssignmentNotUsed, VariableNotUsed, ProcedureNotUsed
 '@IgnoreModule ImplicitDefaultMemberAccess, IndexedDefaultMemberAccess
+'@IgnoreModule FunctionReturnValueDiscarded
 Option Explicit
-
+Option Private Module
 
 Private Const LIB_NAME As String = "SecureADODB"
 Private Const PATH_SEP As String = "\"
@@ -270,57 +270,4 @@ Private Sub CSVTwoParameterQueryTableTest()
     Dim rstAdo As ADODB.Recordset
     
     Set rstAdo = rst.OpenRecordset(SQLQuery, 45, "South Korea")
-End Sub
-
-
-Private Sub SQLiteTwoParameterQueryTableUpdateRstTest()
-    Dim FileName As String
-    FileName = REL_PREFIX & LIB_NAME & ".db"
-
-    Dim TableName As String
-    TableName = "people"
-    Dim SQLQuery As String
-    SQLQuery = "SELECT * FROM " & TableName & " WHERE age >= ? AND country = ?"
-    
-    Dim dbm As IDbManager
-    Set dbm = DbManager.CreateFileDb("sqlite", FileName, vbNullString, LoggerTypeEnum.logPrivate)
-
-    Dim Log As ILogger
-    Set Log = dbm.LogController
-
-    Dim conn As IDbConnection
-    Set conn = dbm.Connection
-    Dim connAdo As ADODB.Connection
-    Set connAdo = conn.AdoConnection
-    
-    Dim cmd As IDbCommand
-    Set cmd = dbm.Command
-    Dim cmdAdo As ADODB.Command
-    Set cmdAdo = cmd.AdoCommand(SQLQuery, 45, "South Korea")
-    
-    Dim rst As IDbRecordset
-    Set rst = dbm.Recordset(Disconnected:=True, CacheSize:=10, LockType:=adLockBatchOptimistic)
-    Dim rstAdo As ADODB.Recordset
-    Set rstAdo = rst.OpenRecordset(SQLQuery, 45, "South Korea")
-    
-    Dim TargetRecordIndex As Long
-    
-    With rstAdo
-        TargetRecordIndex = 2
-        .Move (TargetRecordIndex - .AbsolutePosition)
-        .Fields(1) = .Fields(1) & "XXX"
-        .Fields("last_name") = .Fields("last_name") & "YYY"
-    
-        TargetRecordIndex = 4
-        .Move (TargetRecordIndex - .AbsolutePosition)
-        .Fields(1) = .Fields(1) & "XXX"
-        .Fields("last_name") = .Fields("last_name") & "YYY"
-    End With
-    
-    Dim WSQueryTable As Excel.QueryTable
-    Set WSQueryTable = rst.RecordsetToQT(Buffer.Range("A1"))
-        
-    rstAdo.MarshalOptions = adMarshalModifiedOnly
-    Set rstAdo.ActiveConnection = connAdo
-    rstAdo.UpdateBatch
 End Sub

@@ -24,3 +24,10 @@ End Function
 Public Sub ExecuteNonQuery(ByVal SQL As String, ParamArray ADODBParamsValues())
 Attribute ExecuteNonQuery.VB_Description = "Executes the specified parameterized SQL statement/command."
 End Sub
+
+Public Property Get Connection() As IDbConnection
+End Property
+
+Public Property Get SQL() As String
+End Property
+
