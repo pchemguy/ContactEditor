@@ -19,5 +19,3 @@ Public Function CreateInstance(ByVal Model As DataTableModel, _
                                ByVal ConnectionString As String, _
                                ByVal TableName As String) As IDataTableStorage
 End Function
-
-

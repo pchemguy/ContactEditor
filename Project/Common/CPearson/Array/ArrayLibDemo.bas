@@ -1135,5 +1135,3 @@ Public Sub DemoGetRow()
         Debug.Print "Error from GetColumn"
     End If
 End Sub
-
-

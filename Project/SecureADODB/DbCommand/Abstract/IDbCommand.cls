@@ -30,4 +30,3 @@ End Property
 
 Public Property Get SQL() As String
 End Property
-

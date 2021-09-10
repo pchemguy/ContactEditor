@@ -86,7 +86,7 @@ Attribute PersistRecordsetChanges.VB_Description = "Executes transaction wrapped
         '''' Marshal dirty records only
         .MarshalOptions = adMarshalModifiedOnly
         Set .ActiveConnection = this.cmd.Connection.AdoConnection
-        On Error GoTo ROLLBACK
+        On Error GoTo Rollback
         '''' Set the expected count of affected rows in the DbConnection object
         db.ExpectedRecordsAffected = DirtyRecordCount
         '''' Wrap update in a transaction
@@ -99,7 +99,7 @@ Attribute PersistRecordsetChanges.VB_Description = "Executes transaction wrapped
     
     Exit Sub
     
-ROLLBACK:
+Rollback:
     this.cmd.Connection.RollbackTransaction
     With Err
         .Raise .Number, .Source, .Description, .HelpFile, .HelpContext

@@ -18,4 +18,3 @@ End Sub
 
 Public Function GetSQL(ByVal AdoCommand As ADODB.Command) As String
 End Function
-

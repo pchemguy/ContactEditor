@@ -23,4 +23,3 @@ End Property
 Public Property Get IsMapped(ByVal Name As String) As Boolean
 Attribute IsMapped.VB_Description = "True if the specified data type name is mapped to an ADODB.DataTypeEnum value."
 End Property
-

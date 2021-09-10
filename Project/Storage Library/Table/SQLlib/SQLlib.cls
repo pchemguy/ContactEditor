@@ -137,4 +137,3 @@ Public Function UpdateSingleRecord(ByVal FieldNames As Variant) As String
                          "SET (" & SetFieldList & ") = (" & ValuePlaceholderList & ") " & _
                          "WHERE [" & PKName & "] = ?"
 End Function
-
