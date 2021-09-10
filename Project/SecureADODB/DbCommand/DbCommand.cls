@@ -77,3 +77,8 @@ End Sub
 Private Property Get IDbCommand_Connection() As IDbConnection
     Set IDbCommand_Connection = this.Connection
 End Property
+
+
+Private Property Get IDbCommand_SQL() As String
+    IDbCommand_SQL = this.Base.GetSQL(this.cmd)
+End Property

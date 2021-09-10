@@ -16,3 +16,6 @@ Option Explicit
 Public Sub FromValues(ByVal AdoCommand As ADODB.Command, ParamArray ADODBParamsValues())
 End Sub
 
+Public Function GetSQL(ByVal AdoCommand As ADODB.Command) As String
+End Function
+

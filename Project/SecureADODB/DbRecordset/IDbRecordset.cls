@@ -16,6 +16,9 @@ Attribute VB_Description = "Represents an object that wraps an ADODB recordset."
 Option Explicit
 
 
+Public Property Get cmd() As IDbCommand
+End Property
+
 Public Property Get AdoRecordset() As ADODB.Recordset
 End Property
 

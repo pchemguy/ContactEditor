@@ -23,11 +23,10 @@ Public Function CreateCommand(ByVal db As IDbConnection, _
 Attribute CreateCommand.VB_Description = "Creates and returns an ADODB.Command, without executing it."
 End Function
 
-
 Public Function UpdateCommand(ByVal cmd As ADODB.Command, _
                               ByVal SQL As String, _
                               ByRef ADODBParamsValues() As Variant) As ADODB.Command
 End Function
 
-
-
+Public Function GetSQL(ByVal AdoCommand As ADODB.Command) As String
+End Function

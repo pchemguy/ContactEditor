@@ -187,6 +187,11 @@ Private Function IDbRecordset_RecordsetToQT(ByVal OutputRange As Excel.Range) As
 End Function
 
 
+Private Property Get IDbRecordset_cmd() As IDbCommand
+    Set IDbRecordset_cmd = this.cmd
+End Property
+
+
 Private Property Get IDbRecordset_AdoRecordset() As ADODB.Recordset
     Set IDbRecordset_AdoRecordset = AdoRecordset
 End Property
@@ -334,7 +339,10 @@ Attribute IDbRecordset_UpdateRecordset.VB_Description = "Updates recordset data 
                         "DbRecordset", "Records dimension should be 1-based"
     Guard.ExpressionErr LBound(RecordsetData, 2) = 1, IncompatibleArraysErr, _
                         "DbRecordset", "Fields dimension should be 1-based"
-    
+    Guard.ExpressionErr AbsolutePositions(UBound(AbsolutePositions)) <= RecordCount, _
+                        SubscriptOutOfRange, "DbRecordset", _
+                        "Record position out of range"
+
     Dim RecordPos As Long  '''' Current AbsolutePosition
     Dim FieldIndex As Long
     Dim RecordPosIndex As Long '''' Index of AbsolutePosition in dirty records
@@ -343,6 +351,7 @@ Attribute IDbRecordset_UpdateRecordset.VB_Description = "Updates recordset data 
     '''' Initialize RecordPos to current recordset position. Since setting
     '''' the .AbsolutePosition attribute directly invalidates cache, use
     '''' this value to calculate relative shift for the .Move method
+    AdoRecordset.MoveFirst
     '@Ignore ValueRequired: false positive
     RecordPos = AdoRecordset.AbsolutePosition
     '''' Loop through the list of dirty record indices
@@ -354,7 +363,7 @@ Attribute IDbRecordset_UpdateRecordset.VB_Description = "Updates recordset data 
         '''' Update field values
         For FieldIndex = 1 To FieldCount
             '@Ignore ImplicitDefaultMemberAccess, IndexedDefaultMemberAccess
-            AdoRecordset.Fields(FieldIndex) = RecordsetData(RecordPos, FieldIndex)
+            AdoRecordset.Fields(FieldIndex - 1) = RecordsetData(RecordPos, FieldIndex)
         Next FieldIndex
     Next RecordPosIndex
     
@@ -396,11 +405,11 @@ Private Sub AdoRecordset_FetchComplete(ByVal pError As ADODB.Error, _
 End Sub
 
 
-'@Ignore ProcedureNotUsed, ParameterNotUsed, ParameterCanBeByVal
-Private Sub AdoRecordset_RecordsetChangeComplete( _
-                ByVal adReason As ADODB.EventReasonEnum, _
-                ByVal pError As ADODB.Error, _
-                ByRef adStatus As ADODB.EventStatusEnum, _
-                ByVal pRecordset As ADODB.Recordset)
-    Debug.Print "RecordsetChangeComplete"
-End Sub
+'''@Ignore ProcedureNotUsed, ParameterNotUsed, ParameterCanBeByVal
+''Private Sub AdoRecordset_RecordsetChangeComplete( _
+''                ByVal adReason As ADODB.EventReasonEnum, _
+''                ByVal pError As ADODB.Error, _
+''                ByRef adStatus As ADODB.EventStatusEnum, _
+''                ByVal pRecordset As ADODB.Recordset)
+''    Debug.Print "RecordsetChangeComplete"
+''End Sub

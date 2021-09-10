@@ -28,3 +28,6 @@ End Sub
 Public Property Get Connection() As IDbConnection
 End Property
 
+Public Property Get SQL() As String
+End Property
+

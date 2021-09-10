@@ -102,6 +102,8 @@ End Function
 Friend Function ValidateParameterValues(ByVal cmd As ADODB.Command, _
                                         ParamArray ADODBParamsValues()) As Long
 Attribute ValidateParameterValues.VB_Description = "Validates ValueCount, ParamCount (if >0), and PlaceHolderCount (in SQL)"
+    Guard.NullReference cmd
+    
     Dim Values() As Variant
     Values = UnfoldParamArray(ADODBParamsValues)
 
@@ -233,3 +235,32 @@ Attribute IDbParameters_FromValues.VB_Description = "Creates or updates ADODB.Pa
         Next ValueIndex
     End If
 End Sub
+
+
+Private Function IDbParameters_GetSQL(ByVal AdoCommand As ADODB.Command) As String
+    Guard.NullReference AdoCommand
+
+    Dim ParameterCount As Long
+    ParameterCount = AdoCommand.Parameters.Count
+    Dim SQLQuery As String
+    SQLQuery = AdoCommand.CommandText
+    
+    If Len(SQLQuery) = 0 Or ParameterCount = 0 Then
+        IDbParameters_GetSQL = AdoCommand.CommandText
+        Exit Function
+    End If
+    
+    Dim ParamValue As Variant
+    Dim ParameterIndex As Long
+    For ParameterIndex = 0 To ParameterCount - 1
+        '@Ignore ImplicitDefaultMemberAccess, IndexedDefaultMemberAccess
+        ParamValue = AdoCommand.Parameters(ParameterIndex)
+        If Not IsNumeric(ParamValue) Then
+            ParamValue = "'" & Replace(CStr(ParamValue), "'", "''") & "'"
+        Else
+            ParamValue = CStr(ParamValue)
+        End If
+        SQLQuery = Replace(SQLQuery, "?", ParamValue, Count:=1)
+    Next ParameterIndex
+    IDbParameters_GetSQL = SQLQuery
+End Function
