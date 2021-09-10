@@ -13,6 +13,11 @@ Option Private Module
     Private Assert As Rubberduck.PermissiveAssertClass
 #End If
 
+Private Const LIB_NAME As String = "StorageLibrary"
+Private Const PATH_SEP As String = "\"
+Private Const REL_PREFIX As String = "Library" & PATH_SEP & LIB_NAME & PATH_SEP
+Private Const SQLITE_CONNSTR_PREFIX As String = "sqlite:"
+
 Const TEST_TABLE As String = "Contacts"
 
 'This method runs once per module.
@@ -39,17 +44,27 @@ End Sub
 
 
 Private Function zfxGetDataTableADODB() As DataTableADODB
-    Dim StorageModel As DataTableModel: Set StorageModel = New DataTableModel
-    Dim ConnectionString As String: ConnectionString = ADOlib.GetSQLiteConnectionString()("ADO")
-    Dim TableName As String: TableName = TEST_TABLE
+    Dim StorageModel As DataTableModel
+    Set StorageModel = New DataTableModel
+    Dim FileName As String
+    FileName = SQLITE_CONNSTR_PREFIX & REL_PREFIX & LIB_NAME & ".db"
+    Dim ConnectionString As String
+    ConnectionString = ADOlib.GetSQLiteConnectionString(FileName)("ADO")
+    Dim TableName As String
+    TableName = TEST_TABLE
     Set zfxGetDataTableADODB = DataTableADODB.Create(StorageModel, ConnectionString, TableName)
 End Function
 
 
 Private Function zfxGetDataTableModel() As DataTableModel
-    Dim StorageModel As DataTableModel: Set StorageModel = New DataTableModel
-    Dim ConnectionString As String: ConnectionString = ADOlib.GetSQLiteConnectionString()("ADO")
-    Dim TableName As String: TableName = TEST_TABLE
+    Dim StorageModel As DataTableModel
+    Set StorageModel = New DataTableModel
+    Dim FileName As String
+    FileName = SQLITE_CONNSTR_PREFIX & REL_PREFIX & LIB_NAME & ".db"
+    Dim ConnectionString As String
+    ConnectionString = ADOlib.GetSQLiteConnectionString(FileName)("ADO")
+    Dim TableName As String
+    TableName = TEST_TABLE
     
     Dim SMiDefault As DataTableADODB
     Set SMiDefault = DataTableADODB.Create(StorageModel, ConnectionString, TableName)

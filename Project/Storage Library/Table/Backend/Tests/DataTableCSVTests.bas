@@ -13,6 +13,10 @@ Option Private Module
     Private Assert As Rubberduck.PermissiveAssertClass
 #End If
 
+Private Const LIB_NAME As String = "StorageLibrary"
+Private Const PATH_SEP As String = "\"
+Private Const REL_PREFIX As String = "Library" & PATH_SEP & LIB_NAME & PATH_SEP
+
 
 'This method runs once per module.
 '@ModuleInitialize
@@ -41,9 +45,9 @@ Private Function zfxGetDataTableModel() As DataTableModel
     Dim StorageModel As DataTableModel
     Set StorageModel = New DataTableModel
     Dim ConnectionString As String
-    ConnectionString = ThisWorkbook.Path
+    ConnectionString = ThisWorkbook.Path & PATH_SEP & REL_PREFIX
     Dim TableName As String
-    TableName = "Contacts.xsv!sep=,"
+    TableName = LIB_NAME & ".xsv!sep=,"
     
     Dim StorageManager As IDataTableStorage
     Set StorageManager = DataTableCSV.Create(StorageModel, ConnectionString, TableName)
@@ -77,7 +81,11 @@ Assert:
 CleanExit:
     Exit Sub
 TestFail:
-    Assert.Fail "Error: " & Err.Number & " - " & Err.Description
+    If Err.Number = ErrNo.FileNotFoundErr Then
+        Assert.Inconclusive "Target file not found. This test require particular settings and this error may be ignored"
+    Else
+        Assert.Fail "Error: " & Err.Number & " - " & Err.Description
+    End If
 End Sub
 
 
