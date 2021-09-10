@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Factory return type
-nav_order: 5
+nav_order: 6
 parent: Design patterns
 permalink: /class-design/factory-return-type
 ---

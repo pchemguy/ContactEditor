@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Intro to interfaces in VBA
-nav_order: 3
+nav_order: 4
 parent: Design patterns
 permalink: /class-design/intro-to-interfaces
 ---

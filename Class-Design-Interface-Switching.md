@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Interface switching in VBA
-nav_order: 4
+nav_order: 5
 parent: Design patterns
 permalink: /class-design/interface-switching
 ---
