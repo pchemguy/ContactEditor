@@ -31,8 +31,12 @@ Private Type TDbConnection
     LogController As ILogger
     '''' This attribute is used to query affected rows count across a transaction
     TransRecordsAffected As Long
-    '''' Set before transaction
+    '''' Expected count of changes over the transaction
+    '''' Typically set by the manager or DbRecordset object
     ExpectedRecordsAffected As Long
+    '''' This scalar query command is used to query the total changes count. Run
+    '''' by the transaction begin/commit handlers to yield the count of rows
+    '''' affected during the transaction
     cmdAffectedRows As ADODB.Command
     Engine As String
 End Type
@@ -130,8 +134,10 @@ Private Sub LogAdoErrors()
 End Sub
 
 
+'@Description "If possible, queries the database for total changes count."
 Friend Function TotalChanges() As Long
-    TotalChanges = 0
+Attribute TotalChanges.VB_Description = "If possible, queries the database for total changes count."
+    TotalChanges = -1
     If Not this.cmdAffectedRows Is Nothing Then
         On Error Resume Next
         TotalChanges = this.cmdAffectedRows.Execute.Fields.Item(0).Value
@@ -185,9 +191,13 @@ Private Property Let IDbConnection_ExpectedRecordsAffected(ByVal Value As Long)
 End Property
 
 
+'@Description "Set database type [typically recieved from the manager]"
 Private Property Let IDbConnection_Engine(ByVal EngineName As String)
+Attribute IDbConnection_Engine.VB_Description = "Set database type [typically recieved from the manager]"
     this.Engine = EngineName
+    '''' Set engine specific command for querying affected rows count
     If LCase$(EngineName) = "sqlite" Then
+        '''' Set command for the SQLite engine
         Set this.cmdAffectedRows = New ADODB.Command
         With this.cmdAffectedRows
             .CommandType = adCmdText
@@ -253,6 +263,7 @@ Private Sub AdoConnection_BeginTransComplete( _
             ByVal pConnection As ADODB.Connection)
     Debug.Print "Begin transaction completed. "
     If Not pError Is Nothing Then Debug.Print "Error: " & pError.Number, pError.Description
+    '''' Queries the database for total changes count before the transaction
     this.TransRecordsAffected = TotalChanges()
 End Sub
 
@@ -263,7 +274,11 @@ Private Sub AdoConnection_CommitTransComplete( _
     Debug.Print "Commit transaction completed. "
     If Not pError Is Nothing Then Debug.Print "Error: " & pError.Number, pError.Description
     With this
+        '''' Queries the database for total changes count after the transaction
+        '''' and calculates the difference, yielding transaction changes count
         .TransRecordsAffected = TotalChanges() - .TransRecordsAffected
+        '''' If expected changes count is set, verify that it matches the value
+        '''' reported by the database
         If .ExpectedRecordsAffected >= 0 Then
             Guard.Expression .ExpectedRecordsAffected = .TransRecordsAffected, _
                     "DbConnection", "Affected rows count mismatch"

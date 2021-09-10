@@ -72,8 +72,9 @@ Attribute Init.VB_Description = "Default constructor"
 End Sub
 
 
-'@Ignore ProcedureNotUsed
+'@Description "Executes transaction wrapped batch update of the recordset."
 Friend Sub PersistRecordsetChanges(ByVal DirtyRecordCount As Long)
+Attribute PersistRecordsetChanges.VB_Description = "Executes transaction wrapped batch update of the recordset."
     With AdoRecordset
         Guard.ExpressionErr .State = adStateOpen, _
                             IncompatibleStatusErr, _
@@ -82,10 +83,13 @@ Friend Sub PersistRecordsetChanges(ByVal DirtyRecordCount As Long)
                             
         Dim db As IDbConnection
         Set db = this.cmd.Connection
+        '''' Marshal dirty records only
         .MarshalOptions = adMarshalModifiedOnly
         Set .ActiveConnection = this.cmd.Connection.AdoConnection
         On Error GoTo ROLLBACK
+        '''' Set the expected count of affected rows in the DbConnection object
         db.ExpectedRecordsAffected = DirtyRecordCount
+        '''' Wrap update in a transaction
         db.BeginTransaction
         .UpdateBatch
         db.CommitTransaction
@@ -304,12 +308,13 @@ End Sub
 '''' Args:
 ''''   AbsolutePositions (1D array of long):
 ''''     A 1D 1-based array containing absolute positions of dirty records in
-''''     the recordset object (as in AdoRecordset.AbsolutePosition)
+''''     the recordset object (as in AdoRecordset.AbsolutePosition). The caller
+''''     should sort it in ascending order
 ''''
 ''''   RecordsetData (2D variant array):
 ''''     2D record-wise 1-based array of recordset data
 ''''
-'@Description "Updates recordset data from 2D array of field values and an array of dirty records"
+'@Description "Updates recordset data from 2D array of field values and an array of dirty record indices"
 Private Sub IDbRecordset_UpdateRecordset(ByRef AbsolutePositions() As Long, _
                                          ByRef RecordsetData() As Variant)
 Attribute IDbRecordset_UpdateRecordset.VB_Description = "Updates recordset data from 2D array of field values and an array of dirty records"
@@ -319,13 +324,38 @@ Attribute IDbRecordset_UpdateRecordset.VB_Description = "Updates recordset data 
     RecordCount = UBound(RecordsetData, 1) - LBound(RecordsetData, 1) + 1
     
     Guard.ExpressionErr AdoRecordset.Fields.Count = FieldCount, _
-                        IncompatibleArraysErr, "DbRecordset", "Field count mismatch"
+                        IncompatibleArraysErr, "DbRecordset", _
+                        "Field count mismatch"
     Guard.ExpressionErr AdoRecordset.RecordCount = RecordCount, _
-                        IncompatibleArraysErr, "DbRecordset", "Record count mismatch"
+                        IncompatibleArraysErr, "DbRecordset", _
+                        "Record count mismatch"
+    Guard.ExpressionErr LBound(RecordsetData, 1) = 1, IncompatibleArraysErr, _
+                        "DbRecordset", "Records dimension should be 1-based"
+    Guard.ExpressionErr LBound(RecordsetData, 2) = 1, IncompatibleArraysErr, _
+                        "DbRecordset", "Fields dimension should be 1-based"
+    
+    Dim RecordPos As Long  '''' Current AbsolutePosition
+    Dim FieldIndex As Long
+    Dim RecordPosIndex As Long '''' Index of AbsolutePosition in dirty records
+    Dim NumRecords As Long '''' Relative cursor shift for the .Move method
+    
+    '''' Initialize RecordPos to current recordset position. Since setting
+    '''' the .AbsolutePosition attribute directly invalidates cache, use
+    '''' this value to calculate relative shift for the .Move method
+    RecordPos = AdoRecordset.AbsolutePosition
+    '''' Loop through the list of dirty record indices
+    For RecordPosIndex = LBound(AbsolutePositions) To UBound(AbsolutePositions)
+        NumRecords = AbsolutePositions(RecordPosIndex) - RecordPos
+        RecordPos = AbsolutePositions(RecordPosIndex)
+        AdoRecordset.Move NumRecords
+        '''' Update field values
+        For FieldIndex = 1 To FieldCount
+            AdoRecordset.Fields(FieldIndex) = RecordsetData(RecordPos, FieldIndex)
+        Next FieldIndex
+    Next RecordPosIndex
     
     Dim DirtyRecordsCount As Long
     DirtyRecordsCount = UBound(AbsolutePositions) - LBound(AbsolutePositions) + 1
-    
     PersistRecordsetChanges DirtyRecordsCount
 End Sub
 
