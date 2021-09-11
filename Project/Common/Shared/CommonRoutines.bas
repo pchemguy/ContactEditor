@@ -52,7 +52,6 @@ End Function
 '''' Raise an error if is not an array
 '@Description "Unfolds a ParamArray argument when passed from another ParamArray."
 Public Function UnfoldParamArray(ByVal ParamArrayArg As Variant) As Variant
-Attribute UnfoldParamArray.VB_Description = "Unfolds a ParamArray argument when passed from another ParamArray."
     Guard.NotArray ParamArrayArg
     Dim DoUnfold As Boolean
     DoUnfold = (ArrayLib.NumberOfArrayDimensions(ParamArrayArg) = 1) And (LBound(ParamArrayArg) = 0) And (UBound(ParamArrayArg) = 0)
@@ -154,7 +153,6 @@ End Function
 ''''
 '@Description "Resolves file pathname"
 Public Function VerifyOrGetDefaultPath(ByVal FilePathName As String, ByVal DefaultExts As Variant) As String
-Attribute VerifyOrGetDefaultPath.VB_Description = "Resolves file pathname"
     Dim PATHuSEP As String
     PATHuSEP = Application.PathSeparator
     Dim PROJuNAME As String
@@ -181,6 +179,7 @@ Attribute VerifyOrGetDefaultPath.VB_Description = "Resolves file pathname"
     Dim Prefixes As Variant
     Prefixes = Array( _
         ThisWorkbook.Path & PATHuSEP, _
+        ThisWorkbook.Path & PATHuSEP & "Library" & PATHuSEP & PROJuNAME & PATHuSEP, _
         Environ$("APPDATA") & PATHuSEP & PROJuNAME & PATHuSEP _
     )
     
@@ -295,7 +294,6 @@ End Function
 ''''
 '@Description("Tests if argument is falsy: 0, False, vbNullString, Empty, Null, Nothing")
 Public Function IsFalsy(ByVal arg As Variant) As Boolean
-Attribute IsFalsy.VB_Description = "Tests if argument is falsy: 0, False, vbNullString, Empty, Null, Nothing"
     Select Case VarType(arg)
         Case vbEmpty, vbNull
             IsFalsy = True
@@ -311,3 +309,4 @@ Attribute IsFalsy.VB_Description = "Tests if argument is falsy: 0, False, vbNull
             IsFalsy = False
     End Select
 End Function
+

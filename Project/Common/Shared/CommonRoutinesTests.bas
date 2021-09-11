@@ -276,9 +276,13 @@ Private Sub ztcVerifyOrGetDefaultPath_ValidatesEmptyFilePathName()
     On Error GoTo TestFail
 
 Arrange:
+    Dim PATHuSEP As String
+    PATHuSEP = Application.PathSeparator
+    Dim PROJuNAME As String
+    PROJuNAME = ThisWorkbook.VBProject.Name
     Dim Expected As String
-    Expected = ThisWorkbook.Path & Application.PathSeparator & _
-               ThisWorkbook.VBProject.Name & "." & "db"
+    Expected = ThisWorkbook.Path & _
+               PATHuSEP & PROJuNAME & "." & "db"
 Act:
     Dim Actual As String
     Actual = VerifyOrGetDefaultPath(vbNullString, Array("db", "sqlite"))
@@ -395,3 +399,4 @@ CleanExit:
 TestFail:
     Assert.Fail "Error: " & Err.Number & " - " & Err.Description
 End Sub
+
