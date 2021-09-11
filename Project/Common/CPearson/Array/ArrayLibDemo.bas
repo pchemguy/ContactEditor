@@ -651,28 +651,28 @@ Public Sub DemoVectorsToArray()
     Dim S As String
 
     Dim AA() As Variant
-    Dim BB() As Variant
+    Dim bb() As Variant
     Dim CC() As String
 
     ReDim AA(0 To 2)
-    ReDim BB(1 To 5)
+    ReDim bb(1 To 5)
     ReDim CC(2 To 5)
     
     AA(0) = 16
     AA(1) = 2
     AA(2) = 3
     'AA(3) = 3
-    BB(1) = 11
-    BB(2) = 22
-    BB(3) = 33
-    BB(4) = 44
-    BB(5) = 55
+    bb(1) = 11
+    bb(2) = 22
+    bb(3) = 33
+    bb(4) = 44
+    bb(5) = 55
     CC(2) = "A"
     CC(3) = "B"
     CC(4) = "C"
     CC(5) = "D"
 
-    B = ArrayLib.VectorsToArray(A, AA, BB, CC)
+    B = ArrayLib.VectorsToArray(A, AA, bb, CC)
     If B = True Then
         For R = LBound(A, 1) To UBound(A, 1)
             S = vbNullString
@@ -1135,5 +1135,3 @@ Public Sub DemoGetRow()
         Debug.Print "Error from GetColumn"
     End If
 End Sub
-
-
