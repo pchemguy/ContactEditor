@@ -31,12 +31,6 @@ Private Type TAdoParam
 End Type
 
 
-'''' This permits running DebugFromValue on the predeclared instance
-Private Sub Class_Initialize()
-    Set this.TypeMap = AdoTypeMappings.Default
-End Sub
-
-
 Public Function Create(Optional ByVal TypeMap As ITypeMap = Nothing) As IDbParameters
     Dim Instance As DbParameters
     Set Instance = New DbParameters
@@ -49,7 +43,11 @@ Friend Sub Init(Optional ByVal TypeMap As ITypeMap = Nothing)
     With this
         Set .Factory = New ADODB.Command
         '''' Default is set in Class_Initialize
-        If Not TypeMap Is Nothing Then Set .TypeMap = TypeMap
+        If TypeMap Is Nothing Then
+            Set .TypeMap = AdoTypeMappings.Default
+        Else
+            Set .TypeMap = TypeMap
+        End If
     End With
 End Sub
 
@@ -256,7 +254,11 @@ Private Function IDbParameters_GetSQL(ByVal AdoCommand As ADODB.Command) As Stri
         '@Ignore ImplicitDefaultMemberAccess, IndexedDefaultMemberAccess
         ParamValue = AdoCommand.Parameters(ParameterIndex)
         If Not IsNumeric(ParamValue) Then
-            ParamValue = "'" & Replace(CStr(ParamValue), "'", "''") & "'"
+            If IsNull(ParamValue) Then
+                ParamValue = "Null"
+            Else
+                ParamValue = "'" & Replace(CStr(ParamValue), "'", "''") & "'"
+            End If
         Else
             ParamValue = CStr(ParamValue)
         End If

@@ -48,12 +48,12 @@ End Sub
 '===================================================='
 
 
-Private Function zfxGetSUT() As IDbParameters
+Public Function zfxGetSUT() As IDbParameters
     Set zfxGetSUT = DbParameters.Create(zfxGetDefaultMappings)
 End Function
 
 
-Private Function zfxGetAdoCommandWith2PlaceHolders() As ADODB.Command
+Public Function zfxGetAdoCommandWith2PlaceHolders() As ADODB.Command
     Dim AdoCommand As ADODB.Command
     Set AdoCommand = New ADODB.Command
     Dim SQLQuery As String
@@ -63,7 +63,7 @@ Private Function zfxGetAdoCommandWith2PlaceHolders() As ADODB.Command
 End Function
 
 
-Private Function zfxGetDefaultMappings() As ITypeMap
+Public Function zfxGetDefaultMappings() As ITypeMap
     Set zfxGetDefaultMappings = AdoTypeMappings.Default
 End Function
 
@@ -393,6 +393,31 @@ Arrange:
     sut.FromValues cmd, 19, "John"
     Dim Expected As String
     Expected = "SELECT * FROM people WHERE id <= 19 AND last_name <> 'John'"
+Act:
+    Dim Actual As String
+    Actual = sut.GetSQL(cmd)
+Assert:
+    Assert.AreEqual Expected, Actual, "SQLQuery text mismatch"
+
+CleanExit:
+    Exit Sub
+TestFail:
+    Assert.Fail "Error: " & Err.Number & " - " & Err.Description
+End Sub
+
+
+'@TestMethod("SQL")
+Private Sub ztcGetSQL_VerifiesQueryWithNull()
+    On Error GoTo TestFail
+
+Arrange:
+    Dim sut As IDbParameters
+    Set sut = zfxGetSUT
+    Dim cmd As ADODB.Command
+    Set cmd = zfxGetAdoCommandWith2PlaceHolders()
+    sut.FromValues cmd, True, Null
+    Dim Expected As String
+    Expected = "SELECT * FROM people WHERE id <= True AND last_name <> Null"
 Act:
     Dim Actual As String
     Actual = sut.GetSQL(cmd)

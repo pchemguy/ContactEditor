@@ -54,7 +54,7 @@ End Function
 
 Public Function zfxGetMeta() As DbMetaData
     Dim DbFileName As String
-    DbFileName = zfxGetLibPrefix("SecureADODB") & "ContactEditorTest.db"
+    DbFileName = zfxGetLibPrefix("SecureADODB") & "SecureADODBTest.db"
     Dim DbOK As Variant
     Dim Status As Long
     On Error Resume Next
