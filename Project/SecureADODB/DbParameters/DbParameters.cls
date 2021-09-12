@@ -42,7 +42,6 @@ End Function
 Friend Sub Init(Optional ByVal TypeMap As ITypeMap = Nothing)
     With this
         Set .Factory = New ADODB.Command
-        '''' Default is set in Class_Initialize
         If TypeMap Is Nothing Then
             Set .TypeMap = AdoTypeMappings.Default
         Else
@@ -235,7 +234,9 @@ Attribute IDbParameters_FromValues.VB_Description = "Creates or updates ADODB.Pa
 End Sub
 
 
+'@Description "Generates interpolated SQL query"
 Private Function IDbParameters_GetSQL(ByVal AdoCommand As ADODB.Command) As String
+Attribute IDbParameters_GetSQL.VB_Description = "Generates interpolated SQL query"
     Guard.NullReference AdoCommand
 
     Dim ParameterCount As Long
