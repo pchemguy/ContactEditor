@@ -174,29 +174,37 @@ Private Sub SQLiteUpdateRstTransactionChangesTest()
     Dim dbm As IDbManager
     Set dbm = DbManager.CreateFileDb("sqlite", FileName)
     
-    Dim RstTotalChanges As IDbRecordset
-    Set RstTotalChanges = dbm.Recordset()
+    Dim SQLQuery As String
+    SQLQuery = "SELECT * FROM " & TableName & " WHERE id > 10 AND id <= ? AND gender = ?"
     
     Dim rst As IDbRecordset
     Set rst = dbm.Recordset(Disconnected:=True, CacheSize:=10, LockType:=adLockBatchOptimistic)
-
-    Dim SQLQuery As String
-    SQLQuery = "SELECT * FROM " & TableName & " WHERE id > 10 AND id <= ? AND gender = ?"
     Dim rstAdo As ADODB.Recordset
     Set rstAdo = rst.OpenRecordset(SQLQuery, 20, "male")
-        
-    rst.RecordsetToQT Buffer.Range("A1")
-    Dim Values() As Variant
-    
-    Values = ArrayLib.TransposeArray(rstAdo.GetRows, 1)
-    Values(2, 2) = Values(2, 2) & "___"
-    Values(6, 3) = Values(6, 3) & "___"
-    Values(7, 6) = Values(7, 6) & "___"
+    Dim DataQT As Excel.QueryTable
+    Set DataQT = rst.RecordsetToQT(Buffer.Range("A1"))
     
     Dim DirtyRecords(0 To 2) As Long
     DirtyRecords(0) = 2
     DirtyRecords(1) = 6
     DirtyRecords(2) = 7
     
+    Dim Values() As Variant
+    Values = ArrayLib.TransposeArray(rstAdo.GetRows, 1)
+    
+    Values(2, 2) = Values(2, 2) & "___"
+    Values(6, 3) = Values(6, 3) & "___"
+    Values(7, 6) = Values(7, 6) & "___"
     rst.UpdateRecordset DirtyRecords, Values
+    rst.RecordsetToQT Buffer.Range("A1")
+    'rstAdo.MoveFirst
+    'Buffer.Range("A2").CopyFromRecordset rstAdo
+
+    Values(2, 2) = Replace(Values(2, 2), "___", vbNullString)
+    Values(6, 3) = Replace(Values(6, 3), "___", vbNullString)
+    Values(7, 6) = Replace(Values(7, 6), "___", vbNullString)
+    rst.UpdateRecordset DirtyRecords, Values
+    rst.RecordsetToQT Buffer.Range("A1")
+    'rstAdo.MoveFirst
+    'Buffer.Range("A2").CopyFromRecordset rstAdo
 End Sub

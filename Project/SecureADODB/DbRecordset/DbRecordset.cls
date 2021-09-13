@@ -22,6 +22,7 @@ Attribute AdoRecordset.VB_VarHelpID = -1
 Private Type TRecordset
     cmd As IDbCommand
     OpenOptions As Long
+    DataQT As Excel.QueryTable
 End Type
 Private this As TRecordset
 
@@ -72,41 +73,6 @@ Attribute Init.VB_Description = "Default constructor"
 End Sub
 
 
-'@Description "Executes transaction wrapped batch update of the recordset."
-Friend Sub PersistRecordsetChanges(ByVal DirtyRecordCount As Long)
-Attribute PersistRecordsetChanges.VB_Description = "Executes transaction wrapped batch update of the recordset."
-    With AdoRecordset
-        Guard.ExpressionErr .State = adStateOpen, _
-                            IncompatibleStatusErr, _
-                            "DbRecordset", _
-                            "Expected AdoRecordset.Status = adStateOpen"
-                            
-        Dim db As IDbConnection
-        Set db = this.cmd.Connection
-        '''' Marshal dirty records only
-        .MarshalOptions = adMarshalModifiedOnly
-        Set .ActiveConnection = this.cmd.Connection.AdoConnection
-        On Error GoTo Rollback
-        '''' Set the expected count of affected rows in the DbConnection object
-        db.ExpectedRecordsAffected = DirtyRecordCount
-        '''' Wrap update in a transaction
-        db.BeginTransaction
-        .UpdateBatch
-        db.CommitTransaction
-        On Error GoTo 0
-        If .CursorLocation = adUseClient Then Set .ActiveConnection = Nothing
-    End With
-    
-    Exit Sub
-    
-Rollback:
-    this.cmd.Connection.RollbackTransaction
-    With Err
-        .Raise .Number, .Source, .Description, .HelpFile, .HelpContext
-    End With
-End Sub
-
-
 '@Description "Outputs Recordset to Excel Worksheet via QueryTable"
 Friend Function RecordsetToQT(ByVal OutputRange As Excel.Range, _
                      Optional ByVal AdoRst As ADODB.Recordset = Nothing) As Excel.QueryTable
@@ -115,6 +81,7 @@ Attribute RecordsetToQT.VB_Description = "Outputs Recordset to Excel Worksheet v
     
     Dim rst As ADODB.Recordset
     Set rst = IIf(AdoRst Is Nothing, AdoRecordset, AdoRst)
+    rst.MoveFirst
     
     Dim QTs As Excel.QueryTables
     Set QTs = OutputRange.Worksheet.QueryTables
@@ -166,12 +133,23 @@ Attribute RecordsetToQT.VB_Description = "Outputs Recordset to Excel Worksheet v
     '@Ignore IndexedDefaultMemberAccess
     QTRange.Worksheet.UsedRange.Rows(1).HorizontalAlignment = xlCenter
     
-    Set RecordsetToQT = WSQueryTable
+    '''' The same recordset object cannot be reused on the same worksheet:
+    '''' outputs headers only, but no data. The source of the issue is not clear.
+    '''' If this.DataQT is not set, set it. If set, update the reference and copy
+    '''' the data (as a workaround).
+    If Not this.DataQT Is Nothing Then
+        rst.MoveFirst
+        WSQueryTable.ResultRange.Range("A2").CopyFromRecordset rst
+    End If
+    WSQueryTable.ResultRange.CurrentRegion.Columns.AutoFit
+    
+    Set this.DataQT = WSQueryTable
+    Set RecordsetToQT = this.DataQT
 End Function
 
 
 '@Description "Sets AdoCommand as to AdoRecordset.Source in preparation for .OpenXXX"
-Private Sub SetSource( _
+Friend Sub SetSource( _
             ByVal SQL As String, _
             ParamArray ADODBParamsValues() As Variant)
 Attribute SetSource.VB_Description = "Sets AdoCommand as to AdoRecordset.Source in preparation for .OpenXXX"
@@ -308,21 +286,10 @@ Attribute IDbRecordset_UpdateRecord.VB_Description = "Updates modified records"
 End Sub
 
 
-'''' Factory for file-based databases.
-''''
-'''' Args:
-''''   AbsolutePositions (1D array of long):
-''''     A 1D 1-based array containing absolute positions of dirty records in
-''''     the recordset object (as in AdoRecordset.AbsolutePosition). The caller
-''''     should sort it in ascending order
-''''
-''''   RecordsetData (2D variant array):
-''''     2D record-wise 1-based array of recordset data
-''''
-'@Description "Updates recordset data from 2D array of field values and an array of dirty record indices"
-Private Sub IDbRecordset_UpdateRecordset(ByRef AbsolutePositions() As Long, _
-                                         ByRef RecordsetData() As Variant)
-Attribute IDbRecordset_UpdateRecordset.VB_Description = "Updates recordset data from 2D array of field values and an array of dirty record indices"
+'@Description "Updates AdoRecordset data in preparation for a database update"
+Friend Sub UpdateRecordsetData(ByRef AbsolutePositions() As Long, _
+                               ByRef RecordsetData() As Variant)
+Attribute UpdateRecordsetData.VB_Description = "Updates AdoRecordset data in preparation for a database update"
     Dim FieldCount As Long
     FieldCount = UBound(RecordsetData, 2) - LBound(RecordsetData, 2) + 1
     Dim RecordCount As Long
@@ -366,7 +333,61 @@ Attribute IDbRecordset_UpdateRecordset.VB_Description = "Updates recordset data 
             AdoRecordset.Fields(FieldIndex - 1) = RecordsetData(RecordPos, FieldIndex)
         Next FieldIndex
     Next RecordPosIndex
+End Sub
+
+
+'@Description "Executes transaction wrapped batch update of the recordset."
+Friend Sub PersistRecordsetChanges(ByVal DirtyRecordCount As Long)
+Attribute PersistRecordsetChanges.VB_Description = "Executes transaction wrapped batch update of the recordset."
+    With AdoRecordset
+        Guard.ExpressionErr .State = adStateOpen, _
+                            IncompatibleStatusErr, _
+                            "DbRecordset", _
+                            "Expected AdoRecordset.Status = adStateOpen"
+                            
+        Dim db As IDbConnection
+        Set db = this.cmd.Connection
+        '''' Marshal dirty records only
+'        .MarshalOptions = adMarshalModifiedOnly
+        .MarshalOptions = adMarshalAll
+        Set .ActiveConnection = this.cmd.Connection.AdoConnection
+        On Error GoTo Rollback
+        '''' Set the expected count of affected rows in the DbConnection object
+        db.ExpectedRecordsAffected = DirtyRecordCount
+        '''' Wrap update in a transaction
+        db.BeginTransaction
+        .UpdateBatch
+        db.CommitTransaction
+        On Error GoTo 0
+        If .CursorLocation = adUseClient Then Set .ActiveConnection = Nothing
+    End With
     
+    Exit Sub
+    
+Rollback:
+    this.cmd.Connection.RollbackTransaction
+    With Err
+        .Raise .Number, .Source, .Description, .HelpFile, .HelpContext
+    End With
+End Sub
+
+
+'''' Factory for file-based databases.
+''''
+'''' Args:
+''''   AbsolutePositions (1D array of long):
+''''     A 1D 1-based array containing absolute positions of dirty records in
+''''     the recordset object (as in AdoRecordset.AbsolutePosition). The caller
+''''     should sort it in ascending order
+''''
+''''   RecordsetData (2D variant array):
+''''     2D record-wise 1-based array of recordset data
+''''
+'@Description "Updates recordset data from 2D array of field values and an array of dirty record indices"
+Private Sub IDbRecordset_UpdateRecordset(ByRef AbsolutePositions() As Long, _
+                                         ByRef RecordsetData() As Variant)
+Attribute IDbRecordset_UpdateRecordset.VB_Description = "Updates recordset data from 2D array of field values and an array of dirty record indices"
+    UpdateRecordsetData AbsolutePositions, RecordsetData
     Dim DirtyRecordsCount As Long
     DirtyRecordsCount = UBound(AbsolutePositions) - LBound(AbsolutePositions) + 1
     PersistRecordsetChanges DirtyRecordsCount
