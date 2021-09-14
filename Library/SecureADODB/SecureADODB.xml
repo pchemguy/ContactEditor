@@ -1,0 +1,58 @@
+<xml xmlns:s='uuid:BDC6E3F0-6DA3-11d1-A2A3-00AA00C14882'
+	xmlns:dt='uuid:C2F41010-65B3-11d1-A29F-00AA00C14882'
+	xmlns:rs='urn:schemas-microsoft-com:rowset'
+	xmlns:z='#RowsetSchema'>
+<s:Schema id='RowsetSchema'>
+	<s:ElementType name='row' content='eltOnly'>
+		<s:AttributeType name='id' rs:number='1' rs:nullable='true' rs:writeunknown='true'>
+			<s:datatype dt:type='int' dt:maxLength='4' rs:precision='10' rs:fixedlength='true'/>
+		</s:AttributeType>
+		<s:AttributeType name='first_name' rs:number='2' rs:nullable='true' rs:writeunknown='true'>
+			<s:datatype dt:type='string' dt:maxLength='255'/>
+		</s:AttributeType>
+		<s:AttributeType name='last_name' rs:number='3' rs:nullable='true' rs:writeunknown='true'>
+			<s:datatype dt:type='string' dt:maxLength='255'/>
+		</s:AttributeType>
+		<s:AttributeType name='age' rs:number='4' rs:nullable='true' rs:writeunknown='true'>
+			<s:datatype dt:type='int' dt:maxLength='4' rs:precision='10' rs:fixedlength='true'/>
+		</s:AttributeType>
+		<s:AttributeType name='gender' rs:number='5' rs:nullable='true' rs:writeunknown='true'>
+			<s:datatype dt:type='string' dt:maxLength='10'/>
+		</s:AttributeType>
+		<s:AttributeType name='email' rs:number='6' rs:nullable='true' rs:writeunknown='true'>
+			<s:datatype dt:type='string' dt:maxLength='255'/>
+		</s:AttributeType>
+		<s:AttributeType name='country' rs:number='7' rs:nullable='true' rs:writeunknown='true'>
+			<s:datatype dt:type='string' dt:maxLength='255'/>
+		</s:AttributeType>
+		<s:AttributeType name='domain' rs:number='8' rs:nullable='true' rs:writeunknown='true'>
+			<s:datatype dt:type='string' dt:maxLength='255'/>
+		</s:AttributeType>
+		<s:extends type='rs:rowbase'/>
+	</s:ElementType>
+</s:Schema>
+<rs:data>
+	<z:row id='242' first_name='Hilda' last_name='Hardwick' age='49' gender='female' email='Hilda.Hardwick@mac.com'
+		 country='South Korea' domain='theglobeandmail.com'/>
+	<z:row id='334' first_name='Nicolas' last_name='Parrott' age='50' gender='male' email='Nicolas.Parrott@rediffmail.com'
+		 country='South Korea' domain='comicbookmovie.com'/>
+	<z:row id='338' first_name='Dulcie' last_name='Douch' age='46' gender='male' email='Dulcie.Douch@yahoo.de' country='South Korea'
+		 domain='meetmecdna.com'/>
+	<z:row id='370' first_name='Malcolm' last_name='Eakins' age='61' gender='male' email='Malcolm.Eakins@aim.com'
+		 country='South Korea' domain='formstack.com'/>
+	<z:row id='376' first_name='Stella' last_name='Booze' age='58' gender='male' email='Stella.Booze@facebook.com'
+		 country='South Korea' domain='txcdn.cn'/>
+	<z:row id='406' first_name='Eliza' last_name='Faithfull' age='53' gender='male' email='Eliza.Faithfull@gmx.net'
+		 country='South Korea' domain='voxel.net'/>
+	<z:row id='688' first_name='Bubby' last_name='Haley' age='68' gender='female' email='Bubby.Haley@gmail.com'
+		 country='South Korea' domain='photoshelter.com'/>
+	<z:row id='770' first_name='Albert' last_name='Lovett' age='53' gender='male' email='Albert.Lovett@uol.com.br'
+		 country='South Korea' domain='pbwstatic.com'/>
+	<z:row id='778' first_name='Andy' last_name='Lawson' age='72' gender='male' email='Andy.Lawson@charter.net'
+		 country='South Korea' domain='fontdeck.com'/>
+	<z:row id='847' first_name='Dwight' last_name='Phipps' age='50' gender='male' email='Dwight.Phipps@live.co.uk'
+		 country='South Korea' domain='ekstat.com'/>
+	<z:row id='906' first_name='Hero' last_name='Harp' age='47' gender='female' email='Hero.Harp@hotmail.es' country='South Korea'
+		 domain='someecards.com'/>
+</rs:data>
+</xml>
