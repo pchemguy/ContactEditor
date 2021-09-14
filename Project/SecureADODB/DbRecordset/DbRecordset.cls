@@ -336,9 +336,9 @@ Attribute UpdateRecordsetData.VB_Description = "Updates AdoRecordset data in pre
 End Sub
 
 
-'@Description "Executes transaction wrapped batch update of the recordset."
+'@Description "Executes transaction-wrapped batch update of the recordset."
 Friend Sub PersistRecordsetChanges(ByVal DirtyRecordCount As Long)
-Attribute PersistRecordsetChanges.VB_Description = "Executes transaction wrapped batch update of the recordset."
+Attribute PersistRecordsetChanges.VB_Description = "Executes transaction-wrapped batch update of the recordset."
     With AdoRecordset
         Guard.ExpressionErr .State = adStateOpen, _
                             IncompatibleStatusErr, _
@@ -348,8 +348,7 @@ Attribute PersistRecordsetChanges.VB_Description = "Executes transaction wrapped
         Dim db As IDbConnection
         Set db = this.cmd.Connection
         '''' Marshal dirty records only
-'        .MarshalOptions = adMarshalModifiedOnly
-        .MarshalOptions = adMarshalAll
+        .MarshalOptions = adMarshalModifiedOnly
         Set .ActiveConnection = this.cmd.Connection.AdoConnection
         On Error GoTo Rollback
         '''' Set the expected count of affected rows in the DbConnection object
@@ -372,8 +371,6 @@ Rollback:
 End Sub
 
 
-'''' Factory for file-based databases.
-''''
 '''' Args:
 ''''   AbsolutePositions (1D array of long):
 ''''     A 1D 1-based array containing absolute positions of dirty records in
