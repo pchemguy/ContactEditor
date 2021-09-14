@@ -49,5 +49,5 @@ When I had been working on the current version of the backend, I could not make 
 [SecureADODB]: https://github.com/rubberduck-vba/examples/tree/master/SecureADODB
 [SecureADODB fork]: https://github.com/pchemguy/RDVBA-examples
 [Multiple interfaces]: https://pchemguy.github.io/ContactEditor/class-design
-[DataTableModel]: https://pchemguy.github.io/ContactEditor/data-model#datatablemodel
+[DataTableModel]: https://pchemguy.github.io/ContactEditor/storage-library/implementation-details#datatablemodel
 [VBAArrayLib]: http://cpearson.com/excel/vbaarrays.htm
