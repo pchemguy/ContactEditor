@@ -69,11 +69,11 @@ Attribute Log.VB_Description = "Adds item to the log database"
     Dim LogDb As Scripting.Dictionary
     Set LogDb = IIf(LogDatabase Is Nothing, this.Database, LogDatabase)
     
-    Dim key As String
+    Dim Key As String
     Do
-        key = GetTimeStampMs
-    Loop While LogDb.Exists(key)
-    LogDb.Item(key) = LogLine
+        Key = GetTimeStampMs
+    Loop While LogDb.Exists(Key)
+    LogDb.Item(Key) = LogLine
 End Sub
 
 
@@ -83,10 +83,10 @@ Attribute PrintLog.VB_Description = "Prints the log database to the immediate"
     Dim LogDb As Scripting.Dictionary
     Set LogDb = IIf(LogDatabase Is Nothing, this.Database, LogDatabase)
     
-    Dim key As Variant
-    For Each key In LogDb.Keys
-        Debug.Print key & vbTab & vbTab & LogDb.Item(key)
-    Next key
+    Dim Key As Variant
+    For Each Key In LogDb.Keys
+        Debug.Print Key & vbTab & vbTab & LogDb.Item(Key)
+    Next Key
 End Sub
 
 

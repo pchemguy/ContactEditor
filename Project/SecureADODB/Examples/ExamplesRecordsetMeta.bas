@@ -24,7 +24,7 @@ Private Sub Array2DToWSheetTest()
 End Sub
 
 
-Private Sub GetRecordsetCoreAttributes()
+Private Sub GetRecordsetMeta()
     Dim FileName As String
     FileName = REL_PREFIX & LIB_NAME & ".db"
 
@@ -45,8 +45,10 @@ Private Sub GetRecordsetCoreAttributes()
     Dim RecordsetMeta As DbRecordsetMeta
     Set RecordsetMeta = DbRecordsetMeta.Create(rstAdo)
     
+    Dim RecordsetAttributes As Variant
+    RecordsetAttributes = RecordsetMeta.GetRecordsetAttrbutes(Buffer.Range("E1"))
     Dim RecordsetProperties As Variant
-    RecordsetProperties = RecordsetMeta.GetRecordsetProperties(Buffer.Range("A16"))
-    Dim RecordsetCoreAttributes As Variant
-    RecordsetCoreAttributes = RecordsetMeta.GetRecordsetCoreAttrbutes(Buffer.Range("A1"))
+    RecordsetProperties = RecordsetMeta.GetRecordsetProperties(Buffer.Range("A1"))
+    Dim CursorOptions As Variant
+    CursorOptions = RecordsetMeta.GetCursorOptions(Buffer.Range("I1"))
 End Sub
