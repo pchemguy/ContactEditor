@@ -1,6 +1,6 @@
 Attribute VB_Name = "ExamplesStubRecordset"
 '@Folder "SecureADODB.Examples"
-'@Ignore
+'@IgnoreModule
 Option Explicit
 Option Private Module
 
@@ -10,6 +10,37 @@ Private Const REL_PREFIX As String = "Library" & PATH_SEP & LIB_NAME & PATH_SEP
 
 
 Public Sub FabricateRecordset()
+    Dim objRs As New ADODB.Recordset
+    With objRs.Fields
+        .Append "StudentID", adChar, 11, adFldUpdatable
+        .Append "FullName", adVarChar, 50, adFldUpdatable
+        .Append "PhoneNmbr", adVarChar, 20, adFldUpdatable
+    End With
+    With objRs
+        .Open
+        .AddNew
+        .Fields(0) = "123-45-6789"
+        .Fields(1) = "John Doe"
+        .Fields(2) = "(425) 555-5555"
+        .Update
+        .AddNew
+        .Fields(0) = "123-45-6780"
+        .Fields(1) = "Jane Doe"
+        .Fields(2) = "(615) 555-1212"
+        .Update
+    End With
+    
+    Dim FileName As String
+    FileName = ThisWorkbook.Path & PATH_SEP & REL_PREFIX & "FabricatedRecordset.xml"
+    On Error Resume Next
+    Kill FileName
+    On Error GoTo 0
+    objRs.Save FileName, adPersistXML
+    objRs.Close
+End Sub
+
+
+Public Sub FabricateRecordsetWithNull()
     Dim objRs As New ADODB.Recordset
     With objRs.Fields
         .Append "StudentID", adChar, 11, adFldUpdatable
@@ -81,5 +112,6 @@ Private Sub SaveRestore()
     Dim RstFromFile As ADODB.Recordset
     Set RstFromFile = New ADODB.Recordset
     RstFromFile.Open FileName
+    
     DbRecordset.RecordsetToQT Buffer.Range("K1"), RstFromFile
 End Sub

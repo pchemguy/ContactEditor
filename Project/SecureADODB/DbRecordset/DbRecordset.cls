@@ -41,7 +41,9 @@ Public Function Create(ByVal cmd As IDbCommand, _
 End Function
 
 
-'''' For updatable recordset use LockType = adLockBatchOptimistic
+'''' For updatable recordset use LockType:
+''''   - adLockOptimistic - immediate mode - TODO: add feature check
+''''   - adLockBatchOptimistic - batch update - TODO: add feature check
 '@Description("Default constructor")
 Friend Sub Init(ByVal cmd As IDbCommand, _
             Optional ByVal Disconnected As Boolean = True, _
@@ -258,10 +260,11 @@ Attribute IDbRecordset_UpdateRecord.VB_Description = "Updates modified records"
     
     With AdoRecordset
         Guard.NullReference ValuesDict
-        Guard.ExpressionErr .LockType = adLockBatchOptimistic, _
+        Guard.ExpressionErr .LockType = adLockBatchOptimistic Or _
+                            .LockType = adLockOptimistic, _
                             AdoFeatureNotAvailableErr, _
                             "DbRecordset", _
-                            "Set LockType = adLockBatchOptimistic"
+                            "Set LockType = adLock(|Batch)Optimistic"
         Guard.ExpressionErr .State = adStateOpen, _
                             IncompatibleStatusErr, _
                             "DbRecordset", _

@@ -197,14 +197,13 @@ Private Sub SQLiteUpdateRstTransactionChangesTest()
     Values(7, 6) = Values(7, 6) & "___"
     rst.UpdateRecordset DirtyRecords, Values
     rst.RecordsetToQT Buffer.Range("A1")
-    'rstAdo.MoveFirst
-    'Buffer.Range("A2").CopyFromRecordset rstAdo
 
     Values(2, 2) = Replace(Values(2, 2), "___", vbNullString)
     Values(6, 3) = Replace(Values(6, 3), "___", vbNullString)
     Values(7, 6) = Replace(Values(7, 6), "___", vbNullString)
     rst.UpdateRecordset DirtyRecords, Values
     rst.RecordsetToQT Buffer.Range("A1")
-    'rstAdo.MoveFirst
+    
+    rstAdo.MoveFirst
     'Buffer.Range("A2").CopyFromRecordset rstAdo
 End Sub
