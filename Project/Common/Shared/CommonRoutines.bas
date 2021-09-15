@@ -312,3 +312,35 @@ Attribute IsFalsy.VB_Description = "Tests if argument is falsy: 0, False, vbNull
             IsFalsy = False
     End Select
 End Function
+
+
+'''' Places a 2D array with top header on a worksheet
+''''
+'''' The top row is set in bold and centered, columns are adjusted with autofit.
+''''
+'''' Args:
+''''   DataArray (2D array, variant):
+''''     Data to be placed on a worksheet
+''''   TopLeftCell (Excel.Range):
+''''     Reference to the top left corner of the target area.
+''''
+'@Description "Places a 2D array with top header on a worksheet"
+Public Sub Array2Range(ByVal DataArray As Variant, ByVal TopLeftCell As Excel.Range)
+Attribute Array2Range.VB_Description = "Places a 2D array with top header on a worksheet"
+    Guard.NotArray DataArray
+    Guard.NullReference TopLeftCell
+    Guard.ExpressionErr ArrayLib.NumberOfArrayDimensions(DataArray) = 2, _
+                        ExpectedArrayErr, "CommonRoutines", "Expected 2D Array"
+    
+    Dim OutRange As Excel.Range
+    Set OutRange = TopLeftCell.Resize( _
+        UBound(DataArray, 1) - LBound(DataArray, 1) + 1, _
+        UBound(DataArray, 2) - LBound(DataArray, 2) + 1 _
+    )
+    With OutRange
+        .Value = DataArray
+        .Rows(1).HorizontalAlignment = xlCenter
+        .Rows(1).Font.Bold = True
+        .Columns.AutoFit
+    End With
+End Sub

@@ -95,6 +95,7 @@ Public Property Get RecordsetAttributes() As Variant
     RecordsetAttributesLoc(0, 1) = "Name"
     RecordsetAttributesLoc(0, 2) = "Value"
     RecordsetAttributesLoc(0, 3) = "Type"
+    
     RecordsetAttributesLoc(1, 1) = "CacheSize"
     RecordsetAttributesLoc(2, 1) = "CursorLocation"
     RecordsetAttributesLoc(3, 1) = "CursorType"
@@ -108,6 +109,7 @@ Public Property Get RecordsetAttributes() As Variant
     RecordsetAttributesLoc(11, 1) = "State"
     RecordsetAttributesLoc(12, 1) = "Status"
     RecordsetAttributesLoc(13, 1) = "StayInSync"
+    
     RecordsetAttributesLoc(1, 3) = "Long"
     RecordsetAttributesLoc(2, 3) = "CursorLocationEnum"
     RecordsetAttributesLoc(3, 3) = "CursorTypeEnum"
@@ -177,4 +179,27 @@ Public Function GetObjectStateText(ByVal ObjectState As Long) As String
     Loop
     
     GetObjectStateText = Left(StateText, Len(StateText) - 1)
+End Function
+
+
+Public Function GetProperties(ByVal RawProperties As Properties) As Variant
+    Dim TypeMapping As AdoTypeMappings
+    Set TypeMapping = AdoTypeMappings.Default()
+    Dim PropertyCount As Long
+    PropertyCount = RawProperties.Count
+    
+    Dim Props As Variant: Props = Empty '''' RD workaround
+    ReDim Props(0 To PropertyCount, 1 To 3)
+    Props(0, 1) = "Name"
+    Props(0, 2) = "Type"
+    Props(0, 3) = "Value"
+    Dim PropertyIndex As Long
+    Dim Prop As Property
+    For PropertyIndex = 1 To PropertyCount
+        Set Prop = RawProperties(PropertyIndex - 1)
+        Props(PropertyIndex, 1) = Prop.Name
+        Props(PropertyIndex, 2) = TypeMapping.DataTypeEnumAsText(Prop.Type)
+        Props(PropertyIndex, 3) = Prop.Value
+    Next PropertyIndex
+    GetProperties = Props
 End Function

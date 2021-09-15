@@ -108,39 +108,12 @@ End Function
 
 Public Function GetRecordsetProperties( _
             Optional ByVal TopLeftCell As Excel.Range = Nothing) As Variant
-    Dim PropertyCount As Long
-    PropertyCount = this.AdoRecordset.Properties.Count
-    Dim Properties As Variant: Properties = Empty '''' RD workaround
-    ReDim Properties(0 To PropertyCount, 1 To 3)
-    Properties(0, 1) = "Name"
-    Properties(0, 2) = "Type"
-    Properties(0, 3) = "Value"
-    Dim PropertyIndex As Long
-    With this.AdoRecordset.Properties
-        For PropertyIndex = 0 To PropertyCount - 1
-            Properties(PropertyIndex + 1, 1) = .Item(PropertyIndex).Name
-            Properties(PropertyIndex + 1, 2) = this.DataTypeEnumMapping.DataTypeEnumAsText(.Item(PropertyIndex).Type)
-            Properties(PropertyIndex + 1, 3) = .Item(PropertyIndex).Value
-        Next PropertyIndex
-    End With
+    Dim Props As Variant
+    Props = DbRecordsetStructures.GetProperties(this.AdoRecordset.Properties)
     
-    If Not TopLeftCell Is Nothing Then
-        Dim OutRange As Excel.Range
-        With this
-            Set OutRange = TopLeftCell.Resize( _
-                UBound(Properties, 1) - LBound(Properties, 1) + 1, _
-                UBound(Properties, 2) - LBound(Properties, 2) + 1 _
-            )
-        End With
-        With OutRange
-            .Value = Properties
-            .Rows(1).HorizontalAlignment = xlCenter
-            .Rows(1).Font.Bold = True
-            .Columns.AutoFit
-        End With
-    End If
+    If Not TopLeftCell Is Nothing Then Array2Range Props, TopLeftCell
     
-    GetRecordsetProperties = Properties
+    GetRecordsetProperties = Props
 End Function
 
 
@@ -150,7 +123,7 @@ Public Function GetCursorOptions( _
     Set OptionsMap = DbRecordsetStructures.CursorOptionEnumMap
     Dim OptionIDs As Variant
     OptionIDs = OptionsMap.Keys
-    Dim OptionStatuses As Variant
+    Dim OptionStatuses As Variant: OptionStatuses = Empty '''' RD workaround
     ReDim OptionStatuses(0 To OptionsMap.Count, 1 To 2)
     OptionStatuses(0, 1) = "Option"
     OptionStatuses(0, 2) = "Status"
@@ -163,22 +136,7 @@ Public Function GetCursorOptions( _
         OptionStatuses(OptionIndex, 2) = this.AdoRecordset.Supports(OptionID)
     Next OptionIndex
     
-    If Not TopLeftCell Is Nothing Then
-        Dim OutRange As Excel.Range
-        With this
-            Set OutRange = TopLeftCell.Resize( _
-                UBound(OptionStatuses, 1) - LBound(OptionStatuses, 1) + 1, _
-                UBound(OptionStatuses, 2) - LBound(OptionStatuses, 2) + 1 _
-            )
-        End With
-        With OutRange
-            .Value = OptionStatuses
-            .Rows(1).HorizontalAlignment = xlCenter
-            .Rows(1).Font.Bold = True
-            .Columns.AutoFit
-        End With
-    End If
+    If Not TopLeftCell Is Nothing Then Array2Range OptionStatuses, TopLeftCell
     
     GetCursorOptions = OptionStatuses
 End Function
-
