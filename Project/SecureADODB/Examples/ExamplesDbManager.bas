@@ -69,6 +69,38 @@ Private Sub CSVSingleParameterQueryScalarTest()
     Dim Result As Variant
     Result = rst.OpenScalar(SQLQuery, 45)
     
+    Dim rstAdo As ADODB.Recordset
+    Set rstAdo = rst.AdoRecordset
+    
+    Debug.Print "===== " & CStr(Result) & " ====="
+    
+    rst.RecordsetToQT Buffer.Range("A1")
+End Sub
+
+
+Private Sub SQLiteSingleParameterQueryScalarTest()
+    Dim FileName As String
+    FileName = REL_PREFIX & LIB_NAME & ".db"
+
+    Dim TableName As String
+    TableName = "people"
+    Dim SQLQuery As String
+    SQLQuery = "SELECT * FROM " & TableName & " WHERE age >= ? AND country = 'South Korea'"
+    
+    Dim dbm As IDbManager
+    Set dbm = DbManager.CreateFileDb("sqlite", FileName, vbNullString, LoggerTypeEnum.logPrivate)
+
+    Dim rst As IDbRecordset
+    Set rst = dbm.Recordset(Disconnected:=True, CacheSize:=10)
+    
+    Debug.Print dbm.Connection.AdoConnection.Properties("Transaction DDL")
+    
+    Dim Result As Variant
+    Result = rst.OpenScalar(SQLQuery, 45)
+    
+    Dim rstAdo As ADODB.Recordset
+    Set rstAdo = rst.AdoRecordset
+        
     Debug.Print "===== " & CStr(Result) & " ====="
     
     rst.RecordsetToQT Buffer.Range("A1")
@@ -94,11 +126,6 @@ Private Sub SQLiteSingleParameterQueryTableTest()
     
     Dim Result As ADODB.Recordset
     Set Result = rst.OpenRecordset(SQLQuery, 45)
-    
-'''' Before .Open
-''''   Result.LockType = adLockBatchOptimistic
-'''' After .Open
-''''   Result.MarshalOptions = adMarshalModifiedOnly
     
     rst.RecordsetToQT Buffer.Range("A1")
 End Sub

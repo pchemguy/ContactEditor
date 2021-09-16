@@ -1,8 +1,8 @@
 Attribute VB_Name = "CommonRoutines"
 '@Folder "Common.Shared"
+'@IgnoreModule MoveFieldCloserToUsage, IndexedDefaultMemberAccess
 Option Explicit
 
-'@IgnoreModule MoveFieldCloserToUsage
 Private lastID As Double
 
 
@@ -321,11 +321,17 @@ End Function
 '''' Args:
 ''''   DataArray (2D array, variant):
 ''''     Data to be placed on a worksheet
+''''
 ''''   TopLeftCell (Excel.Range):
 ''''     Reference to the top left corner of the target area.
 ''''
+''''   NoTopHeader (boolean):
+''''     If true, do not format the first row as header
+''''
 '@Description "Places a 2D array with top header on a worksheet"
-Public Sub Array2Range(ByVal DataArray As Variant, ByVal TopLeftCell As Excel.Range)
+Public Sub Array2Range(ByVal DataArray As Variant, _
+                       ByVal TopLeftCell As Excel.Range, _
+              Optional ByVal NoTopHeader As Boolean = False)
 Attribute Array2Range.VB_Description = "Places a 2D array with top header on a worksheet"
     Guard.NotArray DataArray
     Guard.NullReference TopLeftCell
@@ -339,8 +345,10 @@ Attribute Array2Range.VB_Description = "Places a 2D array with top header on a w
     )
     With OutRange
         .Value = DataArray
-        .Rows(1).HorizontalAlignment = xlCenter
-        .Rows(1).Font.Bold = True
+        If Not NoTopHeader Then
+            .Rows(1).HorizontalAlignment = xlCenter
+            .Rows(1).Font.Bold = True
+        End If
         .Columns.AutoFit
     End With
 End Sub

@@ -25,6 +25,8 @@ Private Type TDbRecordsetMeta
     MarshalOptionsEnumArrMap(0 To 1) As String
     DataTypeEnumMapping As AdoTypeMappings
 End Type
+
+
 Private this As TDbRecordsetMeta
 
 
@@ -87,9 +89,9 @@ Public Function GetRecordsetAttrbutes( _
     If Not TopLeftCell Is Nothing Then
         Dim OutRange As Excel.Range
         Set OutRange = TopLeftCell.Resize( _
-            UBound(RstAttr, 1) - LBound(RstAttr, 1) + 1, _
-            UBound(RstAttr, 2) - LBound(RstAttr, 2) + 1 _
-        )
+                       UBound(RstAttr, 1) - LBound(RstAttr, 1) + 1, _
+                       UBound(RstAttr, 2) - LBound(RstAttr, 2) + 1 _
+                       )
         With OutRange
             .Clear
             .Range("B1").Value = "OOOOOOOOOOOOOOOO"
@@ -139,4 +141,128 @@ Public Function GetCursorOptions( _
     If Not TopLeftCell Is Nothing Then Array2Range OptionStatuses, TopLeftCell
     
     GetCursorOptions = OptionStatuses
+End Function
+
+
+Public Function GetFieldsAttributes( _
+            Optional ByVal TopLeftCell As Excel.Range = Nothing) As Variant
+    Dim FieldCount As Long
+    FieldCount = this.AdoRecordset.Fields.Count
+    Dim AttributeNames As Variant
+    AttributeNames = DbRecordsetStructures.FieldAttributeNames
+    Dim FieldAttributes As Variant: FieldAttributes = Empty '''' RD Workaround
+    ReDim FieldAttributes(1 To UBound(AttributeNames) + 1, 0 To FieldCount)
+    
+    Dim AttributeIndex As Long
+    For AttributeIndex = 1 To UBound(AttributeNames) + 1
+        FieldAttributes(AttributeIndex, 0) = AttributeNames(AttributeIndex - 1)
+    Next AttributeIndex
+    
+    Dim FieldInstance As Field
+    Dim FieldIndex As Long
+    For FieldIndex = 1 To FieldCount
+        Set FieldInstance = this.AdoRecordset.Fields(FieldIndex - 1)
+        With FieldInstance
+            FieldAttributes(1, FieldIndex) = .Name
+            FieldAttributes(2, FieldIndex) = this.DataTypeEnumMapping.DataTypeEnumAsText(.Type)
+            FieldAttributes(3, FieldIndex) = .Value
+            FieldAttributes(4, FieldIndex) = .OriginalValue
+            FieldAttributes(5, FieldIndex) = .UnderlyingValue
+            FieldAttributes(6, FieldIndex) = .DefinedSize
+            FieldAttributes(7, FieldIndex) = DbRecordsetStructures.GetFieldStatusText(.Status)
+            FieldAttributes(8, FieldIndex) = DbRecordsetStructures.GetFieldAttributesText(.Attributes)
+        End With
+    Next FieldIndex
+    If Not TopLeftCell Is Nothing Then
+        Array2Range FieldAttributes, TopLeftCell, True
+        With TopLeftCell.CurrentRegion
+            .ColumnWidth = 24
+            .Rows(8).Columns.AutoFit
+            .Columns(1).AutoFit
+            .Rows.AutoFit
+            .Columns(1).Font.Bold = True
+            .Columns(1).VerticalAlignment = xlVAlignCenter
+            '.Value = String(20, "O")
+            '.Columns.AutoFit
+            '.CurrentRegion.Cells.VerticalAlignment = xlVAlignCenter
+        End With
+    End If
+    
+    GetFieldsAttributes = FieldAttributes
+End Function
+
+
+Public Function GetFieldsProperties( _
+            Optional ByVal TopLeftCell As Excel.Range = Nothing) As Variant
+    Dim FieldCount As Long
+    FieldCount = this.AdoRecordset.Fields.Count
+    Dim RawProps As Variant: RawProps = Empty '''' RD workaround
+    ReDim RawProps(0 To FieldCount - 1)
+        
+    Dim FieldIndex As Long
+    For FieldIndex = 0 To FieldCount - 1
+        RawProps(FieldIndex) = DbRecordsetStructures.GetProperties( _
+            this.AdoRecordset.Fields(FieldIndex).Properties)
+    Next FieldIndex
+    
+    '''' Let's verify that all fields have the same set of properties. If so,
+    '''' assume that propety types are also identical. Keep one set of Name/Type.
+    Dim SameProps As Boolean
+    SameProps = True
+    
+    Dim PropertyCount As Long
+    Dim PropertiesString As String
+    Dim PropertySet As Variant
+    Dim PropertyIndex As Long
+    Dim PropertyNames() As String
+    ReDim PropertyNames(1 To UBound(RawProps(0)))
+    If SameProps Then
+        PropertyCount = UBound(RawProps(0))
+        For FieldIndex = 1 To FieldCount - 1
+            If PropertyCount <> UBound(RawProps(FieldIndex)) Then SameProps = False
+        Next FieldIndex
+    End If
+    If SameProps Then
+        FieldIndex = 0
+        PropertySet = RawProps(FieldIndex)
+        For PropertyIndex = 1 To PropertyCount
+            PropertyNames(PropertyIndex) = PropertySet(PropertyIndex, 1)
+        Next PropertyIndex
+        PropertiesString = Join(PropertyNames)
+        For FieldIndex = 1 To FieldCount - 1
+            PropertySet = RawProps(FieldIndex)
+            For PropertyIndex = 1 To PropertyCount
+                PropertyNames(PropertyIndex) = PropertySet(PropertyIndex, 1)
+            Next PropertyIndex
+            If PropertiesString <> Join(PropertyNames) Then SameProps = False
+        Next FieldIndex
+    End If
+    If SameProps Then
+        Dim Props As Variant: Props = Empty '''' RD workaround
+        ReDim Props(0 To PropertyCount, 0 To FieldCount + 2) As Variant
+        Dim PropertyValue As Variant
+        Props(0, 0) = "Name"
+        Props(0, 1) = "Type"
+        For PropertyIndex = 1 To PropertyCount
+            Props(PropertyIndex, 0) = RawProps(0)(PropertyIndex, 1)
+            Props(PropertyIndex, 1) = RawProps(0)(PropertyIndex, 2)
+            For FieldIndex = 0 To FieldCount - 1
+                PropertyValue = RawProps(FieldIndex)(PropertyIndex, 3)
+                If IsNull(PropertyValue) Then PropertyValue = "#NULL!"
+                Props(PropertyIndex, FieldIndex + 2) = PropertyValue
+            Next FieldIndex
+        Next PropertyIndex
+        If Not TopLeftCell Is Nothing Then Array2Range Props, TopLeftCell
+        GetFieldsProperties = Props
+    Else
+        Dim CurTopLeftCell As Excel.Range
+        Set CurTopLeftCell = TopLeftCell
+        For FieldIndex = 0 To FieldCount - 1
+            If Not TopLeftCell Is Nothing Then
+                Array2Range RawProps(FieldIndex), CurTopLeftCell
+                Set CurTopLeftCell = CurTopLeftCell.Offset(0, 4)
+            End If
+        Next FieldIndex
+        GetFieldsProperties = RawProps
+    End If
 End Function

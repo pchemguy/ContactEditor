@@ -29,6 +29,7 @@ Private Sub SQLiteRecordSetOpenBasicTest()
     Dim AdoRecordset As ADODB.Recordset
     Set AdoRecordset = New ADODB.Recordset
     AdoRecordset.CursorLocation = adUseClient
+    '''' AdoRecordset.MaxRecords = 1
     AdoRecordset.Open _
             Source:=sSQL, _
             ActiveConnection:=adoConnStr, _

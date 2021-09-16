@@ -69,6 +69,7 @@ Friend Sub InitDefault()
         .Item(CStr(adSingle)) = "adSingle"
         .Item(CStr(adVarWChar)) = "adVarWChar"
         .Item(CStr(adVarChar)) = "adVarChar"
+        .Item(CStr(adVarBinary)) = "adVarBinary"
     End With
 End Sub
 

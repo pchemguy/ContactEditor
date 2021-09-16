@@ -52,3 +52,94 @@ Private Sub GetRecordsetMeta()
     Dim CursorOptions As Variant
     CursorOptions = RecordsetMeta.GetCursorOptions(Buffer.Range("I1"))
 End Sub
+
+
+Private Sub GetFieldsAttributes()
+    Dim FileName As String
+    FileName = REL_PREFIX & LIB_NAME & ".db"
+
+    Dim TableName As String
+    TableName = "people"
+    
+    Dim dbm As IDbManager
+    Set dbm = DbManager.CreateFileDb("sqlite", FileName)
+    
+    Dim SQLQuery As String
+    SQLQuery = "SELECT * FROM " & TableName & " WHERE id > 10 AND id <= ? AND gender = ?"
+    
+    Dim rst As IDbRecordset
+    Set rst = dbm.Recordset(Disconnected:=True, CacheSize:=10, LockType:=adLockBatchOptimistic)
+    Dim rstAdo As ADODB.Recordset
+    Set rstAdo = rst.OpenRecordset(SQLQuery, 20, "male")
+    
+    Dim RecordsetMeta As DbRecordsetMeta
+    Set RecordsetMeta = DbRecordsetMeta.Create(rstAdo)
+
+    Dim FieldsAttributes As Variant
+    FieldsAttributes = RecordsetMeta.GetFieldsAttributes(Buffer.Range("B1"))
+End Sub
+
+
+Private Sub GetFieldsProperties()
+    Dim FileName As String
+    FileName = REL_PREFIX & LIB_NAME & ".db"
+
+    Dim TableName As String
+    TableName = "people"
+    
+    Dim dbm As IDbManager
+    Set dbm = DbManager.CreateFileDb("sqlite", FileName)
+    
+    Dim SQLQuery As String
+    SQLQuery = "SELECT * FROM " & TableName & " WHERE id > 10 AND id <= ? AND gender = ?"
+    
+    Dim rst As IDbRecordset
+    Set rst = dbm.Recordset(Disconnected:=True, CacheSize:=10, LockType:=adLockBatchOptimistic)
+    Dim rstAdo As ADODB.Recordset
+    Set rstAdo = rst.OpenRecordset(SQLQuery, 20, "male")
+    
+    Dim RecordsetMeta As DbRecordsetMeta
+    Set RecordsetMeta = DbRecordsetMeta.Create(rstAdo)
+
+    Dim FieldsProperties As Variant
+    FieldsProperties = RecordsetMeta.GetFieldsProperties(Buffer.Range("A10"))
+End Sub
+
+
+'''' .OpenSchema support by the SQLiteODBC driver is very poor. PK info N/A.
+'''' PK info is available via the KEYCOLUMN property of the field in
+'''' a recordset at least for SQLite via SQLiteODBC.
+'''' IMPORTANT: to get PK info, the recordset's LockType must be "updatable",
+'''' that is at least adLockOptimistic. With default adLockReadOnly, PK info
+'''' is not set.
+Private Sub GetPK()
+    Dim FileName As String
+    FileName = REL_PREFIX & "SQLiteDBVBALibrary.db"
+
+    Dim TableName As String
+    TableName = "data_audit_log"
+    
+    Dim dbm As IDbManager
+    Set dbm = DbManager.CreateFileDb("sqlite", FileName)
+    
+    Dim SQLQuery As String
+    SQLQuery = "SELECT * FROM " & TableName & " WHERE 1 = 0 AND operation = ? AND timestamp > ?"
+    
+    Dim rst As IDbRecordset
+    Set rst = dbm.Recordset(Disconnected:=True, CacheSize:=10, LockType:=adLockOptimistic)
+    
+    Dim Result As Variant
+    Result = rst.OpenScalar(SQLQuery, "LOG", 0)
+    
+    Dim rstAdo As ADODB.Recordset
+    Set rstAdo = rst.AdoRecordset
+    
+    Dim FieldCount As Long
+    FieldCount = rstAdo.Fields.Count
+    Dim PKFlags() As Boolean
+    ReDim PKFlags(1 To FieldCount)
+    Dim FieldIndex As Long
+    For FieldIndex = 1 To FieldCount
+        PKFlags(FieldIndex) = rstAdo.Fields(FieldIndex - 1).Properties("KEYCOLUMN")
+    Next FieldIndex
+End Sub

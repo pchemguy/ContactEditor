@@ -18,6 +18,7 @@ Public Property Get FieldAttributeEnumMap() As Scripting.Dictionary
     Set FieldAttributeEnumMapLoc = New Scripting.Dictionary
     With FieldAttributeEnumMapLoc
         .CompareMode = TextCompare
+        .Item(adFldUnspecified) = "adFldUnspecified"
         .Item(adFldCacheDeferred) = "adFldCacheDeferred"
         .Item(adFldFixed) = "adFldFixed"
         .Item(adFldIsChapter) = "adFldIsChapter"
@@ -32,7 +33,6 @@ Public Property Get FieldAttributeEnumMap() As Scripting.Dictionary
         .Item(adFldRowID) = "adFldRowID"
         .Item(adFldRowVersion) = "adFldRowVersion"
         .Item(adFldUnknownUpdatable) = "adFldUnknownUpdatable"
-        .Item(adFldUnspecified) = "adFldUnspecified"
         .Item(adFldUpdatable) = "adFldUpdatable"
     End With
     Set FieldAttributeEnumMap = FieldAttributeEnumMapLoc
@@ -202,4 +202,87 @@ Public Function GetProperties(ByVal RawProperties As Properties) As Variant
         Props(PropertyIndex, 3) = Prop.Value
     Next PropertyIndex
     GetProperties = Props
+End Function
+
+
+Public Property Get FieldAttributeNames() As Variant
+    FieldAttributeNames = Array( _
+        "Name", _
+        "Type", _
+        "Value", _
+        "OriginalValue", _
+        "UnderlyingValue", _
+        "DefinedSize", _
+        "Status", _
+        "Attributes" _
+    )
+End Property
+
+
+Public Function GetFieldAttributesText(ByVal FieldAttributes As Long) As String
+    Dim FieldAttributeEnumMapLoc As Scripting.Dictionary
+    Set FieldAttributeEnumMapLoc = FieldAttributeEnumMap
+    Dim FieldAttributeEnumArray As Variant
+    FieldAttributeEnumArray = FieldAttributeEnumMapLoc.Keys()
+    
+    If FieldAttributes = -1 Then
+        GetFieldAttributesText = FieldAttributeEnumMapLoc(-1)
+        Exit Function
+    End If
+    
+    Dim FieldAttribute As FieldAttributeEnum
+    Dim AttributeText As String
+    AttributeText = vbNullString
+    Dim AttributeIndex As Long
+    For AttributeIndex = 0 To UBound(FieldAttributeEnumArray)
+        FieldAttribute = FieldAttributeEnumArray(AttributeIndex)
+        If (FieldAttributes And FieldAttribute) = FieldAttribute Then
+            AttributeText = AttributeText & FieldAttributeEnumMapLoc(FieldAttribute) & vbLf
+        End If
+    Next AttributeIndex
+    
+    GetFieldAttributesText = Left(AttributeText, Len(AttributeText) - 1)
+End Function
+
+
+Public Function GetFieldStatusText(ByVal FieldStatus As Long) As String
+    Dim FieldStatusEnumHighArrMap As Variant
+    FieldStatusEnumHighArrMap = Array( _
+        "adFieldPendingInsert", _
+        "adFieldPendingDelete", _
+        "adFieldPendingChange", _
+        "adFieldPendingUnknown", _
+        "adFieldPendingUnknownDelete" _
+    )
+    Dim FieldStatusEnumLowArrMap As Variant
+    FieldStatusEnumLowArrMap = Array( _
+        "adFieldOK", vbNullString, "adFieldCantConvertValue", "adFieldIsNull", _
+        "adFieldTruncated", "adFieldSignMismatch", "adFieldDataOverflow", _
+        "adFieldCantCreate", "adFieldUnavailable", "adFieldPermissionDenied", _
+        "adFieldIntegrityViolation", "adFieldSchemaViolation", "adFieldBadStatus", _
+        "adFieldDefault", vbNullString, "adFieldIgnore", "adFieldDoesNotExist", _
+        "adFieldInvalidURL", "adFieldResourceLocked", "adFieldResourceExists", _
+        "adFieldCannotComplete", "adFieldVolumeNotFound", "adFieldOutOfSpace", _
+        "adFieldCannotDeleteSource", "adFieldReadOnly", _
+        "adFieldResourceOutOfScope", "adFieldAlreadyExists" _
+    )
+
+    Dim FieldStatusText As String
+    FieldStatusText = vbNullString
+    If (FieldStatus And &HFFFF0000) <> 0 Then
+        Dim StatusFlag As FieldStatusEnum
+        StatusFlag = adFieldPendingInsert
+        Dim StatusIndex As Long
+        For StatusIndex = 0 To UBound(FieldStatusEnumHighArrMap)
+            If (FieldStatus And StatusFlag) <> 0 Then
+                FieldStatusText = FieldStatusText & _
+                                  FieldStatusEnumHighArrMap(StatusIndex) & vbLf
+            End If
+            StatusFlag = StatusFlag * 2
+        Next StatusIndex
+    End If
+    FieldStatusText = FieldStatusText & _
+                      FieldStatusEnumLowArrMap(FieldStatus And &HFFFF&)
+
+    GetFieldStatusText = FieldStatusText
 End Function

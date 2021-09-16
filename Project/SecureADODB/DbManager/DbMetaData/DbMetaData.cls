@@ -12,6 +12,7 @@ Attribute VB_Description = "Database introspection functionality"
 '@ModuleDescription "Database introspection functionality"
 '@PredeclaredId
 '@Exposed
+'@IgnoreModule IndexedDefaultMemberAccess
 Option Explicit
 
 Private Type TDbMeta
@@ -50,7 +51,6 @@ Attribute QueryTableADOXMeta.VB_Description = "Query table field metadata via th
     Set Catalog = New ADOX.Catalog
     Catalog.ActiveConnection = this.DbConnStr.ConnectionString
     Dim Table As ADOX.Table
-    '@Ignore IndexedDefaultMemberAccess
     Set Table = Catalog.Tables(TableName)
     Dim FieldCount As Long
     FieldCount = Table.Columns.Count
@@ -61,11 +61,9 @@ Attribute QueryTableADOXMeta.VB_Description = "Query table field metadata via th
     Dim Column As ADOX.Column
     Dim FieldIndex As Long
     For FieldIndex = 1 To FieldCount
-        '@Ignore IndexedDefaultMemberAccess
         Set Column = Table.Columns(FieldIndex - 1)
         FieldNames(FieldIndex) = Column.Name
         FieldTypes(FieldIndex) = Column.Type
-        '@Ignore IndexedDefaultMemberAccess
         FieldMap(Column.Name) = FieldIndex
     Next FieldIndex
 End Sub

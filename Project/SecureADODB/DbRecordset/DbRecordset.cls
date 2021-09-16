@@ -227,10 +227,19 @@ Private Function IDbRecordset_OpenScalar( _
         .MaxRecords = 1
         .Open Options:=this.OpenOptions
         If .CursorLocation = adUseClient Then Set .ActiveConnection = Nothing
+    
+        Dim Result As Variant
+        '@Ignore ValueRequired: false posititve
+        If (.RecordCount > 0) And (.BOF = False) And (.EOF = False) Then
+            '@Ignore IndexedDefaultMemberAccess
+            Result = AdoRecordset.Fields(0).Value
+        Else
+            Result = Empty
+        End If
     End With
     On Error GoTo 0
     
-    IDbRecordset_OpenScalar = AdoRecordset.Fields.Item(0).Value
+    IDbRecordset_OpenScalar = Result
     Exit Function
 
 RecordsetOpenError:
