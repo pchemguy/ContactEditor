@@ -286,3 +286,16 @@ Public Function GetFieldStatusText(ByVal FieldStatus As Long) As String
 
     GetFieldStatusText = FieldStatusText
 End Function
+
+
+'@Ignore ProcedureNotUsed
+Public Function GetFilterGroupText(ByVal FilterGroup As FilterGroupEnum) As String
+    GetFilterGroupText = Array( _
+        "adFilterNone", _
+        "adFilterPendingRecords", _
+        "adFilterAffectedRecords", _
+        "adFilterFetchedRecords", _
+        Empty, _
+        "adFilterConflictingRecords" _
+    )(FilterGroup)
+End Function

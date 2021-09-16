@@ -111,7 +111,7 @@ Private Sub SaveRestore()
     
     Dim RstFromFile As ADODB.Recordset
     Set RstFromFile = New ADODB.Recordset
-    RstFromFile.Open FileName
+    RstFromFile.Open Source:=FileName, Options:=adCmdFile
     
     DbRecordset.RecordsetToQT Buffer.Range("K1"), RstFromFile
 End Sub

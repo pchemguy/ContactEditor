@@ -200,6 +200,16 @@ Private Function IDbRecordset_OpenRecordset( _
     With AdoRecordset
         .MaxRecords = 0
         .Open Options:=this.OpenOptions
+        If (.LockType = adLockOptimistic) Or (.LockType = adLockBatchOptimistic) Then
+            If Not .Supports(adUpdate) Then
+                Err.Raise ErrNo.AdoFeatureNotAvailableErr, "DbRecordset", _
+                          "Recordset does not support updating"
+            End If
+            If (.LockType = adLockBatchOptimistic) And Not (.Supports(adUpdateBatch)) Then
+                Err.Raise ErrNo.AdoFeatureNotAvailableErr, "DbRecordset", _
+                          "Recordset does not support batch updating"
+            End If
+        End If
         If .CursorLocation = adUseClient Then Set .ActiveConnection = Nothing
     End With
     On Error GoTo 0
@@ -284,6 +294,8 @@ Attribute IDbRecordset_UpdateRecord.VB_Description = "Updates modified records"
                             "DbRecordset", _
                             "AbsolutePosition must be <= AdoRecordset.RecordCount"
         
+        Dim AdoConnection As ADODB.Connection
+        Set AdoConnection = this.cmd.Connection.AdoConnection
         '@Ignore ValueRequired: False positive
         NumRecords = AbsolutePosition - .AbsolutePosition
         '@Ignore ArgumentWithIncompatibleObjectType: False positive
@@ -294,6 +306,14 @@ Attribute IDbRecordset_UpdateRecord.VB_Description = "Updates modified records"
             '@Ignore ImplicitDefaultMemberAccess, IndexedDefaultMemberAccess
             .Fields(FieldName) = ValuesDict(FieldName)
         Next FieldName
+        If .ActiveConnection Is Nothing Then
+            AdoConnection.Errors.Clear
+            Set .ActiveConnection = AdoConnection
+        Else
+            .ActiveConnection.Errors.Clear
+        End If
+        .Update
+        If .CursorLocation = adUseClient Then Set .ActiveConnection = Nothing
     End With
 End Sub
 
@@ -359,9 +379,16 @@ Attribute PersistRecordsetChanges.VB_Description = "Executes transaction-wrapped
                             
         Dim db As IDbConnection
         Set db = this.cmd.Connection
+        Dim AdoConnection As ADODB.Connection
+        Set AdoConnection = this.cmd.Connection.AdoConnection
         '''' Marshal dirty records only
         .MarshalOptions = adMarshalModifiedOnly
-        Set .ActiveConnection = this.cmd.Connection.AdoConnection
+        If .ActiveConnection Is Nothing Then
+            AdoConnection.Errors.Clear
+            Set .ActiveConnection = AdoConnection
+        Else
+            .ActiveConnection.Errors.Clear
+        End If
         On Error GoTo Rollback
         '''' Set the expected count of affected rows in the DbConnection object
         db.ExpectedRecordsAffected = DirtyRecordCount
