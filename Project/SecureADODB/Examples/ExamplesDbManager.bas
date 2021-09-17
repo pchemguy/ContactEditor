@@ -298,30 +298,3 @@ Private Sub CSVTwoParameterQueryTableTest()
     
     Set rstAdo = rst.OpenRecordset(SQLQuery, 45, "South Korea")
 End Sub
-
-
-Private Sub SQLiteSupportedFeaturesTest()
-    Dim FileName As String
-    FileName = REL_PREFIX & LIB_NAME & ".db"
-
-    Dim TableName As String
-    TableName = "people"
-    Dim SQLQuery As String
-    SQLQuery = "SELECT * FROM " & TableName & " WHERE age >= ? AND country = 'South Korea'"
-    
-    Dim dbm As IDbManager
-    Set dbm = DbManager.CreateFileDb("sqlite", FileName, vbNullString, LoggerTypeEnum.logPrivate)
-
-    Dim rst As IDbRecordset
-    Set rst = dbm.Recordset(Disconnected:=True, CacheSize:=10, LockType:=adLockOptimistic)
-    
-    Debug.Print dbm.Connection.AdoConnection.Properties("Transaction DDL")
-    
-    Dim Result As ADODB.Recordset
-    Set Result = rst.GetAdoRecordset("SELECT * FROM " & TableName)
-    
-    
-    Set Result = rst.OpenRecordset(SQLQuery, 45)
-    Debug.Print "==========" & Result.Supports(adUpdate) & "=========="
-End Sub
-

@@ -288,6 +288,10 @@ Attribute IDbRecordset_UpdateRecord.VB_Description = "Updates modified records"
                             IncompatibleStatusErr, _
                             "DbRecordset", _
                             "Expected AdoRecordset.Status = adStateOpen"
+        Guard.ExpressionErr .Filter = adFilterNone, _
+                            IncompatibleStatusErr, _
+                            "DbRecordset", _
+                            "Expected AdoRecordset.Filter = adFilterNone"
         '@Ignore ValueRequired: false positive
         Guard.ExpressionErr AbsolutePosition <= .RecordCount, _
                             InvalidParameterErr, _
@@ -296,6 +300,10 @@ Attribute IDbRecordset_UpdateRecord.VB_Description = "Updates modified records"
         
         Dim AdoConnection As ADODB.Connection
         Set AdoConnection = this.cmd.Connection.AdoConnection
+        Select Case .AbsolutePosition
+            Case adPosUnknown, adPosBOF, adPosEOF
+                .MoveFirst
+        End Select
         '@Ignore ValueRequired: False positive
         NumRecords = AbsolutePosition - .AbsolutePosition
         '@Ignore ArgumentWithIncompatibleObjectType: False positive
@@ -319,21 +327,30 @@ End Sub
 
 
 '@Description "Updates AdoRecordset data in preparation for a database update"
-Friend Sub UpdateRecordsetData(ByRef AbsolutePositions() As Long, _
-                               ByRef RecordsetData() As Variant)
-Attribute UpdateRecordsetData.VB_Description = "Updates AdoRecordset data in preparation for a database update"
+Private Sub IDbRecordset_UpdateRecordsetData(ByRef AbsolutePositions() As Long, _
+                                             ByRef RecordsetData() As Variant)
     Dim FieldCount As Long
     FieldCount = UBound(RecordsetData, 2) - LBound(RecordsetData, 2) + 1
     Dim RecordCount As Long
     RecordCount = UBound(RecordsetData, 1) - LBound(RecordsetData, 1) + 1
     
-    Guard.ExpressionErr AdoRecordset.Fields.Count = FieldCount, _
-                        IncompatibleArraysErr, "DbRecordset", _
-                        "Field count mismatch"
-    '@Ignore ValueRequired: false positive
-    Guard.ExpressionErr AdoRecordset.RecordCount = RecordCount, _
-                        IncompatibleArraysErr, "DbRecordset", _
-                        "Record count mismatch"
+    With AdoRecordset
+        Guard.ExpressionErr .LockType = adLockBatchOptimistic, _
+                            AdoFeatureNotAvailableErr, _
+                            "DbRecordset", _
+                            "Set LockType = adLocktttBatchOptimistic"
+        Guard.ExpressionErr .Fields.Count = FieldCount, _
+                            IncompatibleArraysErr, "DbRecordset", _
+                            "Field count mismatch"
+        Guard.ExpressionErr .Filter = adFilterNone, _
+                            IncompatibleStatusErr, _
+                            "DbRecordset", _
+                            "Expected AdoRecordset.Filter = adFilterNone"
+        '@Ignore ValueRequired: false positive
+        Guard.ExpressionErr .RecordCount = RecordCount, _
+                            IncompatibleArraysErr, "DbRecordset", _
+                            "Record count mismatch"
+    End With
     Guard.ExpressionErr LBound(RecordsetData, 1) = 1, IncompatibleArraysErr, _
                         "DbRecordset", "Records dimension should be 1-based"
     Guard.ExpressionErr LBound(RecordsetData, 2) = 1, IncompatibleArraysErr, _
@@ -364,31 +381,27 @@ Attribute UpdateRecordsetData.VB_Description = "Updates AdoRecordset data in pre
             '@Ignore ImplicitDefaultMemberAccess, IndexedDefaultMemberAccess
             AdoRecordset.Fields(FieldIndex - 1) = RecordsetData(RecordPos, FieldIndex)
         Next FieldIndex
+        AdoRecordset.Update
     Next RecordPosIndex
 End Sub
 
 
 '@Description "Executes transaction-wrapped batch update of the recordset."
-Friend Sub PersistRecordsetChanges(ByVal DirtyRecordCount As Long)
-Attribute PersistRecordsetChanges.VB_Description = "Executes transaction-wrapped batch update of the recordset."
+Private Sub IDbRecordset_PersistRecordsetChanges(ByVal DirtyRecordCount As Long)
     With AdoRecordset
         Guard.ExpressionErr .State = adStateOpen, _
                             IncompatibleStatusErr, _
                             "DbRecordset", _
                             "Expected AdoRecordset.Status = adStateOpen"
-                            
+        
         Dim db As IDbConnection
         Set db = this.cmd.Connection
         Dim AdoConnection As ADODB.Connection
-        Set AdoConnection = this.cmd.Connection.AdoConnection
+        Set AdoConnection = db.AdoConnection
+        If .ActiveConnection Is Nothing Then Set .ActiveConnection = AdoConnection
+        AdoConnection.Errors.Clear
         '''' Marshal dirty records only
         .MarshalOptions = adMarshalModifiedOnly
-        If .ActiveConnection Is Nothing Then
-            AdoConnection.Errors.Clear
-            Set .ActiveConnection = AdoConnection
-        Else
-            .ActiveConnection.Errors.Clear
-        End If
         On Error GoTo Rollback
         '''' Set the expected count of affected rows in the DbConnection object
         db.ExpectedRecordsAffected = DirtyRecordCount
@@ -423,10 +436,10 @@ End Sub
 Private Sub IDbRecordset_UpdateRecordset(ByRef AbsolutePositions() As Long, _
                                          ByRef RecordsetData() As Variant)
 Attribute IDbRecordset_UpdateRecordset.VB_Description = "Updates recordset data from 2D array of field values and an array of dirty record indices"
-    UpdateRecordsetData AbsolutePositions, RecordsetData
+    IDbRecordset_UpdateRecordsetData AbsolutePositions, RecordsetData
     Dim DirtyRecordsCount As Long
     DirtyRecordsCount = UBound(AbsolutePositions) - LBound(AbsolutePositions) + 1
-    PersistRecordsetChanges DirtyRecordsCount
+    IDbRecordset_PersistRecordsetChanges DirtyRecordsCount
 End Sub
 
 

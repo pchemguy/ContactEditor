@@ -145,7 +145,7 @@ End Sub
 
     
 '@TestMethod("UpdateRecord")
-Private Sub ztcUpdateRecord_ThrowsIfValuesDictNotSet()
+Private Sub ztcUpdateRecord_ThrowsIfAbsolutePositionOutOfRange()
     On Error Resume Next
     Dim Recordset As IDbRecordset
     Set Recordset = zfxGetDbRecordset()

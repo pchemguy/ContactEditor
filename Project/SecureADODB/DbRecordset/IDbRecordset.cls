@@ -39,3 +39,9 @@ End Sub
 
 Public Sub UpdateRecordset(ByRef AbsolutePositions() As Long, ByRef RecordsetData() As Variant)
 End Sub
+
+Public Sub UpdateRecordsetData(ByRef AbsolutePositions() As Long, ByRef RecordsetData() As Variant)
+End Sub
+
+Public Sub PersistRecordsetChanges(ByVal DirtyRecordCount As Long)
+End Sub

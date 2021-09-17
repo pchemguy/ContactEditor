@@ -207,3 +207,91 @@ Private Sub SQLiteUpdateRstTransactionChangesTest()
     rstAdo.MoveFirst
     'Buffer.Range("A2").CopyFromRecordset rstAdo
 End Sub
+
+
+Private Sub SQLiteUpdateDirtyRecordsTest()
+    Dim FileName As String
+    FileName = REL_PREFIX & LIB_NAME & ".db"
+
+    Dim TableName As String
+    TableName = "people"
+    
+    Dim dbm As IDbManager
+    Set dbm = DbManager.CreateFileDb("sqlite", FileName)
+    
+    Dim SQLQuery As String
+    SQLQuery = "SELECT * FROM " & TableName & " WHERE id > 10 AND id <= ? AND gender = ?"
+    
+    Dim rst As IDbRecordset
+    Set rst = dbm.Recordset(Disconnected:=True, CacheSize:=10, LockType:=adLockBatchOptimistic)
+    Dim rstAdo As ADODB.Recordset
+    Set rstAdo = rst.OpenRecordset(SQLQuery, 20, "male")
+    Dim DataQT As Excel.QueryTable
+    Set DataQT = rst.RecordsetToQT(Buffer.Range("A1"))
+    
+    Dim DirtyRecords(0 To 2) As Long
+    DirtyRecords(0) = 2
+    DirtyRecords(1) = 6
+    DirtyRecords(2) = 7
+    
+    Dim Values() As Variant
+    Values = ArrayLib.TransposeArray(rstAdo.GetRows, 1)
+    rstAdo.MoveFirst
+    
+    Values(2, 2) = Values(2, 2) & "___"
+    Values(6, 3) = Values(6, 3) & "___"
+    Values(7, 6) = Values(7, 6) & "___"
+    
+    With rstAdo
+        .Move 1
+        .Fields(1) = rstAdo.Fields(1) & "___"
+        .Update
+        .Move 4
+        .Fields(2) = rstAdo.Fields(2) & "___"
+        .Update
+        .Move 1
+        .Fields(5) = rstAdo.Fields(5) & "___"
+        .Update
+    End With
+    
+    rst.RecordsetToQT Buffer.Range("A1")
+    rstAdo.MoveLast
+    
+    Dim RecordsetMeta As DbRecordsetMeta
+    Set RecordsetMeta = DbRecordsetMeta.Create(rstAdo)
+    Dim Meta As Variant
+    Meta = RecordsetMeta.GetFieldsProperties(Buffer.Range("A10"))
+    Meta = RecordsetMeta.GetFieldsAttributes(Buffer.Range("B1"))
+    
+    Dim FilterGroup As FilterGroupEnum
+    
+    FilterGroup = adFilterNone
+    rstAdo.Filter = FilterGroup
+    Debug.Print "======== RecordCount ========:", rstAdo.RecordCount
+    FilterGroup = adFilterPendingRecords
+    rstAdo.Filter = FilterGroup
+    Debug.Print "===== DirtyRecordCount =====:", rstAdo.RecordCount
+    FilterGroup = adFilterAffectedRecords
+    rstAdo.Filter = FilterGroup
+    Debug.Print "==== AffectedRecordCount ====:", rstAdo.RecordCount
+    
+    rst.UpdateRecordset DirtyRecords, Values
+    FilterGroup = adFilterPendingRecords
+    rstAdo.Filter = FilterGroup
+    Debug.Print "===== DirtyRecordCount =====:", rstAdo.RecordCount
+    FilterGroup = adFilterAffectedRecords
+    rstAdo.Filter = FilterGroup
+    Debug.Print "==== AffectedRecordCount ====:", rstAdo.RecordCount
+    
+    
+    rst.RecordsetToQT Buffer.Range("A1")
+
+    Values(2, 2) = Replace(Values(2, 2), "___", vbNullString)
+    Values(6, 3) = Replace(Values(6, 3), "___", vbNullString)
+    Values(7, 6) = Replace(Values(7, 6), "___", vbNullString)
+    rst.UpdateRecordset DirtyRecords, Values
+    rst.RecordsetToQT Buffer.Range("A1")
+    
+    rstAdo.MoveFirst
+    'Buffer.Range("A2").CopyFromRecordset rstAdo
+End Sub
